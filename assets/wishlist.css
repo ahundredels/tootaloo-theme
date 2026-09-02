@@ -50,10 +50,17 @@
   color: #fff;
 }
 
-/* Header wishlist count */
+/* Header wishlist icon + count */
 .header__wishlist {
   position: relative;
   display: inline-flex;
+  align-items: center;
+  color: rgb(var(--color-foreground));
+}
+
+.header__wishlist svg {
+  width: 2rem;
+  height: 2rem;
 }
 
 [data-wishlist-count] {

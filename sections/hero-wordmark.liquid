@@ -29,7 +29,7 @@
 {%- endstyle -%}
 
 <div class="hero-wordmark color-{{ section.settings.color_scheme }} gradient hero-wordmark--scrim-{{ scrim }}">
-  <div class="hero-wordmark__media tt-media tt-media--natural">
+  <div class="hero-wordmark__media">
     {%- if section.settings.image != blank -%}
       {%- if section.settings.image_mobile != blank -%}
         <img
@@ -95,17 +95,31 @@
   .hero-wordmark__media {
     position: absolute;
     inset: 0;
-    background: rgba(var(--color-foreground), 0.04);
+    overflow: hidden;
+    background: rgba(var(--color-foreground), 0.05);
   }
 
-  .hero-wordmark__image,
-  .hero-wordmark__placeholder,
-  .hero-wordmark__placeholder svg {
+  .hero-wordmark__image {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .hero-wordmark__placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-wordmark__placeholder svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    fill: rgba(var(--color-foreground), 0.18);
   }
 
   .hero-wordmark__image--mobile { display: none; }
