@@ -9,8 +9,8 @@
 
 {%- style -%}
   .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    padding-top: {{ section.settings.padding_top | times: 0.6 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.6 | round: 0 }}px;
   }
 
   @media screen and (min-width: 750px) {
@@ -97,7 +97,7 @@
 
 {% stylesheet %}
   .collection-tile-grid__header {
-    margin-bottom: 2.5rem;
+    margin-bottom: var(--tt-space-md);
   }
 
   .collection-tile-grid__heading {
@@ -107,7 +107,7 @@
   .collection-tile-grid__grid {
     display: grid;
     grid-template-columns: repeat(var(--cols-mobile, 2), minmax(0, 1fr));
-    gap: 1rem;
+    gap: var(--tt-grid-col-gap);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -116,7 +116,8 @@
   @media screen and (min-width: 750px) {
     .collection-tile-grid__grid {
       grid-template-columns: repeat(var(--cols-desktop, 3), minmax(0, 1fr));
-      gap: 1.5rem;
+      column-gap: var(--tt-grid-col-gap);
+      row-gap: var(--tt-space-md);
     }
   }
 
@@ -143,22 +144,23 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.5s ease;
+    transition: transform var(--tt-dur-slow) var(--tt-ease);
   }
 
   .collection-tile:hover .collection-tile__image {
-    transform: scale(1.03);
+    transform: scale(1.02);
   }
 
   .collection-tile__name {
     display: block;
-    font-size: 1.5rem;
-    letter-spacing: 0.02em;
+    font-family: var(--tt-font-grotesk);
+    font-size: var(--tt-fs-2xs);
+    letter-spacing: var(--tt-tracking-widest);
+    text-transform: uppercase;
   }
 
   .collection-tile-grid__grid--name-below .collection-tile__name {
-    margin-top: 1rem;
-    text-align: center;
+    margin-top: var(--tt-space-2xs);
   }
 
   .collection-tile-grid__grid--name-overlay .collection-tile__name {
@@ -166,22 +168,19 @@
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 5rem 1.5rem 1.5rem;
+    padding: var(--tt-space-lg) var(--tt-space-xs) var(--tt-space-xs);
     color: #fff;
-    font-size: 1.7rem;
-    text-align: center;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
   }
 
   @media screen and (max-width: 749px) {
     .collection-tile-grid__grid--name-overlay .collection-tile__name {
-      font-size: 1.4rem;
-      padding: 3.5rem 1rem 1rem;
+      padding: var(--tt-space-md) var(--tt-space-2xs) var(--tt-space-2xs);
     }
   }
 
   .collection-tile-grid__placeholder {
-    padding: 4rem 0;
+    padding: var(--tt-space-lg) 0;
     text-align: center;
     color: rgba(var(--color-foreground), 0.6);
   }

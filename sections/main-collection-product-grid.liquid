@@ -37,8 +37,9 @@
 
   .collection-with-sidebar {
     display: flex;
-    align-items: flex-start;
-    gap: 3rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--tt-sidebar-gap);
   }
 
   .collection-with-sidebar .product-grid-container {
@@ -46,9 +47,17 @@
     min-width: 0;
   }
 
-  @media screen and (max-width: 989px) {
+  @media screen and (min-width: 990px) {
     .collection-with-sidebar {
-      flex-direction: column;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--tt-sidebar-gap);
+    }
+
+    .collection-with-sidebar .category-sidebar {
+      flex: 0 0 var(--tt-sidebar-width);
+      position: sticky;
+      top: var(--tt-sticky-offset);
     }
   }
 {%- endstyle -%}

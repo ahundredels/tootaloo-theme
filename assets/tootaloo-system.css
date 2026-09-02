@@ -257,10 +257,8 @@ h5, .h5 {
   gap: 0.4rem;
 }
 
-/* Vendor sits above the title (Liquid renders it first — see card-product.liquid) */
-.card__information .tt-vendor,
-.card-information .caption-with-letter-spacing {
-  order: -1;
+/* Vendor sits above the title — rendered first in card-product.liquid */
+.card__vendor {
   margin: 0;
 }
 
@@ -291,14 +289,7 @@ h5, .h5 {
 /* Hover: image only, restrained */
 .card__media img { transition: transform var(--tt-dur-slow) var(--tt-ease); }
 .card-wrapper:hover .card__media img { transform: scale(1.02); }
-
-/* Wishlist heart on the card */
-.card__media .wishlist-button {
-  position: absolute;
-  top: var(--tt-space-2xs);
-  right: var(--tt-space-2xs);
-  z-index: 2;
-}
+/* (wishlist heart placement is owned by wishlist.css) */
 
 /* ════════════════ 6. COLLECTION GRID + SHOP ALL + SIDEBAR ════════════════
    SSENSE density: tight columns, generous rows, hard alignment. */
@@ -312,22 +303,9 @@ h5, .h5 {
   .product-grid.grid--2-col-tablet-down { column-gap: var(--tt-grid-col-gap); }
 }
 
-/* Sidebar + content layout */
-.collection-with-sidebar {
-  display: grid;
-  gap: var(--tt-sidebar-gap);
-  align-items: start;
-}
-
-@media screen and (min-width: 990px) {
-  .collection-with-sidebar {
-    grid-template-columns: var(--tt-sidebar-width) minmax(0, 1fr);
-  }
-}
-
+/* Sidebar + content layout — grid geometry is owned by the section's own
+   {% style %} block; here we only tune the sidebar's inner presentation. */
 .collection-with-sidebar .category-sidebar {
-  position: sticky;
-  top: var(--tt-sticky-offset);
   max-width: none;
   padding-right: 0;
 }
@@ -394,29 +372,11 @@ h5, .h5 {
 .product-form__buttons { margin-top: var(--tt-space-xs); }
 .product-form__submit { margin-bottom: var(--tt-space-2xs); }
 
-/* Vintage metadata area — label/value system, quiet, no DB table */
-.product__vintage-condition,
-.product__vintage-measurements,
-.product__vintage-details-list {
+/* Vintage metadata area — structural framing only.
+   Label/value typography is owned by component-vintage-details.css. */
+.product__info-container .product__vintage-measurements {
   border-top: 1px solid rgba(var(--color-foreground), 0.12);
   padding-top: var(--tt-space-sm);
-}
-
-.product__vintage-condition-label,
-.product__vintage-measurement-label,
-.product__vintage-details-list dt {
-  font-size: var(--tt-fs-2xs);
-  letter-spacing: var(--tt-tracking-wider);
-  text-transform: uppercase;
-  color: rgba(var(--color-foreground), 0.55);
-  font-weight: var(--tt-fw-regular);
-}
-
-.product__vintage-condition-value,
-.product__vintage-measurement-value,
-.product__vintage-details-list dd {
-  font-size: var(--tt-fs-sm);
-  line-height: var(--tt-lh-body);
 }
 
 .product__accordion .accordion__title,
@@ -427,17 +387,15 @@ h5, .h5 {
   font-family: var(--tt-font-grotesk);
 }
 
-/* ════════════════ 8. HEADER ════════════════ */
-
-.header {
-  padding-top: var(--tt-space-xs);
-  padding-bottom: var(--tt-space-xs);
-}
+/* ════════════════ 8. HEADER ════════════════
+   Sparse and serious. Vertical padding + gutter live in header.liquid's
+   own {% style %} block (token-driven); type + rhythm here. */
 
 .header__heading-link .h2,
 .header__heading-link {
   font-family: var(--tt-font-display);
   letter-spacing: var(--tt-tracking-tight);
+  text-transform: none;
 }
 
 .header__menu-item,
@@ -448,32 +406,26 @@ h5, .h5 {
   text-transform: uppercase;
 }
 
-.header__inline-menu .list-menu__item--link { padding-block: 0; }
-
+.header__inline-menu .header__menu-item { padding-block: 0; }
 .header__icons { gap: var(--tt-space-xs); }
-.header__wishlist { display: flex; align-items: center; }
-.header__wishlist [data-wishlist-count],
-.header__wishlist [data-wishlist-count]:not([hidden]) {
-  font-size: var(--tt-fs-2xs);
-  letter-spacing: var(--tt-tracking-normal);
-}
+.header__icon .svg-wrapper { width: 2rem; height: 2rem; }
+/* (wishlist icon + count are owned by wishlist.css) */
 
 /* ════════════════ 9. FOOTER ════════════════
-   Functional and quiet — no oversized corporate footer. */
+   Functional and quiet — no oversized corporate footer. Section padding is
+   schema-driven (section-<id>-padding); we add top rhythm + type only. */
 
-.footer {
-  margin-top: var(--tt-section-gap);
-  padding-top: var(--tt-space-lg);
-}
+.footer { margin-top: var(--tt-section-gap); }
 
 .footer__content-top { padding-bottom: var(--tt-space-md); }
-.footer__content-bottom { padding-top: var(--tt-space-sm); }
+.footer__content-bottom { padding-block: var(--tt-space-sm); }
 
 .footer-block__heading {
   font-size: var(--tt-fs-2xs);
   letter-spacing: var(--tt-tracking-widest);
   text-transform: uppercase;
   font-family: var(--tt-font-grotesk);
+  font-weight: var(--tt-fw-semibold);
   margin-bottom: var(--tt-space-xs);
 }
 
@@ -483,21 +435,30 @@ h5, .h5 {
   letter-spacing: var(--tt-tracking-normal);
 }
 
-.footer .copyright__content { font-size: var(--tt-fs-2xs); letter-spacing: var(--tt-tracking-wide); }
+.footer-block__newsletter .newsletter-form__field-wrapper { margin-top: var(--tt-space-2xs); }
 
-/* ════════════════ 10. NEWSLETTER — understated capture ════════════════ */
-
-.newsletter__heading,
-.newsletter-form__heading {
+.footer .copyright__content {
   font-size: var(--tt-fs-2xs);
-  letter-spacing: var(--tt-tracking-widest);
-  text-transform: uppercase;
-  font-family: var(--tt-font-grotesk);
+  letter-spacing: var(--tt-tracking-wide);
 }
 
-.newsletter__subheading { font-size: var(--tt-fs-sm); color: rgba(var(--color-foreground), 0.6); }
+/* ════════════════ 10. NEWSLETTER — understated capture ════════════════
+   No forced discount language, quiet label, single field. Heading uses the
+   .h* ladder (already normalised); we only quiet the surrounding chrome. */
 
-.newsletter-form { gap: var(--tt-space-2xs); }
+.newsletter__wrapper,
+.email-signup-banner__box {
+  padding-block: var(--tt-space-lg);
+}
+
+.newsletter__subheading {
+  font-size: var(--tt-fs-sm);
+  color: rgba(var(--color-foreground), 0.6);
+  margin-top: var(--tt-space-2xs);
+}
+
+.newsletter-form { gap: var(--tt-space-2xs); margin-top: var(--tt-space-sm); }
+.newsletter-form__field-wrapper { max-width: 44rem; margin-inline: auto; }
 
 /* ════════════════ 11. WISHLIST ════════════════
    Match the product-card system exactly. */
