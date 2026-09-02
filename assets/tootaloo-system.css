@@ -1,0 +1,586 @@
+/*
+ * ══════════════════════════════════════════════════════════════════════════
+ * TOOTALOO SYSTEM
+ * One coherent layer that governs typography, spacing, layout, cards, grids
+ * and state treatment across the theme. Loaded after base.css so it wins.
+ *
+ * Tokens live in snippets/tootaloo-tokens.liquid (--tt-*). This file only
+ * consumes them — no raw px/rem values except 0, 1px hairlines and %.
+ *
+ * NEUTRAL: no brand colour, no final typeface, no imagery. Colour is still
+ * Dawn's scheme system (rgb(var(--color-foreground)) etc.).
+ *
+ * Sections:
+ *   1. Type role utilities
+ *   2. Base typography normalisation
+ *   3. Layout containers & section rhythm
+ *   4. Media / aspect-ratio system
+ *   5. Product card (boutique object)
+ *   6. Collection grid + Shop All + sidebar
+ *   7. Product page (PDP) — image ↔ buy-box relationship
+ *   8. Header
+ *   9. Footer
+ *  10. Newsletter
+ *  11. Wishlist
+ *  12. Sold / archive / one-of-one state
+ *  13. Multi-weight grid spans (normal / featured / hero / editorial)
+ * ══════════════════════════════════════════════════════════════════════════
+ */
+
+/* ════════════════ 1. TYPE ROLE UTILITIES ════════════════
+   A role bundles size + leading + tracking + weight + case. Sections
+   reference the role, never a raw size. */
+
+.tt-wordmark {
+  font-family: var(--tt-font-display);
+  font-size: var(--tt-fs-oversized);
+  line-height: var(--tt-lh-none);
+  letter-spacing: var(--tt-tracking-tighter);
+  font-weight: var(--tt-fw-regular);
+  text-transform: uppercase;
+}
+
+.tt-nav {
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-sm);
+  line-height: var(--tt-lh-snug);
+  letter-spacing: var(--tt-tracking-wide);
+  font-weight: var(--tt-fw-regular);
+  text-transform: uppercase;
+}
+
+.tt-utility {
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-2xs);
+  line-height: var(--tt-lh-snug);
+  letter-spacing: var(--tt-tracking-widest);
+  font-weight: var(--tt-fw-regular);
+  text-transform: uppercase;
+}
+
+.tt-section-heading {
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-sm);
+  line-height: var(--tt-lh-snug);
+  letter-spacing: var(--tt-tracking-widest);
+  font-weight: var(--tt-fw-semibold);
+  text-transform: uppercase;
+}
+
+.tt-drop-title {
+  font-family: var(--tt-font-display);
+  font-size: var(--tt-fs-xl);
+  line-height: var(--tt-lh-tight);
+  letter-spacing: var(--tt-tracking-tight);
+  font-weight: var(--tt-fw-regular);
+}
+
+.tt-editorial-heading {
+  font-family: var(--tt-font-display);
+  font-size: var(--tt-fs-lg);
+  line-height: var(--tt-lh-snug);
+  letter-spacing: var(--tt-tracking-tight);
+  font-weight: var(--tt-fw-regular);
+}
+
+.tt-product-title {
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-md);
+  line-height: var(--tt-lh-snug);
+  letter-spacing: var(--tt-tracking-normal);
+  font-weight: var(--tt-fw-regular);
+}
+
+.tt-vendor {
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-2xs);
+  line-height: var(--tt-lh-snug);
+  letter-spacing: var(--tt-tracking-widest);
+  font-weight: var(--tt-fw-regular);
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.tt-price {
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-sm);
+  line-height: var(--tt-lh-snug);
+  letter-spacing: var(--tt-tracking-wide);
+  font-weight: var(--tt-fw-regular);
+  font-variant-numeric: tabular-nums;
+}
+
+.tt-body {
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-base);
+  line-height: var(--tt-lh-body);
+  letter-spacing: var(--tt-tracking-normal);
+}
+
+.tt-meta-label {
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-2xs);
+  line-height: var(--tt-lh-snug);
+  letter-spacing: var(--tt-tracking-wider);
+  text-transform: uppercase;
+  font-weight: var(--tt-fw-regular);
+  color: rgba(var(--color-foreground), 0.55);
+}
+
+.tt-meta-value {
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-sm);
+  line-height: var(--tt-lh-body);
+  letter-spacing: var(--tt-tracking-normal);
+  color: rgb(var(--color-foreground));
+}
+
+/* ════════════════ 2. BASE TYPOGRAPHY NORMALISATION ════════════════
+   Re-map Dawn's heading ladder onto the scale and kill the blanket
+   +0.06rem caps tracking that reads as stock Dawn. */
+
+h1, h2, h3, h4, h5,
+.h0, .h1, .h2, .h3, .h4, .h5 {
+  font-family: var(--tt-font-display);
+  letter-spacing: var(--tt-tracking-tight);
+  line-height: var(--tt-lh-heading);
+  font-weight: var(--tt-fw-regular);
+}
+
+.h0 { font-size: var(--tt-fs-display); line-height: var(--tt-lh-tight); letter-spacing: var(--tt-tracking-tighter); }
+h1, .h1 { font-size: var(--tt-fs-xl); line-height: var(--tt-lh-tight); }
+h2, .h2 { font-size: var(--tt-fs-lg); }
+h3, .h3 { font-size: var(--tt-fs-md); line-height: var(--tt-lh-snug); }
+h4, .h4 { font-size: var(--tt-fs-base); letter-spacing: var(--tt-tracking-normal); }
+h5, .h5 {
+  font-size: var(--tt-fs-2xs);
+  letter-spacing: var(--tt-tracking-widest);
+  text-transform: uppercase;
+  font-family: var(--tt-font-grotesk);
+  font-weight: var(--tt-fw-semibold);
+}
+
+/* Dawn's generic section title ("title--primary" etc.) */
+.title-wrapper-with-link { margin-block: 0 var(--tt-space-md); }
+.title--primary { margin-block: 0 var(--tt-space-md); }
+
+/* Body copy rhythm for rich text */
+.rte > * + * { margin-top: 1.1em; }
+.rte h2, .rte h3, .rte h4 { margin-top: 1.8em; }
+
+/* ════════════════ 3. LAYOUT CONTAINERS & SECTION RHYTHM ════════════════ */
+
+.page-width {
+  max-width: var(--tt-content-max);
+  padding-inline: var(--tt-gutter);
+}
+
+@media screen and (min-width: 750px) {
+  .page-width { padding-inline: var(--tt-gutter); }
+  .page-width--narrow { padding-inline: 0; }
+}
+
+.page-width--narrow { max-width: var(--tt-content-narrow); }
+
+/* Reading-measure container for editorial / policy copy */
+.tt-measure { max-width: var(--tt-content-text); margin-inline: auto; }
+
+/* Section rhythm — a controlled ladder, not one uniform gap.
+   Sections opt in with a modifier; default stays Dawn's own padding. */
+.tt-section        { padding-block: var(--tt-section-gap); }
+.tt-section--tight { padding-block: var(--tt-space-md); }
+.tt-section--major { padding-block: var(--tt-section-gap-major); }
+.tt-section--flush-top { padding-top: 0; }
+.tt-section--flush-bottom { padding-bottom: 0; }
+
+/* Full-bleed escape hatch inside a constrained parent */
+.tt-fullbleed {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+
+/* ════════════════ 4. MEDIA / ASPECT-RATIO SYSTEM ════════════════
+   One deliberate ratio vocabulary instead of Dawn's per-section crop. */
+
+.tt-media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: rgba(var(--color-foreground), 0.04);
+}
+
+.tt-media > img,
+.tt-media > svg,
+.tt-media > .placeholder-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.tt-media[data-ratio='square']         { aspect-ratio: var(--tt-ratio-square); }
+.tt-media[data-ratio='portrait']       { aspect-ratio: var(--tt-ratio-portrait); }
+.tt-media[data-ratio='portrait-tall']  { aspect-ratio: var(--tt-ratio-portrait-tall); }
+.tt-media[data-ratio='landscape']      { aspect-ratio: var(--tt-ratio-landscape); }
+.tt-media[data-ratio='featured-wide']  { aspect-ratio: var(--tt-ratio-featured-wide); }
+.tt-media[data-ratio='featured-tall']  { aspect-ratio: var(--tt-ratio-featured-tall); }
+
+/* Story image: uncropped, may sit on any ratio, no commerce chrome */
+.tt-media--natural { background: none; }
+.tt-media--natural > img { position: static; height: auto; object-fit: contain; }
+.tt-media--contain > img { object-fit: contain; }
+
+/* ════════════════ 5. PRODUCT CARD — boutique object ════════════════
+   image · VENDOR · title · price · wishlist · sold. Quiet, aligned,
+   whitespace-separated (no card chrome). */
+
+.card-wrapper .card {
+  --border-width: 0;
+  --border-opacity: 0;
+  --shadow-opacity: 0;
+  background: transparent;
+}
+
+.card__inner { border: 0; }
+
+.card__content {
+  padding: var(--tt-space-xs) 0 0;
+  row-gap: var(--tt-space-2xs);
+}
+
+.card__information {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Vendor sits above the title (Liquid renders it first — see card-product.liquid) */
+.card__information .tt-vendor,
+.card-information .caption-with-letter-spacing {
+  order: -1;
+  margin: 0;
+}
+
+.card__heading,
+.card__heading.h5 {
+  margin: 0;
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-sm);
+  line-height: var(--tt-lh-snug);
+  letter-spacing: var(--tt-tracking-normal);
+  font-weight: var(--tt-fw-regular);
+  text-transform: none;
+}
+
+.card-information > .price,
+.card__information .price {
+  margin-top: 0.2rem;
+}
+
+.price {
+  font-size: var(--tt-fs-sm);
+  letter-spacing: var(--tt-tracking-wide);
+  font-variant-numeric: tabular-nums;
+}
+
+.price .price-item--regular { letter-spacing: var(--tt-tracking-wide); }
+
+/* Hover: image only, restrained */
+.card__media img { transition: transform var(--tt-dur-slow) var(--tt-ease); }
+.card-wrapper:hover .card__media img { transform: scale(1.02); }
+
+/* Wishlist heart on the card */
+.card__media .wishlist-button {
+  position: absolute;
+  top: var(--tt-space-2xs);
+  right: var(--tt-space-2xs);
+  z-index: 2;
+}
+
+/* ════════════════ 6. COLLECTION GRID + SHOP ALL + SIDEBAR ════════════════
+   SSENSE density: tight columns, generous rows, hard alignment. */
+
+.product-grid.grid {
+  column-gap: var(--tt-grid-col-gap);
+  row-gap: var(--tt-grid-row-gap);
+}
+
+@media screen and (max-width: 749px) {
+  .product-grid.grid--2-col-tablet-down { column-gap: var(--tt-grid-col-gap); }
+}
+
+/* Sidebar + content layout */
+.collection-with-sidebar {
+  display: grid;
+  gap: var(--tt-sidebar-gap);
+  align-items: start;
+}
+
+@media screen and (min-width: 990px) {
+  .collection-with-sidebar {
+    grid-template-columns: var(--tt-sidebar-width) minmax(0, 1fr);
+  }
+}
+
+.collection-with-sidebar .category-sidebar {
+  position: sticky;
+  top: var(--tt-sticky-offset);
+  max-width: none;
+  padding-right: 0;
+}
+
+/* Collection banner / hero — quieter, left-aligned, tighter to the grid */
+.collection-hero { padding-block: var(--tt-space-md) var(--tt-space-sm); }
+.collection-hero__title { margin: 0; }
+.collection-hero__description { margin-top: var(--tt-space-xs); max-width: var(--tt-content-text); }
+
+/* Facets / filter bar — restrained utility type */
+.facets__label,
+.facets__summary,
+.facet-checkbox,
+.active-facets__button-inner,
+.facets__heading {
+  font-size: var(--tt-fs-xs);
+  letter-spacing: var(--tt-tracking-wide);
+}
+
+.facets__disclosure .facets__summary { text-transform: uppercase; letter-spacing: var(--tt-tracking-wider); }
+
+/* ════════════════ 7. PDP — image ↔ buy-box relationship ════════════════
+   LTTT: oversized stacked imagery, a calm sticky column, minimal purchase UI. */
+
+@media screen and (min-width: 990px) {
+  .product--large .product__media-wrapper { max-width: 62%; }
+  .product--large .product__info-wrapper { padding-inline-start: var(--tt-space-xl); }
+}
+
+.product__column-sticky {
+  top: var(--tt-sticky-offset);
+  align-self: start;
+}
+
+.product__info-container > * + * { margin-top: var(--tt-space-sm); }
+
+.product__title,
+.product__title h1 {
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-lg);
+  line-height: var(--tt-lh-snug);
+  letter-spacing: var(--tt-tracking-tight);
+  font-weight: var(--tt-fw-regular);
+  margin: 0;
+}
+
+/* Vendor line above the title */
+.product__text.tt-vendor,
+.product .product__text.subtitle { margin-bottom: 0; }
+
+.product__info-container .price {
+  font-size: var(--tt-fs-md);
+  letter-spacing: var(--tt-tracking-wide);
+}
+
+/* Stacked gallery gets real breathing room between frames */
+.product__media-list { gap: var(--tt-space-2xs); }
+@media screen and (min-width: 750px) {
+  .product--stacked .product__media-list,
+  .product__media-list { gap: var(--tt-space-xs); }
+}
+
+/* Buy buttons: single calm column */
+.product-form__buttons { margin-top: var(--tt-space-xs); }
+.product-form__submit { margin-bottom: var(--tt-space-2xs); }
+
+/* Vintage metadata area — label/value system, quiet, no DB table */
+.product__vintage-condition,
+.product__vintage-measurements,
+.product__vintage-details-list {
+  border-top: 1px solid rgba(var(--color-foreground), 0.12);
+  padding-top: var(--tt-space-sm);
+}
+
+.product__vintage-condition-label,
+.product__vintage-measurement-label,
+.product__vintage-details-list dt {
+  font-size: var(--tt-fs-2xs);
+  letter-spacing: var(--tt-tracking-wider);
+  text-transform: uppercase;
+  color: rgba(var(--color-foreground), 0.55);
+  font-weight: var(--tt-fw-regular);
+}
+
+.product__vintage-condition-value,
+.product__vintage-measurement-value,
+.product__vintage-details-list dd {
+  font-size: var(--tt-fs-sm);
+  line-height: var(--tt-lh-body);
+}
+
+.product__accordion .accordion__title,
+.product__accordion summary h2 {
+  font-size: var(--tt-fs-2xs);
+  letter-spacing: var(--tt-tracking-wider);
+  text-transform: uppercase;
+  font-family: var(--tt-font-grotesk);
+}
+
+/* ════════════════ 8. HEADER ════════════════ */
+
+.header {
+  padding-top: var(--tt-space-xs);
+  padding-bottom: var(--tt-space-xs);
+}
+
+.header__heading-link .h2,
+.header__heading-link {
+  font-family: var(--tt-font-display);
+  letter-spacing: var(--tt-tracking-tight);
+}
+
+.header__menu-item,
+.header__menu-item.list-menu__item {
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-sm);
+  letter-spacing: var(--tt-tracking-wide);
+  text-transform: uppercase;
+}
+
+.header__inline-menu .list-menu__item--link { padding-block: 0; }
+
+.header__icons { gap: var(--tt-space-xs); }
+.header__wishlist { display: flex; align-items: center; }
+.header__wishlist [data-wishlist-count],
+.header__wishlist [data-wishlist-count]:not([hidden]) {
+  font-size: var(--tt-fs-2xs);
+  letter-spacing: var(--tt-tracking-normal);
+}
+
+/* ════════════════ 9. FOOTER ════════════════
+   Functional and quiet — no oversized corporate footer. */
+
+.footer {
+  margin-top: var(--tt-section-gap);
+  padding-top: var(--tt-space-lg);
+}
+
+.footer__content-top { padding-bottom: var(--tt-space-md); }
+.footer__content-bottom { padding-top: var(--tt-space-sm); }
+
+.footer-block__heading {
+  font-size: var(--tt-fs-2xs);
+  letter-spacing: var(--tt-tracking-widest);
+  text-transform: uppercase;
+  font-family: var(--tt-font-grotesk);
+  margin-bottom: var(--tt-space-xs);
+}
+
+.footer-block__details-content .list-menu__item,
+.footer__content-bottom .list-menu__item {
+  font-size: var(--tt-fs-sm);
+  letter-spacing: var(--tt-tracking-normal);
+}
+
+.footer .copyright__content { font-size: var(--tt-fs-2xs); letter-spacing: var(--tt-tracking-wide); }
+
+/* ════════════════ 10. NEWSLETTER — understated capture ════════════════ */
+
+.newsletter__heading,
+.newsletter-form__heading {
+  font-size: var(--tt-fs-2xs);
+  letter-spacing: var(--tt-tracking-widest);
+  text-transform: uppercase;
+  font-family: var(--tt-font-grotesk);
+}
+
+.newsletter__subheading { font-size: var(--tt-fs-sm); color: rgba(var(--color-foreground), 0.6); }
+
+.newsletter-form { gap: var(--tt-space-2xs); }
+
+/* ════════════════ 11. WISHLIST ════════════════
+   Match the product-card system exactly. */
+
+.wishlist-page__title {
+  font-family: var(--tt-font-display);
+  font-size: var(--tt-fs-xl);
+  letter-spacing: var(--tt-tracking-tight);
+  margin-block: var(--tt-space-md) var(--tt-space-md);
+}
+
+#wishlist-grid.grid {
+  column-gap: var(--tt-grid-col-gap);
+  row-gap: var(--tt-grid-row-gap);
+}
+
+.wishlist-card__title {
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-sm);
+  line-height: var(--tt-lh-snug);
+  margin: var(--tt-space-xs) 0 0;
+}
+
+.wishlist-card__price {
+  font-size: var(--tt-fs-sm);
+  letter-spacing: var(--tt-tracking-wide);
+  font-variant-numeric: tabular-nums;
+  margin: 0.4rem 0 0;
+}
+
+.wishlist-card__remove {
+  font-size: var(--tt-fs-2xs);
+  letter-spacing: var(--tt-tracking-wider);
+  text-transform: uppercase;
+  margin-top: var(--tt-space-2xs);
+}
+
+.wishlist-empty { padding-block: var(--tt-space-xl); }
+
+/* ════════════════ 12. SOLD / ARCHIVE / ONE-OF-ONE STATE ════════════════
+   Sold pieces stay visible but read as clearly not-purchasable. This is
+   state treatment only — the merchandising logic (Recently Sold / Archive
+   collections) is Phase 4. */
+
+.card__media--sold-out::after {
+  background-color: rgba(var(--color-background), 0.55);
+}
+
+.card-wrapper:has(.card__media--sold-out) .card__heading,
+.card-wrapper:has(.card__media--sold-out) .price {
+  color: rgba(var(--color-foreground), 0.5);
+}
+
+.card__badge .badge {
+  --tt-badge-radius: 0;
+  border-radius: 0;
+  font-size: var(--tt-fs-2xs);
+  letter-spacing: var(--tt-tracking-widest);
+  text-transform: uppercase;
+  padding: 0.4rem 0.8rem;
+}
+
+/* ════════════════ 13. MULTI-WEIGHT GRID SPANS ════════════════
+   Column-span helpers for editorial merchandising. Wired into sections
+   in Phase 4/5; defined here so the vocabulary is shared. */
+
+.tt-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--tt-grid-cols, 2), minmax(0, 1fr));
+  column-gap: var(--tt-grid-col-gap);
+  row-gap: var(--tt-grid-row-gap);
+}
+
+@media screen and (min-width: 750px) {
+  .tt-grid { --tt-grid-cols: var(--tt-grid-cols-desktop, 4); }
+}
+
+.tt-span-normal    { grid-column: span 1; }
+.tt-span-featured  { grid-column: span 2; }
+.tt-span-hero      { grid-column: 1 / -1; }
+.tt-span-editorial { grid-column: span 2; }
+
+@media screen and (max-width: 749px) {
+  .tt-span-featured,
+  .tt-span-editorial { grid-column: 1 / -1; }
+}

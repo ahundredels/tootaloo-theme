@@ -1,0 +1,139 @@
+{%- comment -%}
+  ────────────────────────────────────────────────────────────────────────
+  Tootaloo design tokens — the single source of truth for typography,
+  spacing, layout and ratio values across the theme. Rendered once in
+  <head> (layout/theme.liquid) immediately after Dawn's own :root block.
+
+  Everything here is a NEUTRAL PLACEHOLDER. Final fonts, brand colours and
+  imagery are deliberately NOT chosen here:
+
+    • Colour still comes from Theme settings > Colors (Dawn schemes).
+    • Both type voices are aliased to the existing Theme settings >
+      Typography pickers, so the final typeface choice stays open:
+        --tt-font-display  ← Settings > "Heading font"
+        --tt-font-grotesk  ← Settings > "Body font"
+
+  Naming: every token is prefixed --tt- so the system is unambiguous and
+  greppable. Consumed by assets/tootaloo-system.css and by the custom
+  sections' own {% stylesheet %} blocks.
+  ────────────────────────────────────────────────────────────────────────
+{%- endcomment -%}
+{%- style -%}
+  :root {
+    /* ── Type voices (aliased to Dawn's font settings — final choice stays open) ── */
+    --tt-font-display: var(--font-heading-family);
+    --tt-font-grotesk: var(--font-body-family);
+    --tt-font-display-style: var(--font-heading-style);
+    --tt-font-grotesk-style: var(--font-body-style);
+
+    /* ── Weights ── */
+    --tt-fw-regular: var(--font-body-weight, 400);
+    --tt-fw-medium: 500;
+    --tt-fw-semibold: 600;
+    --tt-fw-bold: var(--font-body-weight-bold, 700);
+
+    /* ── Fluid type scale (rem inherits Dawn's 62.5% root, so it respects the body-scale setting) ── */
+    --tt-fs-2xs: 1.1rem;
+    --tt-fs-xs: 1.2rem;
+    --tt-fs-sm: 1.3rem;
+    --tt-fs-base: 1.5rem;
+    --tt-fs-md: 1.7rem;
+    --tt-fs-lg: clamp(2rem, 1.5rem + 1.4vw, 2.8rem);
+    --tt-fs-xl: clamp(2.8rem, 1.9rem + 3vw, 4.6rem);
+    --tt-fs-display: clamp(3.6rem, 1.2rem + 8vw, 8.4rem);
+    --tt-fs-oversized: clamp(5.6rem, -1rem + 16vw, 17rem);
+
+    /* ── Line heights ── */
+    --tt-lh-none: 1;
+    --tt-lh-tight: 1.08;
+    --tt-lh-snug: 1.2;
+    --tt-lh-heading: 1.28;
+    --tt-lh-body: 1.55;
+    --tt-lh-relaxed: 1.72;
+
+    /* ── Letter spacing ── */
+    --tt-tracking-tighter: -0.03em;
+    --tt-tracking-tight: -0.015em;
+    --tt-tracking-normal: 0;
+    --tt-tracking-wide: 0.04em;
+    --tt-tracking-wider: 0.1em;
+    --tt-tracking-widest: 0.16em;
+
+    /* ── Spacing scale: 8 / 16 / 24 / 40 / 64 / 96 / 160 ── */
+    --tt-space-2xs: 0.8rem;
+    --tt-space-xs: 1.6rem;
+    --tt-space-sm: 2.4rem;
+    --tt-space-md: 4rem;
+    --tt-space-lg: 6.4rem;
+    --tt-space-xl: 9.6rem;
+    --tt-space-2xl: 16rem;
+
+    /* ── Semantic spacing — hierarchy, not uniformity ── */
+    --tt-pad-utility: var(--tt-space-2xs);
+    --tt-pad-grid: var(--tt-space-sm);
+    --tt-pad-editorial: var(--tt-space-lg);
+    --tt-section-gap: var(--tt-space-lg);         /* normal section rhythm */
+    --tt-section-gap-major: var(--tt-space-2xl);  /* homepage / drop transitions */
+
+    /* ── Layout / grid ── */
+    --tt-gutter: 2rem;
+    --tt-content-max: 150rem;
+    --tt-content-wide: 176rem;
+    --tt-content-narrow: 108rem;
+    --tt-content-text: 68rem;    /* editorial reading measure */
+    --tt-sidebar-width: 22rem;
+    --tt-sidebar-gap: var(--tt-space-lg);
+    --tt-grid-col-gap: 0.8rem;
+    --tt-grid-row-gap: var(--tt-space-md);
+    --tt-card-min: 20rem;
+    --tt-header-height: var(--header-height, 7rem); /* Dawn sets --header-height via JS on <html> */
+    --tt-sticky-offset: calc(var(--tt-header-height) + var(--tt-space-sm));
+
+    /* ── Aspect ratios ── */
+    --tt-ratio-square: 1 / 1;
+    --tt-ratio-portrait: 4 / 5;
+    --tt-ratio-portrait-tall: 3 / 4;
+    --tt-ratio-landscape: 3 / 2;
+    --tt-ratio-featured-wide: 16 / 10;
+    --tt-ratio-featured-tall: 5 / 7;
+
+    /* ── Motion — minimal ── */
+    --tt-ease: cubic-bezier(0.2, 0, 0, 1);
+    --tt-dur-fast: 120ms;
+    --tt-dur: 240ms;
+    --tt-dur-slow: 480ms;
+  }
+
+  @media screen and (min-width: 750px) {
+    :root {
+      --tt-gutter: 3.2rem;
+      --tt-grid-col-gap: 1.2rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    :root {
+      --tt-gutter: 4rem;
+      --tt-grid-col-gap: 1.6rem;
+    }
+  }
+
+  /* Mobile ramp — pull the large end of the scale in deliberately, keep the small end intact */
+  @media screen and (max-width: 749px) {
+    :root {
+      --tt-space-md: 3.2rem;
+      --tt-space-lg: 4.8rem;
+      --tt-space-xl: 6.4rem;
+      --tt-space-2xl: 9.6rem;
+      --tt-sidebar-gap: var(--tt-space-md);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --tt-dur-fast: 0ms;
+      --tt-dur: 0ms;
+      --tt-dur-slow: 0ms;
+    }
+  }
+{%- endstyle -%}
