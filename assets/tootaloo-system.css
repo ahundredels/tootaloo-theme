@@ -361,11 +361,24 @@ h5, .h5 {
   letter-spacing: var(--tt-tracking-wide);
 }
 
-/* Stacked gallery gets real breathing room between frames */
+/* Continuous stacked gallery — every frame full column width, evenly spaced.
+   Dawn otherwise drops images 2+ to half width in a wrap layout. */
 .product__media-list { gap: var(--tt-space-2xs); }
-@media screen and (min-width: 750px) {
-  .product--stacked .product__media-list,
-  .product__media-list { gap: var(--tt-space-xs); }
+
+@media screen and (min-width: 990px) {
+  .product--stacked .product__media-list {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: var(--tt-space-xs);
+  }
+
+  .product--stacked .product__media-item,
+  .product--stacked .product__media-item:not(.product__media-item--single):not(:only-child) {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
 }
 
 /* Buy buttons: single calm column */

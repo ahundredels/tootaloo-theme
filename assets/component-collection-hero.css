@@ -39,7 +39,7 @@
 }
 
 .collection-hero__title {
-  margin: var(--tt-space-sm) 0;
+  margin: 0 0 var(--tt-space-xs);
 }
 
 .collection-hero__title + .collection-hero__description {
