@@ -1,0 +1,107 @@
+{% comment %}
+  Full-bleed hero with a giant overlaid wordmark, styled after re-pull.com.
+  Drop this as the first section on your homepage (Theme editor > Home page
+  > Add section > Hero Wordmark). Navigation lives in the header.
+
+  Everything here is a setting — swap in real photography and copy with
+  zero code changes.
+{% endcomment %}
+
+<div class="hero-wordmark color-{{ section.settings.color_scheme }}">
+  {%- if section.settings.image != blank -%}
+    <div class="hero-wordmark__media">
+      {{
+        section.settings.image
+        | image_url: width: 2000
+        | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', class: 'hero-wordmark__image'
+      }}
+    </div>
+  {%- else -%}
+    <div class="hero-wordmark__media hero-wordmark__media--placeholder">
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    </div>
+  {%- endif -%}
+
+  <div class="hero-wordmark__overlay">
+    <h1 class="hero-wordmark__title">{{ section.settings.wordmark | default: shop.name }}</h1>
+  </div>
+</div>
+
+{% stylesheet %}
+  .hero-wordmark {
+    position: relative;
+    width: 100%;
+    min-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .hero-wordmark__media,
+  .hero-wordmark__media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-wordmark__media--placeholder svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-wordmark__overlay {
+    position: relative;
+    width: 100%;
+    z-index: 2;
+    padding: 0 2rem 8rem;
+  }
+
+  .hero-wordmark__title {
+    font-size: clamp(4rem, 12vw, 14rem);
+    line-height: 0.85;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: rgb(var(--color-foreground));
+    mix-blend-mode: difference;
+  }
+
+  @media screen and (max-width: 749px) {
+    .hero-wordmark__overlay {
+      padding: 0 1.5rem 4rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero Wordmark",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "wordmark",
+      "label": "Wordmark text",
+      "default": "BRAND NAME"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Wordmark"
+    }
+  ]
+}
+{% endschema %}
+

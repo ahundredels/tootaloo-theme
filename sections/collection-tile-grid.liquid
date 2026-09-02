@@ -1,0 +1,328 @@
+{% comment %}
+  Collection Tile Grid — a curated grid of collection / brand / drop tiles.
+  Each tile is one block: an image, a name, and a link (pick a collection
+  or paste any URL in the theme editor). No prices, no product data —
+  just image + name, like a directory of drops.
+
+  Theme editor > Add section > Collection Tile Grid, then add Tile blocks.
+{% endcomment %}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- capture tile_sizes -%}
+  (min-width: 990px) calc((min(100vw, var(--page-width, 1200px)) - 10rem) / {{ section.settings.columns_desktop }}), (min-width: 750px) 45vw, {% if section.settings.columns_mobile == '1' %}100vw{% else %}50vw{% endif %}
+{%- endcapture -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="collection-tile-grid page-width section-{{ section.id }}-padding">
+    {%- if section.settings.title != blank -%}
+      <div class="collection-tile-grid__header">
+        <h2 class="collection-tile-grid__heading title inline-richtext {{ section.settings.heading_size }}">
+          {{ section.settings.title }}
+        </h2>
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <ul
+        class="collection-tile-grid__grid collection-tile-grid__grid--name-{{ section.settings.name_position }}"
+        role="list"
+        style="--cols-desktop: {{ section.settings.columns_desktop }}; --cols-mobile: {{ section.settings.columns_mobile }};"
+      >
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign tile_image = block.settings.image
+            assign tile_name = block.settings.name
+            assign tile_link = block.settings.link
+
+            assign ratio = 1
+            if section.settings.image_ratio == 'portrait'
+              assign ratio = 0.75
+            elsif section.settings.image_ratio == 'landscape'
+              assign ratio = 1.5
+            elsif section.settings.image_ratio == 'adapt' and tile_image != blank
+              assign ratio = tile_image.aspect_ratio
+            endif
+          -%}
+
+          {%- capture tile_inner -%}
+            <div class="collection-tile__media" style="--ratio: {{ ratio }};">
+              {%- if tile_image != blank -%}
+                {{
+                  tile_image
+                  | image_url: width: 1600
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '300, 450, 600, 750, 900, 1100, 1400, 1600',
+                    sizes: tile_sizes,
+                    class: 'collection-tile__image'
+                }}
+              {%- else -%}
+                {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg collection-tile__image' }}
+              {%- endif -%}
+            </div>
+            {%- if tile_name != blank -%}
+              <span class="collection-tile__name">{{ tile_name | escape }}</span>
+            {%- endif -%}
+          {%- endcapture -%}
+
+          <li class="collection-tile-grid__item" {{ block.shopify_attributes }}>
+            {%- if tile_link != blank -%}
+              <a class="collection-tile" href="{{ tile_link }}">{{ tile_inner }}</a>
+            {%- else -%}
+              <div class="collection-tile">{{ tile_inner }}</div>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <div class="collection-tile-grid__placeholder">
+        Add Tile blocks in the theme editor to build your grid.
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .collection-tile-grid__header {
+    margin-bottom: 2.5rem;
+  }
+
+  .collection-tile-grid__heading {
+    margin: 0;
+  }
+
+  .collection-tile-grid__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols-mobile, 2), minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .collection-tile-grid__grid {
+      grid-template-columns: repeat(var(--cols-desktop, 3), minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+  }
+
+  .collection-tile-grid__item {
+    margin: 0;
+  }
+
+  .collection-tile {
+    display: block;
+    position: relative;
+    text-decoration: none;
+    color: rgb(var(--color-foreground));
+  }
+
+  .collection-tile__media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: var(--ratio, 1);
+    background: rgba(var(--color-foreground), 0.04);
+  }
+
+  .collection-tile__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  .collection-tile:hover .collection-tile__image {
+    transform: scale(1.03);
+  }
+
+  .collection-tile__name {
+    display: block;
+    font-size: 1.5rem;
+    letter-spacing: 0.02em;
+  }
+
+  .collection-tile-grid__grid--name-below .collection-tile__name {
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  .collection-tile-grid__grid--name-overlay .collection-tile__name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 5rem 1.5rem 1.5rem;
+    color: #fff;
+    font-size: 1.7rem;
+    text-align: center;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+  }
+
+  @media screen and (max-width: 749px) {
+    .collection-tile-grid__grid--name-overlay .collection-tile__name {
+      font-size: 1.4rem;
+      padding: 3.5rem 1rem 1rem;
+    }
+  }
+
+  .collection-tile-grid__placeholder {
+    padding: 4rem 0;
+    text-align: center;
+    color: rgba(var(--color-foreground), 0.6);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection Tile Grid",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 12,
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Heading",
+      "default": "Shop by collection"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3,
+      "label": "Columns on desktop"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1 column" },
+        { "value": "2", "label": "2 columns" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "adapt", "label": "Adapt to image" },
+        { "value": "square", "label": "Square (1:1)" },
+        { "value": "portrait", "label": "Portrait (3:4)" },
+        { "value": "landscape", "label": "Landscape (3:2)" }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "select",
+      "id": "name_position",
+      "label": "Collection name position",
+      "options": [
+        { "value": "overlay", "label": "Overlaid on image" },
+        { "value": "below", "label": "Below image" }
+      ],
+      "default": "overlay"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Tile",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Collection / brand name"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Pick a collection, or paste any URL."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Tile Grid",
+      "blocks": [
+        { "type": "tile", "settings": { "name": "New Arrivals" } },
+        { "type": "tile", "settings": { "name": "Best Sellers" } },
+        { "type": "tile", "settings": { "name": "Sale" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,80 @@
+{% comment %}
+  Wishlist page. Since saved items live in localStorage (client-side),
+  this section renders an empty shell + a hidden template for a product
+  card, then JS fetches each saved product's data via Shopify's
+  Section Rendering API / product.js and injects cards on load.
+{% endcomment %}
+
+{%- style -%}
+  .wishlist-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.4rem;
+  }
+
+  .wishlist-add-all[disabled] {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .wishlist-actions__status {
+    margin: 0;
+    font-size: 1.3rem;
+    color: rgba(var(--color-foreground), 0.7);
+  }
+{%- endstyle -%}
+
+<div class="page-width wishlist-page">
+  <h1 class="wishlist-page__title">{{ section.settings.heading | default: 'Your Wishlist' }}</h1>
+
+  <div id="wishlist-actions" class="wishlist-actions" hidden>
+    <button type="button" id="wishlist-add-all" class="button wishlist-add-all">
+      <span class="wishlist-add-all__label">{{ section.settings.add_all_label | default: 'Add all to cart' }}</span>
+    </button>
+    <p id="wishlist-add-all-status" class="wishlist-actions__status" role="status" aria-live="polite"></p>
+  </div>
+
+  <div id="wishlist-grid" class="grid product-grid grid--4-col-desktop grid--2-col-tablet-down">
+    <!-- Populated by wishlist-page.js -->
+  </div>
+
+  <div id="wishlist-empty" class="wishlist-empty" hidden>
+    <p>Your wishlist is empty.</p>
+    <a href="{{ routes.all_products_collection_url }}" class="button">Continue shopping</a>
+  </div>
+</div>
+
+<template id="wishlist-card-template">
+  <div class="grid__item wishlist-card">
+    <a class="wishlist-card__link" href="">
+      <img class="wishlist-card__image" src="" alt="" loading="lazy" width="400" height="500">
+      <p class="wishlist-card__title"></p>
+      <p class="wishlist-card__price"></p>
+    </a>
+    <button type="button" class="wishlist-card__remove" aria-label="Remove from wishlist">Remove</button>
+  </div>
+</template>
+
+<script src="{{ 'wishlist-page.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Wishlist page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your Wishlist"
+    },
+    {
+      "type": "text",
+      "id": "add_all_label",
+      "label": "\"Add all to cart\" button label",
+      "default": "Add all to cart"
+    }
+  ]
+}
+{% endschema %}

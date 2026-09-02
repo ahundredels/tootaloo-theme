@@ -1,0 +1,102 @@
+{% comment %}
+  Left-side category nav, styled after winfarlab.com / ninetwofive.online's
+  browsing sidebar (Tops > T-shirts, Tank Tops... / Bottoms > Pants, Jeans...).
+
+  Reads from a real Shopify navigation menu, so tomorrow you just build the
+  menu in Online Store > Navigation and this renders it automatically —
+  no code changes needed. Supports one level of nesting.
+
+  Usage:
+    {% render 'category-sidebar-nav', menu: 'shop-sidebar' %}
+
+  Setup: create a menu in Shopify admin with handle "shop-sidebar" (or
+  whatever you pass in), with top-level items like "Tops", "Bottoms",
+  "Accessories", and nested links under each for subcategories.
+{% endcomment %}
+
+{%- liquid
+  assign menu_handle = menu | default: 'shop-sidebar'
+  assign nav_menu = linklists[menu_handle]
+-%}
+
+<nav class="category-sidebar" aria-label="Shop categories">
+  {%- if nav_menu -%}
+    <ul class="category-sidebar__list">
+      {%- for link in nav_menu.links -%}
+        <li class="category-sidebar__item">
+          <a href="{{ link.url }}" class="category-sidebar__link{% if link.active %} is-active{% endif %}">
+            {{ link.title }}
+          </a>
+          {%- if link.links.size > 0 -%}
+            <ul class="category-sidebar__sublist">
+              {%- for sublink in link.links -%}
+                <li>
+                  <a href="{{ sublink.url }}" class="category-sidebar__sublink{% if sublink.active %} is-active{% endif %}">
+                    {{ sublink.title }}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- else -%}
+    <p class="category-sidebar__placeholder">
+      Create a menu with handle "{{ menu_handle }}" in Online Store &gt; Navigation to populate this sidebar.
+    </p>
+  {%- endif -%}
+</nav>
+
+{% stylesheet %}
+  .category-sidebar {
+    width: 100%;
+    max-width: 22rem;
+    padding-right: 2rem;
+    font-size: 1.4rem;
+  }
+
+  .category-sidebar__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .category-sidebar__item {
+    margin-bottom: 1.2rem;
+  }
+
+  .category-sidebar__link {
+    display: block;
+    text-decoration: none;
+    color: rgb(var(--color-foreground));
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.2rem 0;
+  }
+
+  .category-sidebar__sublist {
+    list-style: none;
+    margin: 0.4rem 0 0;
+    padding: 0 0 0 1rem;
+  }
+
+  .category-sidebar__sublink {
+    display: block;
+    text-decoration: none;
+    color: rgba(var(--color-foreground), 0.75);
+    padding: 0.2rem 0;
+  }
+
+  .category-sidebar__link.is-active,
+  .category-sidebar__sublink.is-active {
+    color: rgb(var(--color-foreground));
+    text-decoration: underline;
+  }
+
+  .category-sidebar__placeholder {
+    color: rgba(var(--color-foreground), 0.6);
+    font-style: italic;
+  }
+{% endstylesheet %}
