@@ -185,12 +185,28 @@
                 >
                   {% assign skip_card_product_styles = false %}
                   {%- for product in collection.products -%}
-                    {% assign lazy_load = false %}
-                    {%- if forloop.index > 2 -%}
-                      {%- assign lazy_load = true -%}
-                    {%- endif -%}
+                    {%- liquid
+                      assign lazy_load = false
+                      if forloop.index > 2
+                        assign lazy_load = true
+                      endif
+                      # multi-weight grid: merch.display_priority (§9)
+                      assign weight = product.metafields.merch.display_priority.value | downcase
+                      assign weight_class = ''
+                      if weight == 'featured'
+                        assign weight_class = ' grid__item--featured'
+                      elsif weight == 'hero'
+                        assign weight_class = ' grid__item--hero'
+                      endif
+                      # keep a sold piece out of a browsable collection when flagged
+                      assign skip_sold = false
+                      if product.available == false and product.metafields.merch.keep_in_archive.value == 'false'
+                        assign skip_sold = true
+                      endif
+                    -%}
+                    {%- unless skip_sold -%}
                     <li
-                      class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                      class="grid__item{{ weight_class }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
                       {% if settings.animations_reveal_on_scroll %}
                         data-cascade
                         style="--animation-order: {{ forloop.index }};"
@@ -210,6 +226,7 @@
                         product_view_context: 'collection'
                       %}
                     </li>
+                    {%- endunless -%}
                     {%- assign skip_card_product_styles = true -%}
                   {%- endfor -%}
                 </ul>

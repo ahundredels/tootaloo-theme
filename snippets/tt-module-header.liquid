@@ -1,0 +1,49 @@
+{%- comment -%}
+  Shared header for the Tootaloo homepage modules: optional eyebrow,
+  heading, body text and a link. Everything is optional — renders nothing
+  when nothing is set.
+
+  Accepts:
+    eyebrow      - small uppercase label
+    heading      - section heading (uses the .tt-section-heading role, or
+                   .tt-editorial-heading when heading_style == 'editorial')
+    heading_style- 'label' (default) | 'editorial' | 'drop'
+    text         - short paragraph (rich text ok)
+    link_label   - call-to-action label
+    link_url     - call-to-action url
+    align        - 'left' (default) | 'center'
+{%- endcomment -%}
+{%- liquid
+  assign hs = heading_style | default: 'label'
+  assign al = align | default: 'left'
+  assign has_any = false
+  if eyebrow != blank or heading != blank or text != blank or link_label != blank
+    assign has_any = true
+  endif
+-%}
+{%- if has_any -%}
+  <header class="tt-module-header tt-module-header--{{ al }}">
+    {%- if eyebrow != blank -%}
+      <p class="tt-module-header__eyebrow tt-utility">{{ eyebrow | escape }}</p>
+    {%- endif -%}
+    {%- if heading != blank -%}
+      {%- case hs -%}
+        {%- when 'editorial' -%}
+          <h2 class="tt-module-header__heading tt-editorial-heading">{{ heading }}</h2>
+        {%- when 'drop' -%}
+          <h2 class="tt-module-header__heading tt-drop-title">{{ heading }}</h2>
+        {%- else -%}
+          <h2 class="tt-module-header__heading tt-section-heading">{{ heading }}</h2>
+      {%- endcase -%}
+    {%- endif -%}
+    {%- if text != blank -%}
+      <div class="tt-module-header__text rte">{{ text }}</div>
+    {%- endif -%}
+    {%- if link_label != blank and link_url != blank -%}
+      <a class="tt-module-header__link tt-nav" href="{{ link_url }}">
+        {{- link_label | escape -}}
+        <span class="tt-module-header__arrow" aria-hidden="true">&rarr;</span>
+      </a>
+    {%- endif -%}
+  </header>
+{%- endif -%}

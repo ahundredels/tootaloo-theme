@@ -327,6 +327,19 @@ h5, .h5 {
 
 .facets__disclosure .facets__summary { text-transform: uppercase; letter-spacing: var(--tt-tracking-wider); }
 
+/* Multi-weight grid (brief §9) — a product's merch.display_priority lets it
+   take more of the collection grid. Editorial (image-only) interruptions are
+   a separate section, not a product priority. */
+.product-grid > .grid__item--featured { grid-column: span 2; }
+.product-grid > .grid__item--hero { grid-column: 1 / -1; }
+.product-grid > .grid__item--hero .card__heading,
+.product-grid > .grid__item--hero .card__vendor { font-size: var(--tt-fs-sm); }
+.product-grid > .grid__item--hero .card__information { max-width: var(--tt-content-text); }
+
+@media screen and (max-width: 749px) {
+  .product-grid > .grid__item--featured { grid-column: 1 / -1; }
+}
+
 /* ════════════════ 7. PDP — image ↔ buy-box relationship ════════════════
    LTTT: oversized stacked imagery, a calm sticky column, minimal purchase UI. */
 

@@ -1,0 +1,268 @@
+{%- comment -%}
+  Tootaloo — Collection Row. One flexible module that powers several
+  homepage merchandising blocks via schema presets:
+
+    Current Drop · Just In · Recently Sold · Archive Teaser · Vintage Module
+
+  A heading + an optional row/grid of product cards drawn from one
+  collection, plus a "view all" link. No imagery or copy is baked in;
+  leave the collection empty and the module shows a quiet placeholder in
+  the theme editor and nothing on the live site.
+{%- endcomment -%}
+
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'tt-modules.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign kind = section.settings.module_kind
+  assign coll = section.settings.collection
+  assign limit = section.settings.product_limit
+  assign sold_on = false
+  if section.settings.sold_treatment == 'on'
+    assign sold_on = true
+  elsif section.settings.sold_treatment == 'auto' and kind == 'recently_sold'
+    assign sold_on = true
+  elsif section.settings.sold_treatment == 'auto' and kind == 'archive_teaser'
+    assign sold_on = true
+  endif
+
+  assign link_url = section.settings.link_url
+  if link_url == blank and coll != blank
+    assign link_url = coll.url
+  endif
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --row-cols-desktop: {{ section.settings.columns_desktop }};
+    --row-cols-mobile: {{ section.settings.columns_mobile }};
+    --row-ratio: {{ section.settings.image_ratio }};
+  }
+  #shopify-section-{{ section.id }} .tt-collection-row {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .tt-collection-row {
+      padding-top: {{ section.settings.padding_top | times: 0.6 | round }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.6 | round }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="tt-collection-row tt-collection-row--{{ kind }} tt-collection-row--span-{{ section.settings.span }} color-{{ section.settings.color_scheme }} gradient{% if sold_on %} tt-collection-row--sold{% endif %}">
+  <div class="tt-collection-row__inner {% if section.settings.span == 'full' %}tt-fullbleed{% else %}page-width{% endif %}">
+    {%- render 'tt-module-header',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading,
+      heading_style: section.settings.heading_style,
+      text: section.settings.text,
+      link_label: section.settings.link_label,
+      link_url: link_url,
+      align: section.settings.align
+    -%}
+
+    {%- if coll != blank and coll.products_count > 0 -%}
+      <ul
+        class="tt-collection-row__grid tt-collection-row__grid--{{ section.settings.layout }}"
+        role="list"
+      >
+        {%- assign shown = 0 -%}
+        {%- for product in coll.products -%}
+          {%- liquid
+            assign is_sold = false
+            if product.available == false
+              assign is_sold = true
+            endif
+            assign hide_it = false
+            if is_sold and product.metafields.merch.keep_in_archive.value == 'false'
+              assign hide_it = true
+            endif
+          -%}
+          {%- unless hide_it -%}
+            {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+            <li class="tt-collection-row__item{% if is_sold %} is-sold{% endif %}">
+              {%- render 'card-product',
+                card_product: product,
+                media_aspect_ratio: section.settings.image_ratio,
+                show_vendor: true,
+                lazy_load: true,
+                skip_styles: true,
+                section_id: section.id
+              -%}
+              {%- if sold_on and is_sold and product.metafields.merch.archive_date.value != blank -%}
+                {%- assign sold_month = product.metafields.merch.archive_date.value | date: '%b %Y' -%}
+                <p class="tt-collection-row__sold-on">Sold {{ sold_month }}</p>
+              {%- endif -%}
+            </li>
+            {%- assign shown = shown | plus: 1 -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      </ul>
+    {%- elsif request.design_mode -%}
+      <p class="tt-collection-row__placeholder">
+        Pick a collection in this section&rsquo;s settings. The module stays hidden on the live site until you do.
+      </p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection Row",
+  "tag": "section",
+  "class": "section section--tt-module",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    {
+      "type": "select",
+      "id": "module_kind",
+      "label": "Module type",
+      "info": "Sets sensible defaults and sold-piece styling. Purely a behaviour hint — customise everything below.",
+      "options": [
+        { "value": "current_drop", "label": "Current Drop" },
+        { "value": "just_in", "label": "Just In" },
+        { "value": "recently_sold", "label": "Recently Sold" },
+        { "value": "archive_teaser", "label": "Archive Teaser" },
+        { "value": "vintage", "label": "Vintage Module" }
+      ],
+      "default": "current_drop"
+    },
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow label" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading" },
+    {
+      "type": "select",
+      "id": "heading_style",
+      "label": "Heading style",
+      "options": [
+        { "value": "label", "label": "Utility label" },
+        { "value": "editorial", "label": "Editorial" },
+        { "value": "drop", "label": "Drop title" }
+      ],
+      "default": "label"
+    },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    { "type": "header", "content": "Products" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "min": 2, "max": 12, "step": 1, "default": 4,
+      "label": "Products to show"
+    },
+    { "type": "text", "id": "link_label", "label": "Link label", "info": "e.g. “View the drop”. Links to the collection unless a URL is set below." },
+    { "type": "url", "id": "link_url", "label": "Link URL" },
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "grid", "label": "Grid" },
+        { "value": "scroller", "label": "Row (scrolls on mobile)" }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2, "max": 6, "step": 1, "default": 4,
+      "label": "Columns on desktop"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "portrait", "label": "Portrait" },
+        { "value": "square", "label": "Square" },
+        { "value": "landscape", "label": "Landscape" },
+        { "value": "adapt", "label": "Natural" }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "select",
+      "id": "span",
+      "label": "Module width",
+      "options": [
+        { "value": "normal", "label": "Constrained" },
+        { "value": "wide", "label": "Wide" },
+        { "value": "full", "label": "Full bleed" }
+      ],
+      "default": "normal"
+    },
+    { "type": "header", "content": "Sold pieces" },
+    {
+      "type": "select",
+      "id": "sold_treatment",
+      "label": "Sold styling",
+      "info": "Dims sold pieces and shows the month they sold (from the archive date metafield).",
+      "options": [
+        { "value": "auto", "label": "Automatic (on for Recently Sold / Archive)" },
+        { "value": "on", "label": "Always on" },
+        { "value": "off", "label": "Off" }
+      ],
+      "default": "auto"
+    },
+    { "type": "header", "content": "Section" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0, "max": 160, "step": 8, "unit": "px", "default": 64,
+      "label": "Top padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0, "max": 160, "step": 8, "unit": "px", "default": 64,
+      "label": "Bottom padding"
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "presets": [
+    {
+      "name": "Current Drop",
+      "settings": { "module_kind": "current_drop", "eyebrow": "Now", "heading": "Current Drop", "heading_style": "drop", "link_label": "View the drop", "product_limit": 4, "padding_top": 96, "padding_bottom": 96 }
+    },
+    {
+      "name": "Just In",
+      "settings": { "module_kind": "just_in", "heading": "Just In", "heading_style": "label", "link_label": "See everything new", "product_limit": 6, "layout": "scroller" }
+    },
+    {
+      "name": "Recently Sold",
+      "settings": { "module_kind": "recently_sold", "heading": "Recently Sold", "heading_style": "label", "sold_treatment": "auto", "product_limit": 4, "image_ratio": "portrait" }
+    },
+    {
+      "name": "Archive Teaser",
+      "settings": { "module_kind": "archive_teaser", "eyebrow": "Passed through", "heading": "The Archive", "heading_style": "editorial", "link_label": "Enter the archive", "sold_treatment": "auto", "product_limit": 4 }
+    },
+    {
+      "name": "Vintage Module",
+      "settings": { "module_kind": "vintage", "heading": "Vintage", "heading_style": "editorial", "link_label": "All vintage", "product_limit": 6, "span": "wide" }
+    }
+  ]
+}
+{% endschema %}
