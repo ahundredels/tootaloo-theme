@@ -1,0 +1,61 @@
+{%- comment -%}
+  Renders garment measurements from the `measure` namespace as <dt>/<dd>
+  pairs, in a garment-type-appropriate order keyed on product.type. Only
+  populated fields render; emits nothing when none are set. Output is
+  <dl>-ready rows with no wrapper — the caller supplies the <dl>.
+
+  All fields are `dimension` type (inches). `{{ field.value }}` outputs the
+  formatted measurement, e.g. "22.0 in".
+
+  Usage: {%- render 'product-measurements', product: product -%}
+{%- endcomment -%}
+{%- liquid
+  assign t = product.type | downcase
+  assign m = product.metafields.measure
+
+  assign keys = 'chest,shoulder,length,sleeve,sleeve_opening,neck,hem'
+  if t contains 'jean' or t contains 'pant' or t contains 'trouser' or t contains 'denim' or t contains 'chino'
+    assign keys = 'waist,rise,inseam,thigh,leg_opening,total_length'
+  elsif t contains 'short'
+    assign keys = 'waist,rise,inseam,thigh,leg_opening'
+  elsif t contains 'skirt'
+    assign keys = 'waist,total_length'
+  elsif t contains 'jacket' or t contains 'coat' or t contains 'outerwear' or t contains 'vest' or t contains 'parka' or t contains 'blazer'
+    assign keys = 'chest,shoulder,length,sleeve,sleeve_opening,hem'
+  elsif t contains 'bag' or t contains 'tote'
+    assign keys = 'width,height,total_length,strap_drop'
+  elsif t contains 'shirt' or t contains 'tee' or t contains 't-shirt' or t contains 'top' or t contains 'tank' or t contains 'sweater' or t contains 'sweatshirt' or t contains 'knit' or t contains 'hood' or t contains 'crewneck' or t contains 'polo' or t contains 'jersey' or t contains 'fleece'
+    assign keys = 'chest,shoulder,length,sleeve,sleeve_opening,neck,hem'
+  elsif t == blank
+    assign keys = 'chest,shoulder,length,sleeve,sleeve_opening,neck,hem,waist,rise,inseam,thigh,leg_opening,total_length,width,height,strap_drop'
+  endif
+  assign key_list = keys | split: ','
+-%}
+{%- for key in key_list -%}
+  {%- assign field = m[key] -%}
+  {%- if field.value != blank -%}
+    {%- liquid
+      assign label = key | replace: '_', ' ' | capitalize
+      case key
+        when 'chest'
+          assign label = 'Chest (pit to pit)'
+        when 'total_length'
+          assign label = 'Total length'
+        when 'sleeve_opening'
+          assign label = 'Sleeve opening'
+        when 'leg_opening'
+          assign label = 'Leg opening'
+        when 'strap_drop'
+          assign label = 'Strap drop'
+        when 'rise'
+          assign label = 'Rise'
+        when 'hem'
+          assign label = 'Hem'
+      endcase
+    -%}
+    <div class="product__measurement">
+      <dt>{{ label | escape }}</dt>
+      <dd>{{ field.value }}</dd>
+    </div>
+  {%- endif -%}
+{%- endfor -%}
