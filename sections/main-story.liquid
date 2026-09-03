@@ -1,0 +1,87 @@
+{%- comment -%}
+  Tootaloo — Story page. Renders a `story` metaobject as a lookbook /
+  editorial entry: cover image, title, body at the reading measure, a
+  gallery, and an optional row of the pieces in the story.
+{%- endcomment -%}
+
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'tt-modules.css' | asset_url | stylesheet_tag }}
+{{ 'component-blog-editorial.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign s = metaobject
+  assign products = s.linked_products.value
+  assign gallery = s.gallery.value
+  assign linked_drop = s.linked_drop.value
+-%}
+
+<article class="story-page color-scheme-1 gradient">
+
+  <div class="story-cover tt-media tt-media--natural">
+    {%- if s.cover_image -%}
+      {%- if s.cover_image_mobile -%}
+        <img class="story-cover__img story-cover__img--mobile" src="{{ s.cover_image_mobile | image_url: width: 1200 }}" srcset="{{ s.cover_image_mobile | image_url: width: 750 }} 750w, {{ s.cover_image_mobile | image_url: width: 1200 }} 1200w" sizes="100vw" width="{{ s.cover_image_mobile.width }}" height="{{ s.cover_image_mobile.height }}" alt="{{ s.title.value | escape }}" loading="eager" fetchpriority="high">
+      {%- endif -%}
+      <img class="story-cover__img story-cover__img--desktop" src="{{ s.cover_image | image_url: width: 2400 }}" srcset="{{ s.cover_image | image_url: width: 1200 }} 1200w, {{ s.cover_image | image_url: width: 1800 }} 1800w, {{ s.cover_image | image_url: width: 2400 }} 2400w" sizes="100vw" width="{{ s.cover_image.width }}" height="{{ s.cover_image.height }}" alt="{{ s.title.value | escape }}" loading="eager" fetchpriority="high">
+    {%- else -%}
+      {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+  </div>
+
+  <header class="story-header page-width page-width--narrow">
+    {%- if linked_drop != blank -%}
+      <a class="story-header__drop tt-utility" href="{{ linked_drop.system.url }}">{{ linked_drop.title.value | escape }}</a>
+    {%- endif -%}
+    <h1 class="story-header__title tt-editorial-heading">{{ s.title.value | escape }}</h1>
+    {%- if s.dek.value != blank -%}
+      <p class="story-header__dek">{{ s.dek.value | escape }}</p>
+    {%- endif -%}
+  </header>
+
+  {%- if s.body.value != blank -%}
+    <div class="story-body page-width page-width--narrow">
+      <div class="article-template__content rte tt-measure">{{ s.body.value }}</div>
+    </div>
+  {%- endif -%}
+
+  {%- if gallery != blank and gallery.size > 0 -%}
+    <div class="story-gallery">
+      {%- for g in gallery -%}
+        <figure class="story-gallery__item tt-media tt-media--natural">
+          <img src="{{ g | image_url: width: 2000 }}" srcset="{{ g | image_url: width: 900 }} 900w, {{ g | image_url: width: 1400 }} 1400w, {{ g | image_url: width: 2000 }} 2000w" sizes="100vw" width="{{ g.width }}" height="{{ g.height }}" alt="{{ s.title.value | escape }}" loading="lazy">
+        </figure>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- if products != blank and products.size > 0 -%}
+    <div class="story-pieces page-width">
+      <h2 class="story-pieces__heading tt-section-heading">Pieces in this story</h2>
+      {%- render 'tt-product-grid',
+        products: products,
+        limit: 24,
+        layout: 'grid',
+        cols_desktop: 4,
+        cols_mobile: '2',
+        image_ratio: 'portrait',
+        section_id: section.id
+      -%}
+    </div>
+  {%- elsif request.design_mode -%}
+    <p class="tt-collection-row__placeholder page-width">Add linked products to show a &ldquo;pieces in this story&rdquo; row.</p>
+  {%- endif -%}
+
+</article>
+
+{% schema %}
+{
+  "name": "Story page",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Content comes from the story metaobject. Create stories in Settings > Custom data > Metaobjects > Story."
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,76 @@
+{%- comment -%}
+  Reusable product grid — the shared engine behind the Collection Row
+  module, drop pages and brand pages. Renders a <ul> of boutique product
+  cards from one collection. Nothing when the collection is empty.
+
+  Accepts (one of collection / products):
+    collection      - a collection object
+    products        - an array of product objects (used if collection is blank)
+    limit           - max products (default 12)
+    layout          - 'grid' (default) | 'scroller'
+    cols_desktop    - 2..6 (default 4)
+    cols_mobile     - '1' | '2' (default '2')
+    image_ratio     - 'portrait' | 'square' | 'landscape' | 'adapt' (default 'portrait')
+    sold_on         - Boolean, dim sold pieces + show "Sold <month>" (default false)
+    respect_weight  - Boolean, apply merch.display_priority spans (default false)
+    section_id      - the calling section's id (for card ids)
+{%- endcomment -%}
+{%- liquid
+  assign pglimit = limit | default: 12
+  assign pglayout = layout | default: 'grid'
+  assign pgratio = image_ratio | default: 'portrait'
+  assign pgcd = cols_desktop | default: 4
+  assign pgcm = cols_mobile | default: '2'
+  assign pgitems = products
+  if collection != blank
+    assign pgitems = collection.products
+  endif
+-%}
+{%- if pgitems != blank and pgitems.size > 0 -%}
+  <ul
+    class="tt-collection-row__grid tt-collection-row__grid--{{ pglayout }}"
+    role="list"
+    style="--row-cols-desktop: {{ pgcd }}; --row-cols-mobile: {{ pgcm }};"
+  >
+    {%- assign shown = 0 -%}
+    {%- for product in pgitems -%}
+      {%- liquid
+        assign is_sold = false
+        if product.available == false
+          assign is_sold = true
+        endif
+        assign hide_it = false
+        if is_sold and product.metafields.merch.keep_in_archive.value == 'false'
+          assign hide_it = true
+        endif
+        assign weight_class = ''
+        if respect_weight
+          assign w = product.metafields.merch.display_priority.value | downcase
+          if w == 'featured'
+            assign weight_class = ' grid__item--featured'
+          elsif w == 'hero'
+            assign weight_class = ' grid__item--hero'
+          endif
+        endif
+      -%}
+      {%- unless hide_it -%}
+        {%- if shown >= pglimit -%}{%- break -%}{%- endif -%}
+        <li class="tt-collection-row__item{{ weight_class }}{% if is_sold %} is-sold{% endif %}">
+          {%- render 'card-product',
+            card_product: product,
+            media_aspect_ratio: pgratio,
+            show_vendor: true,
+            lazy_load: true,
+            skip_styles: true,
+            section_id: section_id
+          -%}
+          {%- if sold_on and is_sold and product.metafields.merch.archive_date.value != blank -%}
+            {%- assign sold_month = product.metafields.merch.archive_date.value | date: '%b %Y' -%}
+            <p class="tt-collection-row__sold-on">Sold {{ sold_month }}</p>
+          {%- endif -%}
+        </li>
+        {%- assign shown = shown | plus: 1 -%}
+      {%- endunless -%}
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

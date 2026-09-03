@@ -1,0 +1,133 @@
+{%- comment -%}
+  Tootaloo — Drop page. Renders a `drop` metaobject as a temporary
+  exhibition: hero, intro, an optional hero piece, the drop's collection
+  of products, story images and a closing note. All content comes from
+  the metaobject — the merchant creates the data, assigns a collection,
+  and the page exists.
+{%- endcomment -%}
+
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'tt-modules.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign d = metaobject
+  assign status = d.status.value | default: 'Live'
+  assign is_archived = false
+  if status == 'Archived'
+    assign is_archived = true
+  endif
+  assign scheme = d.accent.value | default: 'scheme-1'
+  assign coll = d.collection.value
+  assign hero_product = d.hero_product.value
+-%}
+
+<div class="drop-page color-{{ scheme }} gradient">
+
+  <header class="drop-hero drop-hero--{{ status | downcase }}">
+    <div class="drop-hero__media tt-media tt-media--natural">
+      {%- if d.hero_image -%}
+        {%- if d.hero_image_mobile -%}
+          <img class="drop-hero__img drop-hero__img--mobile" src="{{ d.hero_image_mobile | image_url: width: 1200 }}" srcset="{{ d.hero_image_mobile | image_url: width: 750 }} 750w, {{ d.hero_image_mobile | image_url: width: 1200 }} 1200w" sizes="100vw" width="{{ d.hero_image_mobile.width }}" height="{{ d.hero_image_mobile.height }}" alt="{{ d.title.value | escape }}" loading="eager" fetchpriority="high">
+        {%- endif -%}
+        <img class="drop-hero__img drop-hero__img--desktop" src="{{ d.hero_image | image_url: width: 2400 }}" srcset="{{ d.hero_image | image_url: width: 1200 }} 1200w, {{ d.hero_image | image_url: width: 1800 }} 1800w, {{ d.hero_image | image_url: width: 2400 }} 2400w, {{ d.hero_image | image_url: width: 3200 }} 3200w" sizes="100vw" width="{{ d.hero_image.width }}" height="{{ d.hero_image.height }}" alt="{{ d.title.value | escape }}" loading="eager" fetchpriority="high">
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </div>
+    <div class="drop-hero__overlay">
+      <div class="drop-hero__inner page-width">
+        <p class="drop-hero__status tt-utility">
+          {{- status | escape -}}
+          {%- if status == 'Upcoming' and d.opens_on.value != blank -%}
+            &nbsp;&middot;&nbsp;{{ d.opens_on.value | date: '%b %-d' }}
+          {%- elsif status == 'Live' and d.closes_on.value != blank -%}
+            &nbsp;&middot;&nbsp;through {{ d.closes_on.value | date: '%b %-d' }}
+          {%- endif -%}
+        </p>
+        {%- if d.subtitle.value != blank -%}
+          <p class="drop-hero__subtitle tt-nav">{{ d.subtitle.value | escape }}</p>
+        {%- endif -%}
+        <h1 class="drop-hero__title tt-wordmark">{{ d.title.value | escape }}</h1>
+      </div>
+    </div>
+  </header>
+
+  {%- if d.intro.value != blank -%}
+    <div class="drop-section page-width page-width--narrow">
+      <div class="drop-intro rte tt-measure">{{ d.intro.value }}</div>
+    </div>
+  {%- endif -%}
+
+  {%- if hero_product != blank -%}
+    <div class="drop-section page-width">
+      <a class="featured-piece featured-piece--image-left" href="{{ hero_product.url }}">
+        <span class="featured-piece__media tt-media" data-ratio="landscape">
+          {%- if hero_product.featured_media -%}
+            {{ hero_product.featured_media | image_url: width: 2000 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 60vw, 100vw', widths: '600, 900, 1200, 1600, 2000', alt: hero_product.title | escape }}
+          {%- endif -%}
+        </span>
+        <span class="featured-piece__info">
+          <span class="featured-piece__eyebrow tt-utility">The piece</span>
+          {%- if hero_product.vendor != blank -%}<span class="featured-piece__vendor tt-vendor">{{ hero_product.vendor | escape }}</span>{%- endif -%}
+          <span class="featured-piece__heading tt-editorial-heading">{{ hero_product.title | escape }}</span>
+          <span class="featured-piece__price tt-price">{%- render 'price', product: hero_product -%}</span>
+          <span class="featured-piece__link tt-nav">View piece <span aria-hidden="true">&rarr;</span></span>
+        </span>
+      </a>
+    </div>
+  {%- endif -%}
+
+  {%- if coll != blank and coll.products_count > 0 -%}
+    <div class="drop-section drop-products page-width">
+      <h2 class="drop-products__heading tt-section-heading">
+        {{- coll.products_count }} {% if coll.products_count == 1 %}piece{% else %}pieces{% endif -%}
+      </h2>
+      {%- render 'tt-product-grid',
+        collection: coll,
+        limit: 48,
+        layout: 'grid',
+        cols_desktop: 4,
+        cols_mobile: '2',
+        image_ratio: 'portrait',
+        sold_on: is_archived,
+        respect_weight: true,
+        section_id: section.id
+      -%}
+    </div>
+  {%- elsif request.design_mode -%}
+    <div class="drop-section page-width">
+      <p class="tt-collection-row__placeholder">Set this drop&rsquo;s <strong>collection</strong> field to fill the grid.</p>
+    </div>
+  {%- endif -%}
+
+  {%- assign story_imgs = d.story_images.value -%}
+  {%- if story_imgs != blank and story_imgs.size > 0 -%}
+    <div class="drop-section drop-stories">
+      {%- for si in story_imgs -%}
+        <figure class="drop-story tt-media tt-media--natural">
+          <img src="{{ si | image_url: width: 2000 }}" srcset="{{ si | image_url: width: 900 }} 900w, {{ si | image_url: width: 1400 }} 1400w, {{ si | image_url: width: 2000 }} 2000w" sizes="100vw" width="{{ si.width }}" height="{{ si.height }}" alt="{{ d.title.value | escape }}" loading="lazy">
+        </figure>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- if d.closing_note.value != blank -%}
+    <div class="drop-section page-width page-width--narrow">
+      <div class="drop-closing rte tt-measure">{{ d.closing_note.value }}</div>
+    </div>
+  {%- endif -%}
+
+</div>
+
+{% schema %}
+{
+  "name": "Drop page",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Everything on a drop page comes from the drop metaobject: hero, intro, collection, hero piece, story images, closing note. Create drops in Settings > Custom data > Metaobjects > Drop."
+    }
+  ]
+}
+{% endschema %}

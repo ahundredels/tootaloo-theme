@@ -1,0 +1,61 @@
+{%- comment -%}
+  Tootaloo — Brand header. The top of a brand page: a smart collection
+  per vendor with the `brand` metafield namespace and this template
+  (collection.brand). Reads collection.metafields.brand.* with graceful
+  fallback to the collection's own title / description.
+{%- endcomment -%}
+
+{{ 'tt-modules.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign b = collection.metafields.brand
+  assign scheme = b.accent.value | default: section.settings.color_scheme | default: 'scheme-1'
+  assign hero = b.hero.value
+  assign desc = b.description.value | default: collection.description
+-%}
+
+<div class="brand-header brand-header--{% if hero != blank %}with-hero{% else %}plain{% endif %} color-{{ scheme }} gradient">
+  {%- if hero != blank -%}
+    <div class="brand-header__media tt-media" data-ratio="featured-wide">
+      {%- if b.hero_mobile.value != blank -%}
+        <img class="brand-header__img brand-header__img--mobile" src="{{ b.hero_mobile.value | image_url: width: 1200 }}" srcset="{{ b.hero_mobile.value | image_url: width: 750 }} 750w, {{ b.hero_mobile.value | image_url: width: 1200 }} 1200w" sizes="100vw" width="{{ b.hero_mobile.value.width }}" height="{{ b.hero_mobile.value.height }}" alt="{{ collection.title | escape }}" loading="eager" fetchpriority="high">
+      {%- endif -%}
+      <img class="brand-header__img brand-header__img--desktop" src="{{ hero | image_url: width: 2400 }}" srcset="{{ hero | image_url: width: 1200 }} 1200w, {{ hero | image_url: width: 1800 }} 1800w, {{ hero | image_url: width: 2400 }} 2400w" sizes="100vw" width="{{ hero.width }}" height="{{ hero.height }}" alt="{{ collection.title | escape }}" loading="eager" fetchpriority="high">
+    </div>
+  {%- endif -%}
+
+  <div class="brand-header__inner page-width">
+    <p class="brand-header__eyebrow tt-utility">
+      Brand{%- if b.established.value != blank -%}&nbsp;&middot;&nbsp;{{ b.established.value | escape }}{%- endif -%}
+    </p>
+    <h1 class="brand-header__name tt-drop-title">{{ collection.title | escape }}</h1>
+    {%- if b.tagline.value != blank -%}
+      <p class="brand-header__tagline tt-nav">{{ b.tagline.value | escape }}</p>
+    {%- endif -%}
+    {%- if desc != blank -%}
+      <div class="brand-header__text rte tt-measure">{{ desc }}</div>
+    {%- endif -%}
+    {%- if b.link.value != blank -%}
+      <a class="brand-header__link tt-nav" href="{{ b.link.value }}" rel="nofollow">
+        {{- b.link.value | split: '//' | last | split: '/' | first -}}
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brand header",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Shown at the top of the collection.brand template. Content comes from the collection's brand.* metafields; falls back to the collection title and description."
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Fallback color scheme", "default": "scheme-1" }
+  ],
+  "presets": [
+    { "name": "Brand header" }
+  ]
+}
+{% endschema %}

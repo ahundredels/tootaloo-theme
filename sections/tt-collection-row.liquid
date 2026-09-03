@@ -64,42 +64,16 @@
     -%}
 
     {%- if coll != blank and coll.products_count > 0 -%}
-      <ul
-        class="tt-collection-row__grid tt-collection-row__grid--{{ section.settings.layout }}"
-        role="list"
-      >
-        {%- assign shown = 0 -%}
-        {%- for product in coll.products -%}
-          {%- liquid
-            assign is_sold = false
-            if product.available == false
-              assign is_sold = true
-            endif
-            assign hide_it = false
-            if is_sold and product.metafields.merch.keep_in_archive.value == 'false'
-              assign hide_it = true
-            endif
-          -%}
-          {%- unless hide_it -%}
-            {%- if shown >= limit -%}{%- break -%}{%- endif -%}
-            <li class="tt-collection-row__item{% if is_sold %} is-sold{% endif %}">
-              {%- render 'card-product',
-                card_product: product,
-                media_aspect_ratio: section.settings.image_ratio,
-                show_vendor: true,
-                lazy_load: true,
-                skip_styles: true,
-                section_id: section.id
-              -%}
-              {%- if sold_on and is_sold and product.metafields.merch.archive_date.value != blank -%}
-                {%- assign sold_month = product.metafields.merch.archive_date.value | date: '%b %Y' -%}
-                <p class="tt-collection-row__sold-on">Sold {{ sold_month }}</p>
-              {%- endif -%}
-            </li>
-            {%- assign shown = shown | plus: 1 -%}
-          {%- endunless -%}
-        {%- endfor -%}
-      </ul>
+      {%- render 'tt-product-grid',
+        collection: coll,
+        limit: limit,
+        layout: section.settings.layout,
+        cols_desktop: section.settings.columns_desktop,
+        cols_mobile: section.settings.columns_mobile,
+        image_ratio: section.settings.image_ratio,
+        sold_on: sold_on,
+        section_id: section.id
+      -%}
     {%- elsif request.design_mode -%}
       <p class="tt-collection-row__placeholder">
         Pick a collection in this section&rsquo;s settings. The module stays hidden on the live site until you do.
