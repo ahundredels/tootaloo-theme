@@ -20,8 +20,13 @@
   if section.settings.eyebrow != blank or section.settings.heading != blank or section.settings.text != blank or section.settings.link_label != blank
     assign has_text = true
   endif
+  assign show_section = false
+  if img != blank or has_text or request.design_mode
+    assign show_section = true
+  endif
 -%}
 
+{%- if show_section -%}
 {%- style -%}
   #shopify-section-{{ section.id }} .editorial-image {
     padding-top: {{ section.settings.padding_top }}px;
@@ -89,6 +94,7 @@
     </figure>
   </div>
 </div>
+{%- endif -%}
 
 {% schema %}
 {

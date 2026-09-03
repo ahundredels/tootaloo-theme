@@ -16,38 +16,86 @@
         "color_scheme": "scheme-1"
       }
     },
+    "current_drop": {
+      "type": "tt-collection-row",
+      "settings": {
+        "module_kind": "current_drop",
+        "eyebrow": "Now",
+        "heading": "Current Drop",
+        "heading_style": "drop",
+        "collection": "all",
+        "product_limit": 4,
+        "link_label": "View the drop",
+        "layout": "grid",
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "image_ratio": "portrait",
+        "span": "normal",
+        "sold_treatment": "auto",
+        "padding_top": 96,
+        "padding_bottom": 96,
+        "color_scheme": "scheme-1"
+      }
+    },
     "collection_tile_grid": {
       "type": "collection-tile-grid",
       "blocks": {
-        "tile_1": {
-          "type": "tile",
-          "settings": { "name": "New Arrivals", "link": "shopify://collections/all" }
-        },
-        "tile_2": {
-          "type": "tile",
-          "settings": { "name": "Best Sellers", "link": "" }
-        },
-        "tile_3": {
-          "type": "tile",
-          "settings": { "name": "Sale", "link": "" }
-        }
+        "tile_1": { "type": "tile", "settings": { "name": "New Arrivals", "link": "shopify://collections/all" } },
+        "tile_2": { "type": "tile", "settings": { "name": "Vintage", "link": "" } },
+        "tile_3": { "type": "tile", "settings": { "name": "Archive", "link": "" } }
       },
       "block_order": ["tile_1", "tile_2", "tile_3"],
       "settings": {
-        "title": "Shop by collection",
+        "title": "",
         "heading_size": "h2",
         "columns_desktop": 3,
         "columns_mobile": "2",
         "image_ratio": "portrait",
         "name_position": "overlay",
         "color_scheme": "scheme-1",
-        "padding_top": 44,
-        "padding_bottom": 36
+        "padding_top": 24,
+        "padding_bottom": 24
+      }
+    },
+    "editorial_image": {
+      "type": "editorial-image",
+      "settings": {
+        "heading": "Story",
+        "heading_style": "editorial",
+        "text_placement": "overlay-bottom-left",
+        "width": "wide",
+        "image_ratio": "featured-wide",
+        "scrim": "subtle",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "recently_sold": {
+      "type": "tt-collection-row",
+      "settings": {
+        "module_kind": "recently_sold",
+        "heading": "Recently Sold",
+        "heading_style": "label",
+        "collection": "all",
+        "product_limit": 4,
+        "layout": "grid",
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "image_ratio": "portrait",
+        "span": "normal",
+        "sold_treatment": "auto",
+        "padding_top": 96,
+        "padding_bottom": 96,
+        "color_scheme": "scheme-1"
       }
     }
   },
   "order": [
     "hero_wordmark",
-    "collection_tile_grid"
+    "current_drop",
+    "collection_tile_grid",
+    "editorial_image",
+    "recently_sold"
   ]
 }
