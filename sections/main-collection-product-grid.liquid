@@ -147,6 +147,10 @@
           </aside>
         {%- endif -%}
 
+        {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
+          {% render 'tt-plp-bar' %}
+        {%- endif -%}
+
         <div class="collection-with-sidebar page-width">
           {% render 'category-sidebar-nav', menu: 'shop-sidebar' %}
 

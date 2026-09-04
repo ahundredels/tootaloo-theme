@@ -1,0 +1,30 @@
+{%- comment -%}
+  Mobile PLP control bar (Phase 8 §4) — two equal bordered buttons:
+
+    [ FILTERS ]  [ DESIGNERS A-Z ]
+
+  Neither is new functionality: "Filters" re-triggers Dawn's existing mobile
+  facet drawer (.mobile-facets__open-wrapper); "Designers A-Z" toggles the
+  existing category-sidebar checkbox (#CategoryToggle-shop-sidebar), which on
+  mobile now presents as a slide-in sheet (see category-sidebar-nav.liquid).
+
+  Shown below 990px only; hidden on desktop where both panels are persistent.
+{%- endcomment -%}
+<div class="tt-plp-bar" data-tt-plp-bar>
+  <button type="button" class="tt-plp-bar__btn" data-tt-open-filters>Filters</button>
+  <label for="CategoryToggle-shop-sidebar" class="tt-plp-bar__btn">Designers A-Z</label>
+</div>
+<script>
+  (function () {
+    var bar = document.currentScript.previousElementSibling;
+    if (!bar) return;
+    var open = bar.querySelector('[data-tt-open-filters]');
+    if (!open) return;
+    open.addEventListener('click', function () {
+      var trigger =
+        document.querySelector('.mobile-facets__open-wrapper') ||
+        document.querySelector('.mobile-facets__disclosure summary');
+      if (trigger) trigger.click();
+    });
+  })();
+</script>

@@ -1,17 +1,14 @@
 {% comment %}
-  Left-side category nav, styled after winfarlab.com / ninetwofive.online's
-  browsing sidebar (Tops > T-shirts, Tank Tops... / Bottoms > Pants, Jeans...).
+  Left-side category / designer nav, driven by a real Shopify navigation menu
+  so it stays merchant-editable (Online Store > Navigation, handle "shop-sidebar").
+  Supports one level of nesting.
 
-  Reads from a real Shopify navigation menu, so tomorrow you just build the
-  menu in Online Store > Navigation and this renders it automatically —
-  no code changes needed. Supports one level of nesting.
+  Desktop (>=990px): a persistent bordered column beside the product grid.
+  Mobile (<990px): a slide-in sheet opened by the "Designers A-Z" button in
+  the mobile PLP bar (snippets/tt-plp-bar.liquid), which toggles the checkbox
+  #CategoryToggle-<handle> below.
 
-  Usage:
-    {% render 'category-sidebar-nav', menu: 'shop-sidebar' %}
-
-  Setup: create a menu in Shopify admin with handle "shop-sidebar" (or
-  whatever you pass in), with top-level items like "Tops", "Bottoms",
-  "Accessories", and nested links under each for subcategories.
+  Usage: {% render 'category-sidebar-nav', menu: 'shop-sidebar' %}
 {% endcomment %}
 
 {%- liquid
@@ -21,9 +18,17 @@
 
 <nav class="category-sidebar" aria-label="Shop categories">
   {%- if nav_menu -%}
-    <div class="category-sidebar__group">
-      <input type="checkbox" id="CategoryToggle-{{ menu_handle }}" class="category-sidebar__toggle-input">
-      <label for="CategoryToggle-{{ menu_handle }}" class="category-sidebar__toggle">Categories</label>
+    <input type="checkbox" id="CategoryToggle-{{ menu_handle }}" class="category-sidebar__toggle-input" aria-hidden="true">
+    <label for="CategoryToggle-{{ menu_handle }}" class="category-sidebar__backdrop" aria-hidden="true"></label>
+
+    <div class="category-sidebar__panel">
+      <div class="category-sidebar__panel-head">
+        <span class="category-sidebar__panel-title">Designers A-Z</span>
+        <label for="CategoryToggle-{{ menu_handle }}" class="category-sidebar__panel-close" aria-label="Close">
+          {{- 'icon-close.svg' | inline_asset_content -}}
+        </label>
+      </div>
+
       <ul class="category-sidebar__list">
         {%- for link in nav_menu.links -%}
           <li class="category-sidebar__item">
@@ -58,16 +63,6 @@
     max-width: var(--tt-sidebar-width);
   }
 
-  @media screen and (max-width: 989px) {
-    .category-sidebar { max-width: none; }
-  }
-
-  .category-sidebar__group {
-    border-top: 1px solid rgba(var(--color-foreground), 0.15);
-    border-bottom: 1px solid rgba(var(--color-foreground), 0.15);
-  }
-
-  /* Visually-hidden but focusable toggle control */
   .category-sidebar__toggle-input {
     position: absolute;
     width: 1px;
@@ -80,63 +75,14 @@
     white-space: nowrap;
   }
 
-  .category-sidebar__toggle {
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--tt-space-sm) 0;
-    font-family: var(--tt-font-grotesk);
-    font-size: var(--tt-fs-2xs);
-    font-weight: var(--tt-fw-semibold);
-    text-transform: uppercase;
-    letter-spacing: var(--tt-tracking-widest);
-  }
-
-  .category-sidebar__toggle::after {
-    content: '+';
-    font-weight: var(--tt-fw-regular);
-  }
-
-  .category-sidebar__toggle-input:checked ~ .category-sidebar__toggle::after {
-    content: '\2013';
-  }
-
-  .category-sidebar__toggle-input:focus-visible ~ .category-sidebar__toggle {
-    outline: 2px solid rgb(var(--color-foreground));
-    outline-offset: 2px;
-  }
-
   .category-sidebar__list {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: none;
-  }
-
-  .category-sidebar__toggle-input:checked ~ .category-sidebar__list {
-    display: block;
-    padding-bottom: var(--tt-space-sm);
-  }
-
-  @media screen and (min-width: 990px) {
-    .category-sidebar__group {
-      border: 0;
-    }
-
-    .category-sidebar__toggle {
-      display: none;
-    }
-
-    .category-sidebar__list,
-    .category-sidebar__toggle-input:checked ~ .category-sidebar__list {
-      display: block;
-      padding-bottom: 0;
-    }
   }
 
   .category-sidebar__item {
-    margin-bottom: var(--tt-space-sm);
+    margin-bottom: var(--tt-space-5);
   }
 
   .category-sidebar__link {
@@ -153,7 +99,7 @@
 
   .category-sidebar__sublist {
     list-style: none;
-    margin: var(--tt-space-2xs) 0 0;
+    margin: var(--tt-space-2) 0 0;
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -167,12 +113,13 @@
     font-size: var(--tt-fs-sm);
     letter-spacing: var(--tt-tracking-normal);
     padding: 0.2rem 0;
-    transition: color var(--tt-dur) var(--tt-ease);
   }
 
-  .category-sidebar__sublink:hover {
-    color: rgb(var(--color-foreground));
+  @media (prefers-reduced-motion: no-preference) {
+    .category-sidebar__sublink { transition: color var(--tt-dur) var(--tt-ease); }
   }
+
+  .category-sidebar__sublink:hover { color: rgb(var(--color-foreground)); }
 
   .category-sidebar__link.is-active,
   .category-sidebar__sublink.is-active {
@@ -184,5 +131,88 @@
   .category-sidebar__placeholder {
     color: rgba(var(--color-foreground), 0.6);
     font-size: var(--tt-fs-sm);
+  }
+
+  /* ── Mobile: slide-in sheet (< 750px, matches Dawn's facet-drawer breakpoint) ── */
+  @media screen and (max-width: 749px) {
+    .category-sidebar { max-width: none; }
+
+    .category-sidebar__backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .category-sidebar__panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 91;
+      width: min(84vw, 32rem);
+      background: rgb(var(--color-background));
+      border-right: var(--tt-border);
+      padding: var(--tt-space-5);
+      overflow-y: auto;
+      transform: translateX(-100%);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .category-sidebar__backdrop { transition: opacity 200ms ease; }
+      .category-sidebar__panel { transition: transform 280ms ease-out; }
+    }
+
+    .category-sidebar__toggle-input:checked ~ .category-sidebar__backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .category-sidebar__toggle-input:checked ~ .category-sidebar__panel {
+      transform: none;
+    }
+
+    .category-sidebar__panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--tt-space-5);
+    }
+
+    .category-sidebar__panel-title {
+      font-family: var(--tt-font-grotesk);
+      font-size: var(--tt-fs-2xs);
+      font-weight: var(--tt-fw-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--tt-tracking-widest);
+    }
+
+    .category-sidebar__panel-close {
+      display: inline-flex;
+      padding: var(--tt-space-2);
+      margin: calc(-1 * var(--tt-space-2));
+      cursor: pointer;
+    }
+
+    .category-sidebar__panel-close .icon { width: 1.8rem; height: 1.8rem; }
+  }
+
+  /* ── Tablet + desktop: static panel, list always visible ── */
+  @media screen and (min-width: 750px) {
+    .category-sidebar__backdrop,
+    .category-sidebar__panel-head {
+      display: none;
+    }
+
+    .category-sidebar__panel {
+      position: static;
+      transform: none;
+      width: auto;
+      padding: 0;
+      border: 0;
+      overflow: visible;
+    }
   }
 {% endstylesheet %}

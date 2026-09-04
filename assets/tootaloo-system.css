@@ -719,6 +719,64 @@ textarea {
   }
 }
 
+/* ── Mobile PLP two-button bar (Phase 8 §4) ── */
+.tt-plp-bar {
+  display: none;
+}
+
+@media screen and (max-width: 749px) {
+  .tt-plp-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 0 var(--tt-gutter) var(--tt-space-5);
+  }
+
+  /* Dawn's own mobile filter button is retriggered by "Filters" — keep it in
+     the DOM and clickable, just out of view. */
+  .mobile-facets__wrapper .mobile-facets__open-wrapper {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+.tt-plp-bar__btn {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 4.4rem;
+  padding: 0 var(--tt-space-4);
+  border: var(--tt-border);
+  background: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-2xs);
+  font-weight: var(--tt-fw-semibold);
+  letter-spacing: var(--tt-tracking-widest);
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* collapse the shared border between the two buttons */
+.tt-plp-bar__btn + .tt-plp-bar__btn {
+  border-left: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tt-plp-bar__btn { transition: background var(--tt-dur-fast) ease, color var(--tt-dur-fast) ease; }
+}
+
+.tt-plp-bar__btn:active {
+  background: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+}
+
 /* Pagination — current page underlined, arrows as text */
 .pagination__item--current {
   text-decoration: underline;
