@@ -59,14 +59,25 @@
     --tt-tracking-wider: 0.1em;
     --tt-tracking-widest: 0.16em;
 
-    /* ── Spacing scale: 8 / 16 / 24 / 40 / 64 / 96 / 160 ── */
-    --tt-space-2xs: 0.8rem;
-    --tt-space-xs: 1.6rem;
-    --tt-space-sm: 2.4rem;
-    --tt-space-md: 4rem;
-    --tt-space-lg: 6.4rem;
-    --tt-space-xl: 9.6rem;
-    --tt-space-2xl: 16rem;
+    /* ── Numeric spacing scale (Phase 8 §2): 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96 ── */
+    --tt-space-1: 0.4rem;
+    --tt-space-2: 0.8rem;
+    --tt-space-3: 1.2rem;
+    --tt-space-4: 1.6rem;
+    --tt-space-5: 2.4rem;
+    --tt-space-6: 3.2rem;
+    --tt-space-7: 4.8rem;
+    --tt-space-8: 6.4rem;
+    --tt-space-9: 9.6rem;
+
+    /* ── Named aliases (kept so existing rules don't churn) ── */
+    --tt-space-2xs: var(--tt-space-2);   /* 8  */
+    --tt-space-xs: var(--tt-space-4);    /* 16 */
+    --tt-space-sm: var(--tt-space-5);    /* 24 */
+    --tt-space-md: 4rem;                 /* 40 — component-internal only, off-scale by design */
+    --tt-space-lg: var(--tt-space-8);    /* 64 */
+    --tt-space-xl: var(--tt-space-9);    /* 96 */
+    --tt-space-2xl: 16rem;               /* 160 — page-major only */
 
     /* ── Semantic spacing — hierarchy, not uniformity ── */
     --tt-pad-utility: var(--tt-space-2xs);
@@ -75,19 +86,21 @@
     --tt-section-gap: var(--tt-space-lg);         /* normal section rhythm */
     --tt-section-gap-major: var(--tt-space-2xl);  /* homepage / drop transitions */
 
-    /* ── Layout / grid ── */
-    --tt-gutter: 2rem;
+    /* ── Layout / grid (Phase 8 §2) ── */
+    --tt-gutter: var(--tt-space-4);          /* page edge: 16 mobile → 32 desktop */
     --tt-content-max: 140rem;    /* aligns with Theme settings > page_width (1400) */
     --tt-content-wide: 160rem;
     --tt-content-narrow: 108rem;
     --tt-content-text: 68rem;    /* editorial reading measure */
     --tt-sidebar-width: 22rem;
-    --tt-sidebar-gap: var(--tt-space-lg);
-    --tt-grid-col-gap: 0.8rem;
-    --tt-grid-row-gap: var(--tt-space-md);
+    --tt-sidebar-gap: var(--tt-space-8);
+    --tt-grid-col-gap: var(--tt-space-3);    /* 12 mobile → 24 desktop, mirrors spacing_grid_horizontal */
+    --tt-grid-row-gap: var(--tt-space-6);
     --tt-card-min: 20rem;
-    --tt-header-height: var(--header-height, 7rem); /* Dawn sets --header-height via JS on <html> */
-    --tt-sticky-offset: calc(var(--tt-header-height) + var(--tt-space-sm));
+    --tt-header-height-desktop: 7.2rem;
+    --tt-header-height-mobile: 5.6rem;
+    --tt-header-height: var(--tt-header-height-mobile);
+    --tt-sticky-offset: calc(var(--header-height, var(--tt-header-height)) + var(--tt-space-5));
 
     /* ── Aspect ratios ── */
     --tt-ratio-square: 1 / 1;
@@ -112,15 +125,9 @@
 
   @media screen and (min-width: 750px) {
     :root {
-      --tt-gutter: 3.2rem;
-      --tt-grid-col-gap: 1.2rem;
-    }
-  }
-
-  @media screen and (min-width: 990px) {
-    :root {
-      --tt-gutter: 4rem;
-      --tt-grid-col-gap: 1.6rem;
+      --tt-gutter: var(--tt-space-6);       /* 32 */
+      --tt-grid-col-gap: var(--tt-space-5); /* 24 */
+      --tt-header-height: var(--tt-header-height-desktop);
     }
   }
 
@@ -128,7 +135,7 @@
   @media screen and (max-width: 749px) {
     :root {
       --tt-space-md: 3.2rem;
-      --tt-space-lg: 4.8rem;
+      --tt-space-lg: 3.2rem;
       --tt-space-xl: 6.4rem;
       --tt-space-2xl: 9.6rem;
       --tt-sidebar-gap: var(--tt-space-md);

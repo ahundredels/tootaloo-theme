@@ -735,6 +735,31 @@ textarea {
   --alpha-button-border: 1;
 }
 
+/* ── Phase 8 §1/§2 — icon sizing + fixed spacing ── */
+
+/* The new bag icon is a tight 24-unit viewBox; Dawn sized the old 40-unit
+   cart glyph up to 4.4rem to compensate. Bring it back in line. */
+.header__icon--cart .icon,
+.header__icon--cart .svg-wrapper .icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Fixed header height (72 desktop / 56 mobile) — content vertically centred,
+   schema padding removed so the height is exact. */
+.header {
+  min-height: var(--tt-header-height);
+  padding-block: 0;
+}
+
+@media screen and (min-width: 990px) {
+  .header { padding-block: 0; }
+}
+
+/* Card-internal rhythm: image → info block is one tight 8px step. */
+.card__content { padding-top: var(--tt-space-2); }
+.card__information { gap: var(--tt-space-1); }
+
 /* ── Footer masthead (wordmark + search), Phase 7 §5 ── */
 .footer { border-top: var(--tt-border); }
 

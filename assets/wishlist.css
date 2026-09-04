@@ -24,16 +24,20 @@
   height: 2rem;
 }
 
-.wishlist-button__icon--filled {
+/* Phase 8 §1 — the heart is always the filled glyph (per wireframe).
+   Saved vs not-saved is carried by opacity, not an outline swap. */
+.wishlist-button__icon--outline {
   display: none;
 }
 
-.wishlist-button.is-active .wishlist-button__icon--outline {
-  display: none;
+.wishlist-button__icon--filled {
+  display: block;
+  opacity: 0.5;
+  transition: opacity var(--tt-dur-fast) var(--tt-ease);
 }
 
 .wishlist-button.is-active .wishlist-button__icon--filled {
-  display: block;
+  opacity: 1;
 }
 
 /* Placement on product cards — sharp, no pill, legible over imagery */
