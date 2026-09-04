@@ -293,17 +293,18 @@ h5, .h5 {
   font-size: var(--tt-fs-sm);
   line-height: var(--tt-lh-snug);
   letter-spacing: var(--tt-tracking-normal);
-  font-weight: var(--tt-fw-regular);
+  font-weight: var(--tt-fw-bold);
   text-transform: none;
 }
 
 .card-information > .price,
 .card__information .price {
-  margin-top: 0.2rem;
+  margin-top: 0;
 }
 
 .price {
   font-size: var(--tt-fs-sm);
+  font-weight: var(--tt-fw-regular);
   letter-spacing: var(--tt-tracking-wide);
   font-variant-numeric: tabular-nums;
 }
@@ -509,6 +510,25 @@ h5, .h5 {
 .header__icons { gap: var(--tt-space-xs); }
 .header__icon .svg-wrapper { width: 2rem; height: 2rem; }
 /* (wishlist icon + count are owned by wishlist.css) */
+
+/* Header/nav carries no fill of its own — it sits over whatever's behind
+   it. The announcement bar above it (if enabled) keeps its own scheme
+   background; this is scoped to the nav row only. */
+.header-wrapper.gradient {
+  background: transparent;
+  position: relative;
+  z-index: 10;
+}
+
+/* On the homepage the hero is the very first section — let it slide up
+   underneath the transparent header so the hero's own background/image
+   shows through the nav band, instead of a gap of plain white above it.
+   Scoped to the hero specifically (not "whatever happens to load first")
+   so no other template's content ends up hidden behind the nav. */
+.hero-wordmark {
+  margin-top: calc(-1 * var(--header-height, 7rem));
+  padding-top: var(--header-height, 7rem);
+}
 
 /* No account icon in the wireframe header — reachable via "Login" in the
    mobile drawer utility links instead. Kept in the DOM (not removed) so
@@ -863,8 +883,18 @@ textarea {
   border-radius: 0;
 }
 
-/* Sold-out cards read as a flat grey placeholder with a centered "Sold out"
-   label — no border, no product photo, per the wireframe. */
+/* Sold-out cards: flat grey placeholder + centered "Sold out" label, with
+   the standard 1px black border — the border is a real element, not a
+   section divider, so it stays. */
+.card-wrapper:has(.card__media--sold-out) .card__inner {
+  border: var(--tt-border);
+}
+
+.card-wrapper:has(.card__media--sold-out) .card__content {
+  padding-inline: var(--tt-space-2xs);
+  padding-bottom: var(--tt-space-2xs);
+}
+
 .card-wrapper:has(.card__media--sold-out) .card__media {
   background: rgba(var(--color-foreground), 0.06);
 }
@@ -893,7 +923,14 @@ textarea {
   padding: 0;
 }
 
-/* PLP sidebar — plain text column on desktop, no border box (per wireframe) */
+/* PLP sidebar — persistent bordered container on desktop. Element border,
+   not a section divider — stays. */
+@media screen and (min-width: 990px) {
+  .collection-with-sidebar .category-sidebar {
+    border: var(--tt-border);
+    padding: var(--tt-space-sm);
+  }
+}
 
 /* ── Mobile PLP two-button bar (Phase 8 §4) ── */
 .tt-plp-bar {
@@ -990,12 +1027,13 @@ textarea {
   .header { padding-block: 0; }
 }
 
-/* Card-internal rhythm: image → info block is one tight 8px step. */
+/* Card-internal rhythm: image → info block is one tight 8px step.
+   (.card__information's own row/column gap is set once, in §5.) */
 .card__content { padding-top: var(--tt-space-2); }
-.card__information { gap: var(--tt-space-1); }
 
 /* ── Footer masthead (wordmark + search), Phase 7 §5 ── */
-.footer { border-top: var(--tt-border); }
+/* No top border — the gap above (--tt-section-gap, set on .footer's
+   margin-top) is the separator now, not a rule. */
 
 /* Footer layout (wireframe): wordmark + search stacked in the left column,
    email/subscribe top-right, link columns below spanning full width.
