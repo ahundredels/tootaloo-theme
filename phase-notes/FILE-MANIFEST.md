@@ -11,7 +11,9 @@ Every file touched since `baseline-live-20260902` (the live theme verbatim), plu
 | `assets/tootaloo-system.css` | A | The layer that consumes the tokens: type roles, heading normalisation, `.page-width`, `.tt-media` ratio system, product card, collection grid, PDP, header, footer, newsletter, wishlist, sold-state, `grid__item--featured/--hero` spans. Loaded after `base.css`. |
 | `assets/tt-modules.css` | A | Homepage module + drop/story/brand styles. Loaded per-section by the module sections only. |
 | `layout/theme.liquid` | M | 2-line change: `{% render 'tootaloo-tokens' %}` before `base.css`; `{{ 'tootaloo-system.css' ... }}` after. |
-| `config/settings_data.json` | M | Merchant theme settings (below). |
+| `config/settings_data.json` | M | Merchant theme settings (below). Phase 7 §1: fonts → Archivo / Archivo Black; `page_width` → 1400. |
+| `assets/tootaloo-wordmark.svg` | A | **The real logo.** Single path, `fill: currentColor`, viewBox 1144×268. Rendered inline (not `<img>`) so it themes. |
+| `snippets/tootaloo-logo.liquid` | A | Renders the wordmark inline via `inline_asset_content`. Params: `context` (header/footer/drawer → sizing class). Merchant `settings.logo` still wins upstream. |
 
 ## Product page (PDP)
 
@@ -68,7 +70,7 @@ Every file touched since `baseline-live-20260902` (the live theme verbatim), plu
 
 | Path | | Role |
 |---|---|---|
-| `sections/header.liquid` | M | 1-line change: header horizontal padding uses `--tt-gutter`. |
+| `sections/header.liquid` | M | Header horizontal padding uses `--tt-gutter`; Phase 7 §1: both logo blocks render `tootaloo-logo` instead of the text shop-name fallback. |
 | `assets/wishlist.css` | M | Heart chip on tokens — sharp, no white pill, drop-shadow. |
 | `assets/component-blog-editorial.css` | M | Blog / article ("The Mag") restyle, on tokens. |
 | `sections/main-search.liquid` | M | 1-line: search `<h1>` left-aligned, `.h1` scale. |
@@ -85,15 +87,15 @@ Every file touched since `baseline-live-20260902` (the live theme verbatim), plu
 
 ---
 
-## Phase 7 (proposed — the wireframe-skeleton reconcile) would touch
+## Phase 7 — wireframe parity pass (in progress)
 
-*Not started — awaiting direction on scope + aesthetic.*
+Building to the 7 wireframes. Section numbering follows the breakdown doc.
 
-| Likely path | Change |
-|---|---|
-| `sections/editorial-cards.liquid` *(new)* | The "Tootaloo Mag" homepage section — N article cards (kicker / headline / dek / Read More) from a chosen blog. Currently missing. |
-| `assets/tt-modules.css` | Styles for the above. |
-| `templates/index.json` | Place the Mag section. |
-| `snippets/tootaloo-tokens.liquid` *(only if aesthetic shifts)* | `--tt-font-display` / `--tt-font-grotesk` swap, tracking/weight for a bolder direction. |
-| `config/settings_data.json` *(only if aesthetic shifts)* | `type_header_font` / `type_body_font`; border/card settings if going boxy. |
-| `assets/tootaloo-system.css` *(only if aesthetic shifts)* | Border rules if the skeleton's hard-border look is adopted. |
+| Section | Status | Files |
+|---|---|---|
+| §1 Global tokens | **done** — tag `phase-7-s1-global-20260903` | `config/settings_data.json`, `snippets/tootaloo-tokens.liquid`, `assets/tootaloo-system.css` §14, `sections/header.liquid`, + new `assets/tootaloo-wordmark.svg` / `snippets/tootaloo-logo.liquid` |
+| §2 Home | not started | `templates/index.json` (Staff Picks label), `sections/collection-tile-grid.liquid`, `sections/hero-wordmark.liquid`, `snippets/header-drawer.liquid` (drawer wordmark), **new** `sections/editorial-cards.liquid` + `assets/tt-modules.css` (Tootaloo Mag — 3 cards) |
+| §3 Shop All / PLP | partial (sidebar bordered in §1) | `sections/main-collection-product-grid.liquid`, `snippets/pagination.liquid`, `snippets/facets.liquid` |
+| §4 Product page | not started | `sections/main-product.liquid` / `snippets/buy-buttons.liquid` ("Add to Bag" label + black fill), related-products row |
+| §5 Footer | not started | `sections/footer.liquid` (wordmark + search box + uppercase links), `assets/tootaloo-system.css` §9 |
+| §6 QA | not started | real mobile-viewport screenshots, wireframe diff saved to repo |

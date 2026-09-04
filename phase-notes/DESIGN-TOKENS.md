@@ -10,10 +10,10 @@ Nothing here chooses final fonts, colours or imagery. Colour comes from **Theme 
 
 | Token | Aliased to | Current value (Theme settings) |
 |---|---|---|
-| `--tt-font-display` | `--font-heading-family` ← Settings > Heading font | **Assistant**, weight 400 (`assistant_n4`) |
-| `--tt-font-grotesk` | `--font-body-family` ← Settings > Body font | **Assistant**, weight 400 (`assistant_n4`) |
+| `--tt-font-display` | `--font-heading-family` ← Settings > Heading font | **Archivo Black**, weight 400 (`archivo_black_n4`) |
+| `--tt-font-grotesk` | `--font-body-family` ← Settings > Body font | **Archivo**, weight 400 (`archivo_n4`); bold derived `archivo_n7` |
 
-Both voices are currently the same face (Assistant). The system is built to take a distinct display face the moment one is picked in the Heading-font setting — no code change.
+Phase 7 (0.1 resolved): display voice is Archivo Black, body/UI voice is Archivo — matches the wireframes. Dawn emits the `@font-face` for both from the Typography settings automatically. Swapping either face is still a settings-only change.
 
 ## Weights
 `--tt-fw-regular` = `var(--font-body-weight, 400)` · `--tt-fw-medium` = 500 · `--tt-fw-semibold` = 600 · `--tt-fw-bold` = `var(--font-body-weight-bold, 700)`
@@ -74,8 +74,8 @@ Semantic: `--tt-pad-utility` = 2xs · `--tt-pad-grid` = sm · `--tt-pad-editoria
 | Token | Value |
 |---|---|
 | `--tt-gutter` | `2rem` / `3.2rem` @750 / `4rem` @990 |
-| `--tt-content-max` | `150rem` (1500) |
-| `--tt-content-wide` | `176rem` (1760) |
+| `--tt-content-max` | `140rem` (1400) — matches Theme settings `page_width: 1400` |
+| `--tt-content-wide` | `160rem` (1600) |
 | `--tt-content-narrow` | `108rem` (1080) |
 | `--tt-content-text` | `68rem` (680) — editorial reading measure |
 | `--tt-sidebar-width` | `22rem` (220) |
@@ -93,16 +93,19 @@ Semantic: `--tt-pad-utility` = 2xs · `--tt-pad-grid` = sm · `--tt-pad-editoria
 ## Motion (minimal — brief §22)
 `--tt-ease` `cubic-bezier(0.2, 0, 0, 1)` · `--tt-dur-fast` 120ms · `--tt-dur` 240ms · `--tt-dur-slow` 480ms. All → 0 under `prefers-reduced-motion`.
 
+## Hard edges (Phase 7 — wireframe parity)
+`--tt-border-width` 1px · `--tt-border` `1px solid rgb(var(--color-foreground))` · `--tt-border-hairline` `1px solid rgba(var(--color-foreground), 0.16)` · `--tt-radius` 0. Consumed by `tootaloo-system.css` §14 on category tiles, search inputs, sold-out cards, the PLP sidebar container (≥990). Breakpoints stay 750/990 — the skeleton's 900 is not used.
+
 ---
 
 ## Relevant `config/settings_data.json` values (Dawn settings the theme relies on)
 
 ```json
-"type_header_font": "assistant_n4",
-"type_body_font": "assistant_n4",
+"type_header_font": "archivo_black_n4",
+"type_body_font": "archivo_n4",
 "heading_scale": 100,
 "body_scale": 100,
-"page_width": 1600,
+"page_width": 1400,
 "spacing_sections": 0,           // sections own their own token padding — no Dawn inter-section margin
 "spacing_grid_horizontal": 16,   // product grid: 8px gap mobile / 16px desktop
 "spacing_grid_vertical": 40,     // product grid: 20px row gap mobile / 40px desktop

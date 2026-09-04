@@ -82,6 +82,20 @@ The design system lives in two files: `snippets/tootaloo-tokens.liquid` (the `--
   - Product grid rendered 1-up on mobile. Cause: the Phase-2 `.product-grid.grid` `column-gap` override desynced Dawn's flex gap from its `.grid__item` width calc → overflow → wrap. Removed the override; grid gap now flows from `spacing_grid_horizontal` (8→16) / `spacing_grid_vertical` (8→40).
   - Category sidebar rendered the full open taxonomy above products on mobile. Now a visually-hidden-checkbox disclosure in `snippets/category-sidebar-nav.liquid` — a "Categories" toggle on mobile, forced-open with the toggle hidden at ≥990. (Checkbox, not `<details>` — current Chrome's `content-visibility` on a closed `<details>` can't be beaten by an author `display` rule, which broke the desktop force-open.)
 
+## Phase 7 — Wireframe parity pass (2026-09-03) · in progress
+
+Reconciled against the "Tootaloo — Design Breakdown & Build Spec" (checkpoint doc). Building to the 7 wireframes: all-caps, hard 1px black edges, radius 0. Section numbering follows the doc (§1 global → §6 QA).
+
+### §1 — Global / design tokens · tag `phase-7-s1-global-20260903` · commit `<this>`
+- **0.1 resolved — fonts:** `type_header_font` → `archivo_black_n4`, `type_body_font` → `archivo_n4` (Dawn derives bold `archivo_n7`). Both voices (`--tt-font-display` / `--tt-font-grotesk`) already alias these settings, so no CSS change. "Arial" was Assistant failing to load → generic fallback; nothing was ever set to Arial.
+- **0.2 resolved — width:** `page_width` 1600 → **1400** (Dawn's picker nearest the skeleton's 1440). `--tt-content-max` 150→**140rem**, `--tt-content-wide` 176→**160rem** so the token layer and Dawn agree.
+- **0.3 — wordmark:** **new** `assets/tootaloo-wordmark.svg` (the real logo, single path, `fill: currentColor`, viewBox 1144×268) rendered inline by **new** `snippets/tootaloo-logo.liquid` via `inline_asset_content`. `sections/header.liquid` — both logo blocks now fall through to `{% render 'tootaloo-logo' %}` instead of `<span class="h2">{{ shop.name }}</span>`. A merchant-uploaded raster logo (`settings.logo`) still takes precedence. Footer + mobile-drawer wordmark deferred to §5 / §2.
+- **new tokens:** `--tt-border-width` `--tt-border` `--tt-border-hairline` `--tt-radius`.
+- `assets/tootaloo-system.css` **§14 (new):** uppercase on `.button` / `.card__heading` / `.product__title` / `.pagination__item` / accordion + footer headings / `.collection-hero__title`; 1px black edges on category tiles, search inputs, sold-out card inners, and the PLP sidebar container at ≥990 (persistent bordered box per wireframe §3); `border-radius: 0` belt-and-braces on buttons/inputs/selects/cards. `.shopify-payment-button__button` explicitly left `text-transform: none`.
+- **Breakpoints:** stay on Dawn's 750 / 990. The skeleton's 900 is **not** introduced — no competing systems.
+- Verified on local `theme dev` @1440: home (wordmark crisp ~34px, category tiles bordered, Archivo throughout), Shop All (sidebar now a bordered box, uppercase toolbar + cards), PDP (sharp size pills + stepper, uppercase vendor/title). No layout regressions, no horizontal overflow.
+- **Still on the §1 checklist for a later pass:** footer search box border + footer link uppercase land with the §5 footer rebuild; category-tile label copy ("New Arrivals" → "Staff Picks") is a §2 `index.json` edit.
+
 ## Open / not done
 - **Mobile QA is desk-verified only** — the browser tooling renders at a fixed 1440px viewport; the two bugs above came from the merchant's real-device testing. CSS is mobile-first with token breakpoints at 749 / 750 / 990.
 - **Drop / story / brand pages** — templates are live but render nothing until the Admin objects above exist.
