@@ -71,9 +71,13 @@
       {%- if section.settings.eyebrow != blank -%}
         <p class="hero-wordmark__eyebrow tt-utility">{{ section.settings.eyebrow | escape }}</p>
       {%- endif -%}
-      <h1 class="hero-wordmark__title tt-wordmark">
-        {{- section.settings.wordmark | default: shop.name | escape -}}
-      </h1>
+      {%- if section.settings.show_wordmark_title -%}
+        <h1 class="hero-wordmark__title tt-wordmark">
+          {{- section.settings.wordmark | default: shop.name | escape -}}
+        </h1>
+      {%- else -%}
+        <h1 class="visually-hidden">{{- section.settings.wordmark | default: shop.name | escape -}}</h1>
+      {%- endif -%}
     </div>
   </div>
 
@@ -286,6 +290,13 @@
         { "value": "oversized", "label": "Oversized" }
       ],
       "default": "oversized"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wordmark_title",
+      "label": "Show large text wordmark over the hero",
+      "info": "Off by default — the real logo already appears in the header. Turning this on adds a second, large text version on top of the hero image.",
+      "default": false
     },
     {
       "type": "text",

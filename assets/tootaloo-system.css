@@ -69,10 +69,11 @@
 
 .tt-drop-title {
   font-family: var(--tt-font-display);
-  font-size: var(--tt-fs-xl);
+  font-size: var(--tt-fs-lg);
   line-height: var(--tt-lh-tight);
   letter-spacing: var(--tt-tracking-tight);
   font-weight: var(--tt-fw-regular);
+  text-transform: uppercase;
 }
 
 .tt-editorial-heading {
@@ -295,6 +296,16 @@ h5, .h5 {
   letter-spacing: var(--tt-tracking-normal);
   font-weight: var(--tt-fw-bold);
   text-transform: none;
+}
+
+/* A long title never wraps past 2 lines and bunches the grid row — clamp
+   with an ellipsis instead. Price stays put on the first line regardless
+   of title length. */
+.card__heading a {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .card-information > .price,
