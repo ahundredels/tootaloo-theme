@@ -296,8 +296,7 @@ h5, .h5 {
 
 .price .price-item--regular { letter-spacing: var(--tt-tracking-wide); }
 
-/* Hover: image only, restrained */
-.card__media img { transition: transform var(--tt-dur-slow) var(--tt-ease); }
+/* Hover: image only, restrained (motion tuned in §15) */
 .card-wrapper:hover .card__media img { transform: scale(1.02); }
 /* (wishlist heart placement is owned by wishlist.css) */
 
@@ -879,4 +878,70 @@ textarea {
 @media screen and (max-width: 749px) {
   .footer__masthead { flex-direction: column; align-items: flex-start; }
   .footer__search { width: 100%; }
+}
+
+/* ════════════════ 15. MOTION / INTERACTION (Phase 8 §5) ════════════════
+   Authored spec — deliberate, contained, quick. Every transition here is
+   gated on prefers-reduced-motion: no-preference; the reduce block below
+   is the belt-and-braces stop. */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Product card — image only, never the text block */
+  .card-wrapper .card__media img,
+  .card__media img {
+    transition: transform 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  /* Outline elements (tiles, plp bar, carousel arrows) — quick invert */
+  .collection-tile,
+  .tt-plp-bar__btn,
+  .tt-carousel__arrow {
+    transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+  }
+
+  /* Mobile off-canvas menu — slide from left, backdrop fade */
+  .menu-drawer {
+    transition: transform 280ms ease-out, visibility 280ms ease-out;
+  }
+  #menu-drawer .menu-drawer,
+  details[open] > .menu-drawer__overlay,
+  .menu-drawer-container > details[open] ~ .menu-drawer__overlay {
+    transition: opacity 200ms ease;
+  }
+
+  /* Mobile PLP sheet (category / designers) */
+  .category-sidebar__panel { transition: transform 280ms ease-out; }
+  .category-sidebar__backdrop { transition: opacity 200ms ease; }
+}
+
+/* Selection is not a hover — swatches / size pills change state instantly */
+.product-form__input input[type='radio'] + label,
+.product-form__input .swatch,
+variant-selects .product-form__input label {
+  transition: none;
+}
+
+/* Outline hover-invert — quick, functional, no lingering fade */
+.collection-tile:hover {
+  background: rgb(var(--color-foreground));
+}
+.collection-tile:hover .collection-tile__name {
+  color: rgb(var(--color-background));
+}
+.tt-plp-bar__btn:hover {
+  background: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card__media img,
+  .menu-drawer,
+  .category-sidebar__panel,
+  .category-sidebar__backdrop,
+  .tt-carousel__arrow,
+  .tt-plp-bar__btn,
+  .collection-tile {
+    transition: none !important;
+  }
+  .card-wrapper:hover .card__media img { transform: none; }
 }
