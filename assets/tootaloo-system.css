@@ -304,14 +304,9 @@ h5, .h5 {
 /* ════════════════ 6. COLLECTION GRID + SHOP ALL + SIDEBAR ════════════════
    SSENSE density: tight columns, generous rows, hard alignment. */
 
-.product-grid.grid {
-  column-gap: var(--tt-grid-col-gap);
-  row-gap: var(--tt-grid-row-gap);
-}
-
-@media screen and (max-width: 749px) {
-  .product-grid.grid--2-col-tablet-down { column-gap: var(--tt-grid-col-gap); }
-}
+/* Grid gap comes from Theme settings > Layout (spacing_grid_*) so Dawn's
+   column-gap and its .grid__item width calc stay in sync. Overriding only
+   the gap desyncs them and collapses the mobile 2-up to 1-up. */
 
 /* Sidebar + content layout — grid geometry is owned by the section's own
    {% style %} block; here we only tune the sidebar's inner presentation. */

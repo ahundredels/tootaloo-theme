@@ -21,26 +21,30 @@
 
 <nav class="category-sidebar" aria-label="Shop categories">
   {%- if nav_menu -%}
-    <ul class="category-sidebar__list">
-      {%- for link in nav_menu.links -%}
-        <li class="category-sidebar__item">
-          <a href="{{ link.url }}" class="category-sidebar__link{% if link.active %} is-active{% endif %}">
-            {{ link.title }}
-          </a>
-          {%- if link.links.size > 0 -%}
-            <ul class="category-sidebar__sublist">
-              {%- for sublink in link.links -%}
-                <li>
-                  <a href="{{ sublink.url }}" class="category-sidebar__sublink{% if sublink.active %} is-active{% endif %}">
-                    {{ sublink.title }}
-                  </a>
-                </li>
-              {%- endfor -%}
-            </ul>
-          {%- endif -%}
-        </li>
-      {%- endfor -%}
-    </ul>
+    <div class="category-sidebar__group">
+      <input type="checkbox" id="CategoryToggle-{{ menu_handle }}" class="category-sidebar__toggle-input">
+      <label for="CategoryToggle-{{ menu_handle }}" class="category-sidebar__toggle">Categories</label>
+      <ul class="category-sidebar__list">
+        {%- for link in nav_menu.links -%}
+          <li class="category-sidebar__item">
+            <a href="{{ link.url }}" class="category-sidebar__link{% if link.active %} is-active{% endif %}">
+              {{ link.title }}
+            </a>
+            {%- if link.links.size > 0 -%}
+              <ul class="category-sidebar__sublist">
+                {%- for sublink in link.links -%}
+                  <li>
+                    <a href="{{ sublink.url }}" class="category-sidebar__sublink{% if sublink.active %} is-active{% endif %}">
+                      {{ sublink.title }}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
   {%- else -%}
     <p class="category-sidebar__placeholder">
       Create a menu with handle "{{ menu_handle }}" in Online Store &gt; Navigation to populate this sidebar.
@@ -54,10 +58,81 @@
     max-width: var(--tt-sidebar-width);
   }
 
+  @media screen and (max-width: 989px) {
+    .category-sidebar { max-width: none; }
+  }
+
+  .category-sidebar__group {
+    border-top: 1px solid rgba(var(--color-foreground), 0.15);
+    border-bottom: 1px solid rgba(var(--color-foreground), 0.15);
+  }
+
+  /* Visually-hidden but focusable toggle control */
+  .category-sidebar__toggle-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .category-sidebar__toggle {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--tt-space-sm) 0;
+    font-family: var(--tt-font-grotesk);
+    font-size: var(--tt-fs-2xs);
+    font-weight: var(--tt-fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tt-tracking-widest);
+  }
+
+  .category-sidebar__toggle::after {
+    content: '+';
+    font-weight: var(--tt-fw-regular);
+  }
+
+  .category-sidebar__toggle-input:checked ~ .category-sidebar__toggle::after {
+    content: '\2013';
+  }
+
+  .category-sidebar__toggle-input:focus-visible ~ .category-sidebar__toggle {
+    outline: 2px solid rgb(var(--color-foreground));
+    outline-offset: 2px;
+  }
+
   .category-sidebar__list {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: none;
+  }
+
+  .category-sidebar__toggle-input:checked ~ .category-sidebar__list {
+    display: block;
+    padding-bottom: var(--tt-space-sm);
+  }
+
+  @media screen and (min-width: 990px) {
+    .category-sidebar__group {
+      border: 0;
+    }
+
+    .category-sidebar__toggle {
+      display: none;
+    }
+
+    .category-sidebar__list,
+    .category-sidebar__toggle-input:checked ~ .category-sidebar__list {
+      display: block;
+      padding-bottom: 0;
+    }
   }
 
   .category-sidebar__item {
