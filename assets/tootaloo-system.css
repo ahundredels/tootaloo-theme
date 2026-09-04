@@ -377,15 +377,17 @@ h5, .h5 {
    Desktop (990px+): images run side by side in one continuous, full-height
    horizontal filmstrip — swipe/scroll to move through them, no arrows. A
    small bordered card floats bottom-left over the first frame and stays
-   pinned there while the filmstrip scrolls behind it.
-   Both: the card holds only vendor, title, description and the combined
-   Add/price button — variant picker, quantity and the accordion render
-   separately, below the fold, in .product__details. */
+   pinned there while the filmstrip scrolls behind it. Everything lives in
+   that one card — vendor, title, description, the Add/price button, size
+   picker, quantity, accordion, share — so the page is one screen: no
+   below-the-fold section, no footer (see the "one page, no footer" rules
+   at the end of this block). The card scrolls internally if its own
+   content runs long, rather than growing the page. */
 
 /* Media wrapper and info wrapper share one grid cell on desktop (instead of
-   sitting side by side) so the card can overlay the image; on mobile the
-   grid collapses back to a single stacked column via .product__details
-   being a normal sibling below, so this doesn't need to be undone there. */
+   sitting side by side) so the card can overlay the image; mobile keeps
+   them stacked in normal flow (Dawn's own default), so nothing needs
+   undoing there. */
 @media screen and (min-width: 990px) {
   .product.grid--2-col-tablet {
     display: grid;
@@ -440,14 +442,23 @@ h5, .h5 {
    navigation is by scroll/swipe here, at both breakpoints. */
 .product__media-wrapper .slider-buttons { display: none; }
 
-/* Desktop: horizontal filmstrip — every frame full viewport height, its own
-   width set from the image's real aspect ratio (via the --ratio custom
-   property Dawn already puts on .product-media-container), side by side,
-   free-scrolling. !important beats the mobile rules above at this width. */
+/* Desktop: horizontal filmstrip — every frame fills the space below the
+   (transparent, in-flow) header, its own width set from the image's real
+   aspect ratio (via the --ratio custom property Dawn already puts on
+   .product-media-container), side by side, free-scrolling. --tt-pdp-h is
+   the viewport height minus the header's real measured height
+   (--header-height, set by header.liquid's own JS) so the header + this
+   fill exactly 100vh between them — the "one page" fit below relies on
+   this being exact, not just close. !important beats the mobile rules
+   above at this width. */
 @media screen and (min-width: 990px) {
+  .product {
+    --tt-pdp-h: calc(100vh - var(--header-height, 7rem));
+  }
+
   .product__media-wrapper .product__media-list {
     flex-direction: row !important;
-    height: 100vh;
+    height: var(--tt-pdp-h);
     align-items: stretch;
     overflow-x: auto !important;
     overflow-y: hidden !important;
@@ -463,7 +474,7 @@ h5, .h5 {
 
   .product__media-wrapper .product-media-container {
     height: 100%;
-    width: calc(100vh * var(--ratio, 1));
+    width: calc(var(--tt-pdp-h) * var(--ratio, 1));
     max-width: none;
     flex: none;
   }
@@ -486,8 +497,7 @@ h5, .h5 {
 }
 
 /* Desktop: floats bottom-left over the first frame — pinned there via
-   `sticky` on the shared grid cell while the filmstrip scrolls behind it,
-   releasing once the gallery ends, just above .product__details.
+   `sticky` on the shared grid cell while the filmstrip scrolls behind it.
    !important: Dawn's own padding/width rules for this element
    (.product--large .product__info-wrapper etc., 3 classes deep) would
    otherwise win over this card's compact sizing. */
@@ -503,7 +513,7 @@ h5, .h5 {
     max-width: clamp(24rem, 24vw, 36rem) !important;
     margin-inline-start: var(--tt-space-md);
     padding: var(--tt-space-sm) !important;
-    max-height: calc(100vh - var(--tt-space-lg) * 2);
+    max-height: calc(var(--tt-pdp-h) - var(--tt-space-lg) * 2);
     overflow-y: auto;
   }
 }
@@ -550,11 +560,27 @@ h5, .h5 {
 .product-form__buttons { margin-top: var(--tt-space-xs); }
 .product-form__submit { margin-bottom: var(--tt-space-2xs); }
 
-/* Below-the-fold details — variant picker, quantity, vintage accordion,
-   share. Same vertical rhythm as the card, full width, normal flow. */
-.product__details-wrapper { margin-top: var(--tt-section-gap); }
-.product__details > * + * { margin-top: var(--tt-space-sm); }
-.product__details .product__sizing { margin-top: var(--tt-space-2xs); }
+/* Vintage metadata area — spacing rhythm only.
+   All label/value typography is owned by component-vintage-details.css. */
+.product__info-container .product__sizing { margin-top: var(--tt-space-2xs); }
+
+/* One page, no footer — the PDP is the gallery + card and nothing else.
+   Desktop only: mobile still needs to scroll vertically through the
+   stacked images, so it keeps the footer and normal page scroll.
+   Scoped via the product template's own <main data-template="product">
+   (already in layout/theme.liquid) rather than a new body class. */
+@media screen and (min-width: 990px) {
+  body:has(main[data-template='product']) .footer,
+  body:has(main[data-template='product']) .shopify-section[id*='disclosures'] {
+    display: none;
+  }
+
+  html:has(main[data-template='product']),
+  body:has(main[data-template='product']) {
+    height: 100vh;
+    overflow: hidden;
+  }
+}
 
 .product__accordion .accordion__title,
 .product__accordion summary h2 {
