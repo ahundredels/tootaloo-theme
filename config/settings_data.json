@@ -70,11 +70,11 @@
           }
         }
       },
-      "type_header_font": "assistant_n4",
+      "type_header_font": "archivo_black_n4",
       "heading_scale": 100,
-      "type_body_font": "assistant_n4",
+      "type_body_font": "archivo_n4",
       "body_scale": 100,
-      "page_width": 1600,
+      "page_width": 1400,
       "spacing_sections": 0,
       "spacing_grid_horizontal": 16,
       "spacing_grid_vertical": 40,

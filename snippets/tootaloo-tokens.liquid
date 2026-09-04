@@ -77,8 +77,8 @@
 
     /* ── Layout / grid ── */
     --tt-gutter: 2rem;
-    --tt-content-max: 150rem;
-    --tt-content-wide: 176rem;
+    --tt-content-max: 140rem;    /* aligns with Theme settings > page_width (1400) */
+    --tt-content-wide: 160rem;
     --tt-content-narrow: 108rem;
     --tt-content-text: 68rem;    /* editorial reading measure */
     --tt-sidebar-width: 22rem;
@@ -102,6 +102,12 @@
     --tt-dur-fast: 120ms;
     --tt-dur: 240ms;
     --tt-dur-slow: 480ms;
+
+    /* ── Phase 7: wireframe parity — hard edges, no radius ── */
+    --tt-border-width: 1px;
+    --tt-border: var(--tt-border-width) solid rgb(var(--color-foreground));
+    --tt-border-hairline: var(--tt-border-width) solid rgba(var(--color-foreground), 0.16);
+    --tt-radius: 0;
   }
 
   @media screen and (min-width: 750px) {

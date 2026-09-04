@@ -1,0 +1,17 @@
+{%- comment -%}
+  Tootaloo wordmark — the real logo asset (assets/tootaloo-wordmark.svg),
+  rendered inline so it inherits the active colour scheme's foreground through
+  `fill: currentColor`.
+
+  A merchant-uploaded raster logo (Theme settings > Logo) still wins wherever
+  the calling template tests `settings.logo` before falling through to this.
+
+  Params:
+    context - 'header' (default) | 'footer' | 'drawer'  → sizing class only
+{%- endcomment -%}
+{%- liquid
+  assign ctx = context | default: 'header'
+-%}
+<span class="tt-logo tt-logo--{{ ctx }}">
+  {{- 'tootaloo-wordmark.svg' | inline_asset_content -}}
+</span>

@@ -598,3 +598,123 @@ h5, .h5 {
   .tt-span-featured,
   .tt-span-editorial { grid-column: 1 / -1; }
 }
+
+/* ════════════════ 14. WIREFRAME PARITY (Phase 7) ════════════════
+   The 7 wireframes are all-caps, hard 1px black edges, radius 0. Breakpoints
+   stay on Dawn's 750 / 990 — the skeleton's 900 is not introduced as a third
+   system. Colour still comes from the scheme (rgb(var(--color-foreground))). */
+
+/* ── Wordmark (snippets/tootaloo-logo.liquid) ── */
+.tt-logo {
+  display: inline-flex;
+  align-items: center;
+  color: rgb(var(--color-foreground));
+}
+
+.tt-logo svg {
+  display: block;
+  width: auto;
+  height: 2.8rem;
+}
+
+@media screen and (min-width: 990px) {
+  .tt-logo--header svg { height: 3.4rem; }
+}
+
+.tt-logo--footer svg { height: 5rem; }
+.tt-logo--drawer svg { height: 2.6rem; }
+
+/* ── Uppercase treatment ── */
+.button,
+button.button,
+.card__heading,
+.card__heading.h5,
+.collection-tile__name,
+.pagination__item,
+.product__title,
+.product__title h1,
+.product__accordion .accordion__title,
+.product__accordion summary h2,
+.footer-block__heading,
+.footer-block__details-content .list-menu__item,
+.footer__content-bottom .list-menu__item,
+.footer__copyright,
+.title-wrapper-with-link .title,
+.collection-hero__title {
+  text-transform: uppercase;
+}
+
+.button,
+button.button {
+  letter-spacing: var(--tt-tracking-wide);
+}
+
+.card__heading,
+.card__heading.h5,
+.pagination__item {
+  letter-spacing: var(--tt-tracking-wide);
+}
+
+/* Keep the branded Shop Pay / dynamic checkout button untouched */
+.shopify-payment-button__button { text-transform: none; }
+
+/* ── Hard 1px edges + radius 0 ── */
+.button,
+.card,
+.field__input,
+.search__input,
+.select__select,
+select,
+input[type='text'],
+input[type='email'],
+input[type='search'],
+input[type='password'],
+input[type='number'],
+textarea {
+  border-radius: 0;
+}
+
+/* Category tiles (home) */
+.collection-tile,
+.collection-tile__media,
+.collection-tile-grid__placeholder {
+  border: var(--tt-border);
+  border-radius: 0;
+}
+
+.collection-tile-grid__grid { --tt-tile-gap: var(--tt-grid-col-gap); }
+
+/* Search inputs — everywhere they appear */
+.search__input.field__input,
+.main-search .search__input,
+.search-modal__form .search__input {
+  border: var(--tt-border);
+  border-radius: 0;
+}
+
+/* Sold-out / placeholder product cards read as bordered boxes; live cards stay
+   whitespace-separated per the card system (§5). */
+.card-wrapper:has(.card__media--sold-out) .card__inner,
+.card-wrapper:has(.badge--sold-out) .card__inner {
+  border: var(--tt-border);
+}
+
+.card-wrapper:has(.card__media--sold-out) .card__content,
+.card-wrapper:has(.badge--sold-out) .card__content {
+  padding-inline: var(--tt-space-2xs);
+  padding-bottom: var(--tt-space-2xs);
+}
+
+/* PLP sidebar — persistent bordered container on desktop */
+@media screen and (min-width: 990px) {
+  .collection-with-sidebar .category-sidebar {
+    border: var(--tt-border);
+    padding: var(--tt-space-sm);
+  }
+}
+
+/* Pagination — current page underlined, arrows as text */
+.pagination__item--current {
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
