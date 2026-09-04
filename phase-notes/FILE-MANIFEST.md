@@ -95,7 +95,7 @@ Building to the 7 wireframes. Section numbering follows the breakdown doc.
 |---|---|---|
 | §1 Global tokens | **done** — tag `phase-7-s1-global-20260903` | `config/settings_data.json`, `snippets/tootaloo-tokens.liquid`, `assets/tootaloo-system.css` §14, `sections/header.liquid`, + new `assets/tootaloo-wordmark.svg` / `snippets/tootaloo-logo.liquid` |
 | §2 Home | **done** — tag `phase-7-s2-home-20260903` | **new** `sections/editorial-cards.liquid` (Tootaloo Mag) + `assets/tt-modules.css`; `templates/index.json` (Staff Picks label, Mag placement, mobile tiles 1-up); `sections/header-group.json` (centred wordmark); `snippets/header-drawer.liquid` (drawer wordmark) |
-| §3 Shop All / PLP | partial (sidebar bordered + pagination underline in §1) | `sections/main-collection-product-grid.liquid`, `snippets/pagination.liquid`, `snippets/facets.liquid` |
-| §4 Product page | not started | `snippets/buy-buttons.liquid` ("Add to Bag" label + black fill), related-products row on `templates/product.json` |
-| §5 Footer | not started | `sections/footer.liquid` (wordmark + search box + uppercase links), `assets/tootaloo-system.css` §9 |
-| §6 QA | not started | real mobile-viewport screenshots, wireframe diff saved to repo |
+| §3 Shop All / PLP | **done** (via §1 + Phases 2–6) | bordered sidebar + pagination underline in §1; 4-up grid / horizontal facets / removed price filter already built earlier. Mobile "Filters / Designers A-Z" bar not pixel-identical. |
+| §4 Product page | **done** — tag `phase-7-s4-pdp-20260903` | `locales/en.default.json` (Add to bag / bag copy), `assets/tootaloo-system.css` (solid Add to Bag), `templates/product.json` (related row) |
+| §5 Footer | **done** — tag `phase-7-s5-footer-20260903` | `sections/footer.liquid` (masthead: wordmark + search), `sections/footer-group.json` (columns + brand block), `assets/tootaloo-system.css` (masthead + border) |
+| §6 QA | desktop swept; mobile is CSS-review only | browser tool renders at a fixed ~1440px viewport (resize confirmed no effect) — mobile needs a real device or the merchant's check |

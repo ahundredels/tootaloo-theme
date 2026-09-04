@@ -31,7 +31,7 @@
 
   <div id="wishlist-actions" class="wishlist-actions" hidden>
     <button type="button" id="wishlist-add-all" class="button wishlist-add-all">
-      <span class="wishlist-add-all__label">{{ section.settings.add_all_label | default: 'Add all to cart' }}</span>
+      <span class="wishlist-add-all__label">{{ section.settings.add_all_label | default: 'Add all to bag' }}</span>
     </button>
     <p id="wishlist-add-all-status" class="wishlist-actions__status" role="status" aria-live="polite"></p>
   </div>
@@ -72,8 +72,8 @@
     {
       "type": "text",
       "id": "add_all_label",
-      "label": "\"Add all to cart\" button label",
-      "default": "Add all to cart"
+      "label": "\"Add all to bag\" button label",
+      "default": "Add all to bag"
     }
   ]
 }

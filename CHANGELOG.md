@@ -86,7 +86,7 @@ The design system lives in two files: `snippets/tootaloo-tokens.liquid` (the `--
 
 Reconciled against the "Tootaloo — Design Breakdown & Build Spec" (checkpoint doc). Building to the 7 wireframes: all-caps, hard 1px black edges, radius 0. Section numbering follows the doc (§1 global → §6 QA).
 
-### §1 — Global / design tokens · tag `phase-7-s1-global-20260903` · commit `<this>`
+### §1 — Global / design tokens · tag `phase-7-s1-global-20260903` · commit `017ced2`
 - **0.1 resolved — fonts:** `type_header_font` → `archivo_black_n4`, `type_body_font` → `archivo_n4` (Dawn derives bold `archivo_n7`). Both voices (`--tt-font-display` / `--tt-font-grotesk`) already alias these settings, so no CSS change. "Arial" was Assistant failing to load → generic fallback; nothing was ever set to Arial.
 - **0.2 resolved — width:** `page_width` 1600 → **1400** (Dawn's picker nearest the skeleton's 1440). `--tt-content-max` 150→**140rem**, `--tt-content-wide` 176→**160rem** so the token layer and Dawn agree.
 - **0.3 — wordmark:** **new** `assets/tootaloo-wordmark.svg` (the real logo, single path, `fill: currentColor`, viewBox 1144×268) rendered inline by **new** `snippets/tootaloo-logo.liquid` via `inline_asset_content`. `sections/header.liquid` — both logo blocks now fall through to `{% render 'tootaloo-logo' %}` instead of `<span class="h2">{{ shop.name }}</span>`. A merchant-uploaded raster logo (`settings.logo`) still takes precedence. Footer + mobile-drawer wordmark deferred to §5 / §2.
@@ -103,6 +103,24 @@ Reconciled against the "Tootaloo — Design Breakdown & Build Spec" (checkpoint 
 - `snippets/header-drawer.liquid` — wordmark added at the top of the mobile off-canvas menu (`.menu-drawer__wordmark`, bordered).
 - **Merchant action for the Mag section to appear:** create a blog (handle `news` or re-point the section) with published articles.
 - **Not done in §2:** Recently Sold as a horizontal scroller with arrow controls (currently a static grid — functional, not the wireframe's carousel); desktop hamburger (kept the inline nav — a one-toggle editor change if wanted).
+
+### §3 — Shop All / PLP · (covered by §1 + earlier phases)
+- Persistent bordered category sidebar (§1) + horizontal facet bar ("Filter: Availability", "Sort by", product count) + 4-up grid / 2-up mobile were already built in Phases 2–6; `filter_type: horizontal`, `columns_desktop: 4`. Price filter removed in Phase 4/5.
+- Pagination: current page underlined (§14). Numbered list + "Next" is Dawn's.
+- Sold-out cards: 1px border + inset padding via `:has(.card__media--sold-out)` (§14) — not visually confirmed (no sold product in the catalogue yet).
+- **Not done:** the mobile "Filters / Designers A-Z" two-button bar exactly as drawn — currently a "Categories" disclosure + Dawn's facet drawer. Functional, not pixel-identical.
+
+### §4 — Product page · tag `phase-7-s4-pdp-20260903` · commit `b6aa8a9`
+- `locales/en.default.json`: "Add to cart" → **"Add to bag"**; notification "Item added to your cart" → "Added to your bag"; "View cart" → "View bag".
+- `tootaloo-system.css`: Add to Bag forced to solid foreground fill even with the dynamic checkout button present (Dawn otherwise makes it a page-blending secondary). Full width + uppercase + radius 0.
+- `templates/product.json`: "You may also like" row shows vendor, portrait ratio.
+- Variant wiring already verified real (Phase 2.5 / 3); one-of-one hides the picker + stepper (Phase 3). Verified: size S posts through to the cart, notification copy consistent.
+
+### §5 — Footer · tag `phase-7-s5-footer-20260903` · commit `0b84177`
+- `sections/footer.liquid`: new masthead row (wordmark at ~50px + product search form) above the columns; toggles `show_footer_masthead` / `show_footer_search`.
+- `sections/footer-group.json`: two `link_list` columns ("Customer care" / "Information", default `footer` menu — merchant re-points one) + a `brand_information` block for social icons.
+- `tootaloo-system.css`: 1px top border on `.footer`; masthead flex layout; bordered search field + solid icon button; stacks on mobile. Uppercase links/headings via §14.
+- **Merchant config:** build the `footer` menu(s); add social links in Theme settings; "Powered by Shopify" is plan-gated and stays.
 
 ## Open / not done
 - **Mobile QA is desk-verified only** — the browser tooling renders at a fixed 1440px viewport; the two bugs above came from the merchant's real-device testing. CSS is mobile-first with token breakpoints at 749 / 750 / 990.
