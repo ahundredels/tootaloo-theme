@@ -414,6 +414,64 @@ h5, .h5 {
   font-family: var(--tt-font-grotesk);
 }
 
+/* PDP accordion (Phase 9 §1) — rebuilt off native <details> onto a
+   visually-hidden checkbox so the panel can animate open/closed with the
+   grid-template-rows 0fr → 1fr technique. CSS-only, keyboard-operable. */
+.product__accordion.tt-acc { position: relative; }
+
+.tt-acc__toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.tt-acc__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--tt-space-3);
+  padding: var(--tt-space-4) 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.tt-acc__summary .summary__title { display: flex; align-items: center; flex: 1; }
+.tt-acc__summary .accordion__title { margin: 0; }
+.tt-acc__summary .icon-caret { flex: 0 0 auto; height: 0.7rem; width: auto; }
+
+.tt-acc__toggle:focus-visible ~ .tt-acc__summary {
+  outline: 2px solid rgb(var(--color-foreground));
+  outline-offset: 2px;
+}
+
+.tt-acc__panel {
+  height: 0;
+  overflow: hidden;
+}
+
+.tt-acc__toggle:checked ~ .tt-acc__panel {
+  height: auto;
+}
+
+.tt-acc__toggle:checked ~ .tt-acc__summary .icon-caret {
+  transform: rotate(180deg);
+}
+
+/* height: 0 <-> auto animates in engines that support interpolate-size;
+   elsewhere it's an instant (still correct) open/close. */
+@media (prefers-reduced-motion: no-preference) {
+  :root { interpolate-size: allow-keywords; }
+  .tt-acc__panel { transition: height 200ms ease; }
+  .tt-acc__summary .icon-caret { transition: transform 200ms ease; }
+}
+
+.icon-caret { fill: none; }
+
 /* ════════════════ 8. HEADER ════════════════
    Sparse and serious. Vertical padding + gutter live in header.liquid's
    own {% style %} block (token-driven); type + rhythm here. */
