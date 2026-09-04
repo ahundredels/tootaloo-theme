@@ -13,8 +13,25 @@
   "sections": {
     "footer": {
       "type": "footer",
+      "blocks": {
+        "help_menu": {
+          "type": "link_list",
+          "settings": { "heading": "Customer care", "menu": "footer" }
+        },
+        "info_menu": {
+          "type": "link_list",
+          "settings": { "heading": "Information", "menu": "footer" }
+        },
+        "brand": {
+          "type": "brand_information",
+          "settings": { "show_social": true }
+        }
+      },
+      "block_order": ["help_menu", "info_menu", "brand"],
       "settings": {
         "color_scheme": "scheme-1",
+        "show_footer_masthead": true,
+        "show_footer_search": true,
         "newsletter_enable": true,
         "newsletter_heading": "Subscribe to our emails",
         "enable_follow_on_shop": true,

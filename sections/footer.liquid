@@ -42,6 +42,32 @@
       assign only_empty_brand = true
     endif
   -%}
+
+  {%- if section.settings.show_footer_masthead -%}
+    <div class="footer__masthead page-width">
+      <a href="{{ routes.root_url }}" class="footer__masthead-logo" aria-label="{{ shop.name | escape }}">
+        {%- render 'tootaloo-logo', context: 'footer' -%}
+      </a>
+      {%- if section.settings.show_footer_search -%}
+        <form action="{{ routes.search_url }}" method="get" role="search" class="footer__search">
+          <input type="hidden" name="type" value="product">
+          <label for="FooterSearch-{{ section.id }}" class="visually-hidden">{{ 'general.search.search' | t }}</label>
+          <input
+            type="search"
+            id="FooterSearch-{{ section.id }}"
+            name="q"
+            class="footer__search-input field__input"
+            placeholder="{{ 'general.search.search' | t }}"
+            autocomplete="off"
+          >
+          <button type="submit" class="footer__search-submit" aria-label="{{ 'general.search.search' | t }}">
+            {{- 'icon-search.svg' | inline_asset_content -}}
+          </button>
+        </form>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
   {%- if section.blocks.size > 0
     or section.settings.newsletter_enable
     or section.settings.show_social
@@ -429,6 +455,22 @@
       "id": "color_scheme",
       "label": "t:sections.all.colors.label",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Masthead"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_footer_masthead",
+      "default": true,
+      "label": "Show wordmark row"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_footer_search",
+      "default": true,
+      "label": "Show search box"
     },
     {
       "type": "header",
