@@ -161,6 +161,29 @@ Built from the "Phase 8: Pixel & Motion Precision Spec". Closes the two flagged 
 - Recently Sold carousel scroll behaviour needs **> 4 sold products** to actually exercise (only 2 in the catalogue).
 - PDP accordion animation deferred (see §5).
 
+## Phase 9 — Pixel & motion precision + wireframe-fidelity pass (2026-09-04) · pushed to live
+
+### §1+§2 — Animated PDP accordion + stroke chevron · tag `phase-9-s1-s2-accordion-chevron-20260904`
+- PDP accordion (vintage_details, collapsible_tab) rebuilt off native `<details>` onto a visually-hidden checkbox + `.tt-acc__panel`. Animates `height: 0 → auto` via `interpolate-size: allow-keywords` (confirmed supported and working in-page: closed 0px, open = full content height, 200ms). Chevron rotates 180°.
+- `icon-caret.svg` rebuilt as a 1.5px-equivalent stroke chevron, same 10:6 aspect as before so every existing height-only sizing rule (facets, sort, pagination, disclosures, drawers) renders it correctly untouched.
+
+### Wireframe-fidelity pass · tag `phase-9-wireframe-fidelity-20260904`
+Re-derived against the 7 real wireframe PNGs (not the earlier breakdown doc's paraphrase, which diverged from them). Fixed:
+- Product cards everywhere: vendor line, then NAME .... PRICE on one row (CSS grid, no markup change).
+- Header: persistent inline search box (new `snippets/tt-header-search.liquid`) on desktop; account icon hidden.
+- Mobile drawer: rebuilt top bar — X / wordmark / heart + bag — then a search bar row.
+- Category sidebar: border removed (plain text list per the real wireframe).
+- Home: tiles are plain bordered boxes, no image (`name_position: text_only`); featured grid 6-col desktop; tile row moved before the product grid; hero gets a "Staff Picks" CTA pinned to its bottom-left.
+- Shop All mobile: Filters/Designers A-Z stacked full-width; grid 1-up.
+- Recently Sold: arrows move below the row on mobile, edge-to-edge.
+- Sold-out cards: flat grey placeholder + centered "Sold out", no border/photo.
+- Footer: rebuilt into wordmark+search (left) / email+subscribe (top right) / two link columns + social (below).
+- `tt-module-header__link` was rendering unstyled (browser default visited-purple) — fixed, no color was ever set.
+
+**Deliberately not changed:** header nav labels and off-canvas nav grouping (real Shopify menu content, not theme code — editing it would be silently rewriting Admin data); the two PDP wireframes are annotation sketches (text labels in boxes, no real content/proportions) — not rebuilt into a speculative full-bleed-carousel architecture from a label.
+
+**Hard limit, tested directly:** true mobile-viewport rendering / CDP device emulation is not available from this tooling — `resize_window` doesn't change `window.innerWidth` (verified: stays 1440 after resizing to 390×844), `javascript_tool` runs in page context with no `chrome.debugger`/CDP access, no emulation tool exists in the MCP surface, DevTools keyboard shortcuts sent via the `computer` tool have no effect. Mobile verification here used a same-origin `@media`-condition rewrite (flips `max-width`/`min-width` rules so mobile CSS applies at the real 1440 viewport) — confirms DOM structure, CSS rules and JS wiring, not true pixel proportions. Real-device screenshots remain the merchant's to take.
+
 ## Open / not done
 - **Mobile QA is desk-verified only** — the browser tooling renders at a fixed 1440px viewport; the two bugs above came from the merchant's real-device testing. CSS is mobile-first with token breakpoints at 749 / 750 / 990.
 - **Drop / story / brand pages** — templates are live but render nothing until the Admin objects above exist.
