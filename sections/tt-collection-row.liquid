@@ -53,31 +53,77 @@
 
 <div class="tt-collection-row tt-collection-row--{{ kind }} tt-collection-row--span-{{ section.settings.span }} color-{{ section.settings.color_scheme }} gradient{% if sold_on %} tt-collection-row--sold{% endif %}">
   <div class="tt-collection-row__inner {% if section.settings.span == 'full' %}tt-fullbleed{% else %}page-width{% endif %}">
-    {%- render 'tt-module-header',
-      eyebrow: section.settings.eyebrow,
-      heading: section.settings.heading,
-      heading_style: section.settings.heading_style,
-      text: section.settings.text,
-      link_label: section.settings.link_label,
-      link_url: link_url,
-      align: section.settings.align
+    {%- liquid
+      assign is_carousel = false
+      if section.settings.layout == 'scroller'
+        assign is_carousel = true
+      endif
+      assign has_products = false
+      if coll != blank and coll.products_count > 0
+        assign has_products = true
+      endif
     -%}
 
-    {%- if coll != blank and coll.products_count > 0 -%}
-      {%- render 'tt-product-grid',
-        collection: coll,
-        limit: limit,
-        layout: section.settings.layout,
-        cols_desktop: section.settings.columns_desktop,
-        cols_mobile: section.settings.columns_mobile,
-        image_ratio: section.settings.image_ratio,
-        sold_on: sold_on,
-        section_id: section.id
+    {%- if is_carousel and has_products -%}
+      <div class="tt-carousel" data-tt-carousel>
+        <div class="tt-carousel__head">
+          {%- render 'tt-module-header',
+            eyebrow: section.settings.eyebrow,
+            heading: section.settings.heading,
+            heading_style: section.settings.heading_style,
+            text: section.settings.text,
+            link_label: section.settings.link_label,
+            link_url: link_url,
+            align: section.settings.align
+          -%}
+          <div class="tt-carousel__nav">
+            <button type="button" class="tt-carousel__arrow tt-carousel__arrow--prev" data-tt-carousel-prev aria-label="{{ 'general.pagination.previous' | t | default: 'Previous' }}" disabled>
+              {{- 'icon-tt-arrow.svg' | inline_asset_content -}}
+            </button>
+            <button type="button" class="tt-carousel__arrow tt-carousel__arrow--next" data-tt-carousel-next aria-label="{{ 'general.pagination.next' | t | default: 'Next' }}">
+              {{- 'icon-tt-arrow.svg' | inline_asset_content -}}
+            </button>
+          </div>
+        </div>
+        {%- render 'tt-product-grid',
+          collection: coll,
+          limit: limit,
+          layout: 'scroller',
+          cols_desktop: section.settings.columns_desktop,
+          cols_mobile: section.settings.columns_mobile,
+          image_ratio: section.settings.image_ratio,
+          sold_on: sold_on,
+          section_id: section.id
+        -%}
+      </div>
+      <script src="{{ 'tt-carousel.js' | asset_url }}" defer="defer"></script>
+    {%- else -%}
+      {%- render 'tt-module-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading,
+        heading_style: section.settings.heading_style,
+        text: section.settings.text,
+        link_label: section.settings.link_label,
+        link_url: link_url,
+        align: section.settings.align
       -%}
-    {%- elsif request.design_mode -%}
-      <p class="tt-collection-row__placeholder">
-        Pick a collection in this section&rsquo;s settings. The module stays hidden on the live site until you do.
-      </p>
+
+      {%- if has_products -%}
+        {%- render 'tt-product-grid',
+          collection: coll,
+          limit: limit,
+          layout: section.settings.layout,
+          cols_desktop: section.settings.columns_desktop,
+          cols_mobile: section.settings.columns_mobile,
+          image_ratio: section.settings.image_ratio,
+          sold_on: sold_on,
+          section_id: section.id
+        -%}
+      {%- elsif request.design_mode -%}
+        <p class="tt-collection-row__placeholder">
+          Pick a collection in this section&rsquo;s settings. The module stays hidden on the live site until you do.
+        </p>
+      {%- endif -%}
     {%- endif -%}
   </div>
 </div>
@@ -129,11 +175,11 @@
       "default": "left"
     },
     { "type": "header", "content": "Products" },
-    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "For Recently Sold, point this at a smart collection with the rule “Product tag is equal to sold”, sorted newest-first — it then tracks real sales." },
     {
       "type": "range",
       "id": "product_limit",
-      "min": 2, "max": 12, "step": 1, "default": 4,
+      "min": 2, "max": 24, "step": 1, "default": 8,
       "label": "Products to show"
     },
     { "type": "text", "id": "link_label", "label": "Link label", "info": "e.g. “View the drop”. Links to the collection unless a URL is set below." },
@@ -145,7 +191,7 @@
       "label": "Layout",
       "options": [
         { "value": "grid", "label": "Grid" },
-        { "value": "scroller", "label": "Row (scrolls on mobile)" }
+        { "value": "scroller", "label": "Carousel (arrows on desktop, swipe on mobile)" }
       ],
       "default": "grid"
     },

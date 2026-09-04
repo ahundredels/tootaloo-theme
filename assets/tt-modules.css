@@ -77,16 +77,19 @@
   }
 }
 
+/* Carousel: horizontal scroll-snap on all sizes. Mobile = swipe only.
+   Desktop = arrow controls in the header row (see .tt-carousel__nav). */
 .tt-collection-row__grid--scroller {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(62vw, 1fr);
+  grid-auto-columns: 78vw;
   gap: var(--tt-grid-col-gap);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   margin-inline: calc(-1 * var(--tt-gutter));
   padding-inline: var(--tt-gutter);
   scrollbar-width: none;
+  overscroll-behavior-x: contain;
 }
 
 .tt-collection-row__grid--scroller::-webkit-scrollbar { display: none; }
@@ -94,16 +97,67 @@
 
 @media screen and (min-width: 750px) {
   .tt-collection-row__grid--scroller {
-    grid-auto-columns: minmax(0, 1fr);
-    grid-template-columns: repeat(var(--row-cols-desktop, 4), minmax(0, 1fr));
-    grid-auto-flow: row;
-    overflow: visible;
+    /* show exactly --row-cols-desktop cards, scroll one card + gap at a time */
+    grid-auto-columns: calc(
+      (100% - (var(--row-cols-desktop, 4) - 1) * var(--tt-grid-col-gap)) / var(--row-cols-desktop, 4)
+    );
     margin-inline: 0;
     padding-inline: 0;
   }
 }
 
 .tt-collection-row__item { position: relative; }
+
+/* ── Carousel shell + arrow controls (Phase 8 §3) ── */
+.tt-carousel__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--tt-space-4);
+}
+
+.tt-carousel__head .tt-module-header { flex: 1 1 auto; }
+
+.tt-carousel__nav {
+  display: none;
+  flex: 0 0 auto;
+  gap: var(--tt-space-2);
+  padding-bottom: var(--tt-space-2);
+}
+
+@media screen and (min-width: 750px) {
+  .tt-carousel__nav { display: flex; }
+}
+
+.tt-carousel__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  padding: 0;
+  border: var(--tt-border);
+  background: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tt-carousel__arrow { transition: background var(--tt-dur-fast) ease, color var(--tt-dur-fast) ease; }
+}
+
+.tt-carousel__arrow:not([disabled]):hover {
+  background: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+}
+
+.tt-carousel__arrow[disabled] {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.tt-carousel__arrow .icon { width: 1.8rem; height: 1.8rem; }
+.tt-carousel__arrow--prev .icon { transform: rotate(180deg); }
 
 .tt-collection-row--sold .is-sold .card__media::after {
   background-color: rgba(var(--color-background), 0.6);
