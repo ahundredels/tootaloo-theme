@@ -422,7 +422,7 @@ h5, .h5 {
   display: flex !important;
   flex-direction: column !important;
   flex-wrap: nowrap !important;
-  gap: var(--tt-space-xs);
+  gap: 0;
   overflow: visible !important;
   scroll-snap-type: none !important;
 }
@@ -496,8 +496,9 @@ h5, .h5 {
   padding: var(--tt-space-sm);
 }
 
-/* Desktop: floats bottom-left over the first frame — pinned there via
-   `sticky` on the shared grid cell while the filmstrip scrolls behind it.
+/* Desktop: floats bottom-right — pinned there via `sticky` on the shared
+   grid cell while the filmstrip scrolls behind it, kept off to the side
+   (not centered over a frame) so it blocks less of each photo.
    !important: Dawn's own padding/width rules for this element
    (.product--large .product__info-wrapper etc., 3 classes deep) would
    otherwise win over this card's compact sizing. */
@@ -507,11 +508,11 @@ h5, .h5 {
     top: auto;
     bottom: var(--tt-space-md);
     align-self: end;
-    justify-self: start;
+    justify-self: end;
     z-index: 2;
     width: clamp(24rem, 24vw, 36rem) !important;
     max-width: clamp(24rem, 24vw, 36rem) !important;
-    margin-inline-start: var(--tt-space-md);
+    margin-inline-end: var(--tt-space-md);
     padding: var(--tt-space-sm) !important;
     max-height: calc(var(--tt-pdp-h) - var(--tt-space-lg) * 2);
     overflow-y: auto;
