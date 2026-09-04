@@ -22,13 +22,34 @@
     </summary>
     <div class="gradient menu-drawer motion-reduce color-{{ section.settings.menu_color_scheme }}{% if section.settings.drawer_feature_image != blank or section.settings.drawer_feature_text != blank %} menu-drawer--with-feature{% endif %}" id="menu-drawer">
       <div class="menu-drawer__inner-container">
-        <a href="#" class="menu-drawer__close-link link link--text focus-inset" data-menu-drawer-close>
-          <span class="svg-wrapper">{{- 'icon-close.svg' | inline_asset_content -}}</span>
-          <span>{{ 'accessibility.close' | t | default: 'Close' }}</span>
-        </a>
-        <a href="{{ routes.root_url }}" class="menu-drawer__wordmark" data-menu-drawer-close>
-          {%- render 'tootaloo-logo', context: 'drawer' -%}
-        </a>
+        <div class="menu-drawer__topbar">
+          <a
+            href="#"
+            class="menu-drawer__close-link link focus-inset"
+            data-menu-drawer-close
+            aria-label="{{ 'accessibility.close' | t | default: 'Close' }}"
+          >
+            <span class="svg-wrapper">{{- 'icon-close.svg' | inline_asset_content -}}</span>
+          </a>
+          <a href="{{ routes.root_url }}" class="menu-drawer__wordmark" data-menu-drawer-close>
+            {%- render 'tootaloo-logo', context: 'drawer' -%}
+          </a>
+          <div class="menu-drawer__topbar-icons">
+            {% render 'header-wishlist-icon' %}
+            <a href="{{ routes.cart_url }}" class="menu-drawer__cart-link link focus-inset" aria-label="{{ 'templates.cart.cart' | t }}">
+              <span class="svg-wrapper">
+                {%- if cart == empty -%}
+                  {{- 'icon-cart-empty.svg' | inline_asset_content -}}
+                {%- else -%}
+                  {{- 'icon-cart.svg' | inline_asset_content -}}
+                {%- endif -%}
+              </span>
+            </a>
+          </div>
+        </div>
+        <div class="menu-drawer__search">
+          {%- render 'tt-header-search', input_id: 'HeaderSearch-drawer' -%}
+        </div>
         <div class="menu-drawer__layout">
         <div class="menu-drawer__navigation-container">
           <nav class="menu-drawer__navigation">

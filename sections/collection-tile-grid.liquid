@@ -58,21 +58,23 @@
           -%}
 
           {%- capture tile_inner -%}
-            <div class="collection-tile__media" style="--ratio: {{ ratio }};">
-              {%- if tile_image != blank -%}
-                {{
-                  tile_image
-                  | image_url: width: 1600
-                  | image_tag:
-                    loading: 'lazy',
-                    widths: '300, 450, 600, 750, 900, 1100, 1400, 1600',
-                    sizes: tile_sizes,
-                    class: 'collection-tile__image'
-                }}
-              {%- else -%}
-                {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg collection-tile__image' }}
-              {%- endif -%}
-            </div>
+            {%- unless section.settings.name_position == 'text_only' -%}
+              <div class="collection-tile__media" style="--ratio: {{ ratio }};">
+                {%- if tile_image != blank -%}
+                  {{
+                    tile_image
+                    | image_url: width: 1600
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '300, 450, 600, 750, 900, 1100, 1400, 1600',
+                      sizes: tile_sizes,
+                      class: 'collection-tile__image'
+                  }}
+                {%- else -%}
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg collection-tile__image' }}
+                {%- endif -%}
+              </div>
+            {%- endunless -%}
             {%- if tile_name != blank -%}
               <span class="collection-tile__name">{{ tile_name | escape }}</span>
             {%- endif -%}
@@ -179,6 +181,25 @@
     }
   }
 
+  /* Text-only tile — plain bordered box, centered bold label, no image
+     (wireframe: Home's Staff Picks / Vintage / Archive tiles). */
+  .collection-tile-grid__grid--name-text_only .collection-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 3 / 2;
+    border: var(--tt-border);
+    text-align: center;
+    padding: var(--tt-space-4);
+  }
+
+  .collection-tile-grid__grid--name-text_only .collection-tile__name {
+    font-family: var(--tt-font-display);
+    font-size: var(--tt-fs-lg);
+    letter-spacing: var(--tt-tracking-tight);
+    text-transform: uppercase;
+  }
+
   .collection-tile-grid__placeholder {
     padding: var(--tt-space-lg) 0;
     text-align: center;
@@ -254,7 +275,8 @@
       "label": "Collection name position",
       "options": [
         { "value": "overlay", "label": "Overlaid on image" },
-        { "value": "below", "label": "Below image" }
+        { "value": "below", "label": "Below image" },
+        { "value": "text_only", "label": "Text only (bordered box, no image)" }
       ],
       "default": "overlay"
     },

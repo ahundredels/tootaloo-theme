@@ -1,0 +1,22 @@
+{%- comment -%}
+  Always-visible header search — icon + bordered input, per the wireframe
+  (both the desktop persistent header and the mobile off-canvas menu use
+  this same control; the desktop top bar shows it inline, the mobile top
+  bar does not — it only appears once the drawer is open).
+
+  Usage: {% render 'tt-header-search', input_id: 'HeaderSearch' %}
+{%- endcomment -%}
+<form action="{{ routes.search_url }}" method="get" role="search" class="tt-header-search">
+  <input type="hidden" name="type" value="product">
+  <button type="submit" class="tt-header-search__icon" aria-label="{{ 'general.search.search' | t }}">
+    {{- 'icon-search.svg' | inline_asset_content -}}
+  </button>
+  <label for="{{ input_id | default: 'HeaderSearch' }}" class="visually-hidden">{{ 'general.search.search' | t }}</label>
+  <input
+    type="search"
+    id="{{ input_id | default: 'HeaderSearch' }}"
+    name="q"
+    class="tt-header-search__input"
+    autocomplete="off"
+  >
+</form>

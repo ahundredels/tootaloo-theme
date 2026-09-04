@@ -43,32 +43,8 @@
     endif
   -%}
 
-  {%- if section.settings.show_footer_masthead -%}
-    <div class="footer__masthead page-width">
-      <a href="{{ routes.root_url }}" class="footer__masthead-logo" aria-label="{{ shop.name | escape }}">
-        {%- render 'tootaloo-logo', context: 'footer' -%}
-      </a>
-      {%- if section.settings.show_footer_search -%}
-        <form action="{{ routes.search_url }}" method="get" role="search" class="footer__search">
-          <input type="hidden" name="type" value="product">
-          <label for="FooterSearch-{{ section.id }}" class="visually-hidden">{{ 'general.search.search' | t }}</label>
-          <input
-            type="search"
-            id="FooterSearch-{{ section.id }}"
-            name="q"
-            class="footer__search-input field__input"
-            placeholder="{{ 'general.search.search' | t }}"
-            autocomplete="off"
-          >
-          <button type="submit" class="footer__search-submit" aria-label="{{ 'general.search.search' | t }}">
-            {{- 'icon-search.svg' | inline_asset_content -}}
-          </button>
-        </form>
-      {%- endif -%}
-    </div>
-  {%- endif -%}
-
-  {%- if section.blocks.size > 0
+  {%- if section.settings.show_footer_masthead
+    or section.blocks.size > 0
     or section.settings.newsletter_enable
     or section.settings.show_social
     and has_social_icons == true
@@ -76,6 +52,30 @@
   -%}
     {%- unless only_empty_brand -%}
       <div class="footer__content-top page-width">
+        {%- if section.settings.show_footer_masthead -%}
+          <div class="footer__masthead">
+            <a href="{{ routes.root_url }}" class="footer__masthead-logo" aria-label="{{ shop.name | escape }}">
+              {%- render 'tootaloo-logo', context: 'footer' -%}
+            </a>
+            {%- if section.settings.show_footer_search -%}
+              <form action="{{ routes.search_url }}" method="get" role="search" class="footer__search">
+                <input type="hidden" name="type" value="product">
+                <label for="FooterSearch-{{ section.id }}" class="visually-hidden">{{ 'general.search.search' | t }}</label>
+                <input
+                  type="search"
+                  id="FooterSearch-{{ section.id }}"
+                  name="q"
+                  class="footer__search-input field__input"
+                  placeholder="{{ 'general.search.search' | t }}"
+                  autocomplete="off"
+                >
+                <button type="submit" class="footer__search-submit" aria-label="{{ 'general.search.search' | t }}">
+                  {{- 'icon-search.svg' | inline_asset_content -}}
+                </button>
+              </form>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
         {%- if section.blocks.size > 0 -%}
           {%- liquid
             if section.blocks.size == 9

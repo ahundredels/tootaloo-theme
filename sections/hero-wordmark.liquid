@@ -74,13 +74,14 @@
       <h1 class="hero-wordmark__title tt-wordmark">
         {{- section.settings.wordmark | default: shop.name | escape -}}
       </h1>
-      {%- if section.settings.link_label != blank -%}
-        <a class="hero-wordmark__link tt-nav" href="{{ section.settings.link | default: routes.all_products_collection_url }}">
-          {{- section.settings.link_label | escape -}}
-        </a>
-      {%- endif -%}
     </div>
   </div>
+
+  {%- if section.settings.link_label != blank -%}
+    <a class="hero-wordmark__cta" href="{{ section.settings.link | default: routes.all_products_collection_url }}">
+      {{- section.settings.link_label | escape -}}
+    </a>
+  {%- endif -%}
 </div>
 
 {% stylesheet %}
@@ -176,8 +177,7 @@
     color: #fff;
   }
 
-  .hero-wordmark__eyebrow,
-  .hero-wordmark__link {
+  .hero-wordmark__eyebrow {
     margin: 0;
     color: inherit;
   }
@@ -185,11 +185,36 @@
   .hero-wordmark--scrim-subtle .hero-wordmark__overlay,
   .hero-wordmark--scrim-strong .hero-wordmark__overlay { color: #fff; }
 
-  .hero-wordmark__link {
+  /* CTA button pinned to the hero's bottom-left, independent of wherever
+     the wordmark itself sits (wireframe: "STAFF PICKS" sits at the hero's
+     bottom-left corner, not grouped with the wordmark). */
+  .hero-wordmark__cta {
+    position: absolute;
+    left: var(--tt-gutter);
+    bottom: var(--tt-gutter);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--tt-border);
+    background: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+    font-family: var(--tt-font-grotesk);
+    font-size: var(--tt-fs-sm);
+    font-weight: var(--tt-fw-semibold);
+    letter-spacing: var(--tt-tracking-widest);
+    text-transform: uppercase;
     text-decoration: none;
-    border-bottom: 1px solid currentColor;
-    padding-bottom: 0.2rem;
-    align-self: var(--hero-align-x, flex-start);
+    padding: var(--tt-space-4) var(--tt-space-6);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-wordmark__cta { transition: background-color 120ms ease, color 120ms ease; }
+  }
+
+  .hero-wordmark__cta:hover {
+    background: rgb(var(--color-foreground));
+    color: rgb(var(--color-background));
   }
 
   @media screen and (max-width: 749px) {

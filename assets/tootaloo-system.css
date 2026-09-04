@@ -260,11 +260,25 @@ h5, .h5 {
   row-gap: var(--tt-space-2xs);
 }
 
+/* Wireframe card layout: vendor on its own line, then NAME .... PRICE on
+   one row. Grid auto-placement does this without touching the markup —
+   vendor (if present) spans both columns; heading + price fall into the
+   next row's two columns in DOM order. */
 .card__information {
   padding: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  column-gap: var(--tt-space-2);
+  row-gap: var(--tt-space-1);
+}
+
+.card__information > .card__vendor { grid-column: 1 / -1; }
+.card__information > .card-information {
   display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+  align-items: baseline;
+  justify-content: flex-end;
+  text-align: right;
 }
 
 /* Vendor sits above the title — rendered first in card-product.liquid */
@@ -496,6 +510,51 @@ h5, .h5 {
 .header__icon .svg-wrapper { width: 2rem; height: 2rem; }
 /* (wishlist icon + count are owned by wishlist.css) */
 
+/* No account icon in the wireframe header — reachable via "Login" in the
+   mobile drawer utility links instead. Kept in the DOM (not removed) so
+   /account still works and nothing here is destructive. */
+.tt-header-account { display: none; }
+
+/* Persistent inline search — desktop only; the mobile top bar has none,
+   search lives inside the off-canvas menu (see menu-drawer). */
+.tt-header-search { display: none; }
+
+@media screen and (min-width: 990px) {
+  .tt-header-search {
+    display: flex;
+    align-items: center;
+    gap: var(--tt-space-2);
+  }
+}
+
+.tt-header-search__icon {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgb(var(--color-foreground));
+  cursor: pointer;
+}
+
+.tt-header-search__icon .icon { width: 1.8rem; height: 1.8rem; }
+
+.tt-header-search__input {
+  border: var(--tt-border);
+  border-radius: 0;
+  height: 3.6rem;
+  width: 22rem;
+  padding-inline: var(--tt-space-3);
+  font-size: var(--tt-fs-sm);
+  background: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+}
+
+.tt-header-search__input:focus,
+.tt-header-search__input:focus-visible {
+  outline: 2px solid rgb(var(--color-foreground));
+  outline-offset: -2px;
+}
+
 /* ════════════════ 9. FOOTER ════════════════
    Functional and quiet — no oversized corporate footer. Section padding is
    schema-driven (section-<id>-padding); we add top rhythm + type only. */
@@ -513,6 +572,20 @@ h5, .h5 {
   font-weight: var(--tt-fw-semibold);
   margin-bottom: var(--tt-space-xs);
 }
+
+/* Two link columns side by side, brand/social block stacked under the
+   second column (wireframe: Sizing/Shipping column, then social icons). */
+@media screen and (min-width: 750px) {
+  .footer__blocks-wrapper {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .footer__blocks-wrapper > .footer-block:nth-child(3) {
+    grid-column: 2;
+  }
+}
+
+.footer-block__brand-info { display: flex; flex-direction: column; gap: var(--tt-space-3); }
 
 .footer-block__details-content .list-menu__item,
 .footer__content-bottom .list-menu__item {
@@ -681,10 +754,45 @@ h5, .h5 {
 .tt-logo--footer svg { height: 5rem; }
 .tt-logo--drawer svg { height: 2.6rem; }
 
+/* Drawer top bar: close (left) / wordmark (center) / heart + bag (right) —
+   matches the mobile off-canvas wireframe exactly. */
+.menu-drawer__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--tt-space-4) var(--tt-space-5);
+  border-bottom: var(--tt-border);
+}
+
+.menu-drawer__close-link .svg-wrapper,
+.menu-drawer__cart-link .svg-wrapper { width: 2rem; height: 2rem; }
+
 .menu-drawer__wordmark {
   display: block;
-  padding: var(--tt-space-xs) var(--tt-space-sm) var(--tt-space-sm);
+  color: rgb(var(--color-foreground));
+}
+
+.menu-drawer__topbar-icons {
+  display: flex;
+  align-items: center;
+  gap: var(--tt-space-4);
+}
+
+.menu-drawer__topbar-icons .header__wishlist { color: rgb(var(--color-foreground)); }
+
+.menu-drawer__search {
+  padding: var(--tt-space-4) var(--tt-space-5);
   border-bottom: var(--tt-border);
+}
+
+.menu-drawer__search .tt-header-search {
+  display: flex;
+  width: 100%;
+}
+
+.menu-drawer__search .tt-header-search__input {
+  flex: 1 1 auto;
+  width: auto;
 }
 
 /* ── Uppercase treatment ── */
@@ -755,26 +863,37 @@ textarea {
   border-radius: 0;
 }
 
-/* Sold-out / placeholder product cards read as bordered boxes; live cards stay
-   whitespace-separated per the card system (§5). */
-.card-wrapper:has(.card__media--sold-out) .card__inner,
-.card-wrapper:has(.badge--sold-out) .card__inner {
-  border: var(--tt-border);
+/* Sold-out cards read as a flat grey placeholder with a centered "Sold out"
+   label — no border, no product photo, per the wireframe. */
+.card-wrapper:has(.card__media--sold-out) .card__media {
+  background: rgba(var(--color-foreground), 0.06);
 }
 
-.card-wrapper:has(.card__media--sold-out) .card__content,
-.card-wrapper:has(.badge--sold-out) .card__content {
-  padding-inline: var(--tt-space-2xs);
-  padding-bottom: var(--tt-space-2xs);
+.card-wrapper:has(.card__media--sold-out) .card__media img {
+  opacity: 0;
 }
 
-/* PLP sidebar — persistent bordered container on desktop */
-@media screen and (min-width: 990px) {
-  .collection-with-sidebar .category-sidebar {
-    border: var(--tt-border);
-    padding: var(--tt-space-sm);
-  }
+.card-wrapper:has(.card__media--sold-out) .card__badge {
+  position: absolute;
+  inset: 0;
+  bottom: auto;
+  left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.card-wrapper:has(.card__media--sold-out) .card__badge .badge {
+  background: none;
+  border: 0;
+  color: rgb(var(--color-foreground));
+  font-family: var(--tt-font-grotesk);
+  font-size: var(--tt-fs-sm);
+  letter-spacing: var(--tt-tracking-widest);
+  padding: 0;
+}
+
+/* PLP sidebar — plain text column on desktop, no border box (per wireframe) */
 
 /* ── Mobile PLP two-button bar (Phase 8 §4) ── */
 .tt-plp-bar {
@@ -784,7 +903,7 @@ textarea {
 @media screen and (max-width: 749px) {
   .tt-plp-bar {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 0;
     margin: 0 var(--tt-gutter) var(--tt-space-5);
   }
@@ -820,9 +939,9 @@ textarea {
   text-align: center;
 }
 
-/* collapse the shared border between the two buttons */
+/* collapse the shared border between the two stacked buttons */
 .tt-plp-bar__btn + .tt-plp-bar__btn {
-  border-left: 0;
+  border-top: 0;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -878,14 +997,51 @@ textarea {
 /* ── Footer masthead (wordmark + search), Phase 7 §5 ── */
 .footer { border-top: var(--tt-border); }
 
+/* Footer layout (wireframe): wordmark + search stacked in the left column,
+   email/subscribe top-right, link columns below spanning full width.
+   Mobile: everything stacks in document order — wordmark, search, links,
+   newsletter, socials. */
+.footer__content-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-6);
+  padding-top: var(--tt-space-lg);
+}
+
+@media screen and (min-width: 750px) {
+  .footer__content-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--tt-space-6);
+    row-gap: var(--tt-space-6);
+    align-items: start;
+  }
+
+  .footer__content-top > .footer__masthead { grid-column: 1; grid-row: 1; }
+
+  .footer__content-top > .footer-block--newsletter {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    text-align: right;
+    width: 100%;
+    max-width: 40rem;
+  }
+
+  .footer__content-top > .footer-block--newsletter .newsletter-form__field-wrapper {
+    margin-inline: auto 0;
+  }
+
+  .footer__content-top > .footer__blocks-wrapper {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
 .footer__masthead {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--tt-space-sm);
-  padding-top: var(--tt-space-lg);
-  padding-bottom: var(--tt-space-md);
+  flex-direction: column;
+  gap: var(--tt-space-4);
 }
 
 .footer__masthead-logo {
@@ -898,7 +1054,8 @@ textarea {
   display: flex;
   align-items: stretch;
   border: var(--tt-border);
-  min-width: min(32rem, 100%);
+  max-width: 32rem;
+  width: 100%;
 }
 
 .footer__search-input.field__input {
@@ -931,11 +1088,6 @@ textarea {
 .footer__search-submit .icon {
   width: 1.6rem;
   height: 1.6rem;
-}
-
-@media screen and (max-width: 749px) {
-  .footer__masthead { flex-direction: column; align-items: flex-start; }
-  .footer__search { width: 100%; }
 }
 
 /* ════════════════ 15. MOTION / INTERACTION (Phase 8 §5) ════════════════
