@@ -371,12 +371,16 @@ h5, .h5 {
 }
 
 /* ════════════════ 7. PDP — full-bleed gallery + floating buy panel ════════════════
-   LTTT: the image is the whole page — floor-to-ceiling, full width, no side
-   column. The buy box is a compact panel that floats over it, bottom-left,
-   and stays put while the gallery scrolls/changes behind it. Both wrapper
-   elements share one grid cell (stacked, not side-by-side) so the panel
-   overlays the image instead of sitting beside it. */
+   LTTT: the image is the whole page — floor-to-ceiling, full width, one
+   frame visible at a time, no side column. The buy box is a compact,
+   translucent panel that floats over it, bottom-left, and stays pinned to
+   the viewport corner while the gallery scrolls/changes behind it — it's
+   a window onto the image, not a card sitting on top of it. */
 
+/* Media wrapper and info wrapper share one grid cell (instead of sitting
+   side by side) so the panel overlays the image instead of sitting beside
+   it — a prerequisite for both the full-bleed gallery and the floating
+   panel below. */
 .product.grid--2-col-tablet {
   display: grid;
   grid-template-columns: 1fr;
@@ -386,12 +390,19 @@ h5, .h5 {
 .product__info-wrapper {
   grid-column: 1;
   grid-row: 1;
-  width: 100%;
-  max-width: 100%;
-  flex: none;
 }
 
 .product__media-wrapper { position: relative; z-index: 1; }
+
+/* Break the gallery out of .page-width so it bleeds edge to edge.
+   !important: Dawn re-clamps this to 65/55/45% of the row at 990px+
+   (.product--large/medium/small .product__media-wrapper), which would
+   silently undo the full-bleed width on desktop otherwise. */
+.product__media-wrapper {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-inline: calc(50% - 50vw) !important;
+}
 
 /* Each frame fills the viewport height, so the gallery reads as one
    continuous full-bleed scroll rather than a boxed image column. */
@@ -400,29 +411,72 @@ h5, .h5 {
   --constrained-height: 100vh;
 }
 
-.product__media-item { width: 100%; max-width: 100%; margin: 0; }
+/* One frame at a time, stacked vertically — at every width, not desktop
+   only. Dawn's default is a horizontal "peek" slider (each slide narrower
+   than the viewport so the next one shows at the edge); that peek is what
+   was showing two images at once, so it's overridden outright here rather
+   than only past a breakpoint. */
+.product__media-wrapper .product__media-list {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  gap: var(--tt-space-xs);
+  overflow: visible !important;
+  scroll-snap-type: none !important;
+}
 
-/* The floating detail panel — fixed to the bottom-left corner of the
-   viewport, pinned there via `sticky` while the tall image column (the
-   grid row both elements share) scrolls past behind it. It releases
-   naturally once the gallery ends, just above the disclosures section. */
+.product__media-wrapper .product__media-list:after { content: none !important; }
+
+.product__media-wrapper .product__media-item {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex-shrink: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  scroll-snap-align: none !important;
+}
+
+/* The slider's prev/next/counter controls are for the horizontal peek
+   layout we've just removed — navigation is by scrolling now. */
+.product__media-wrapper .slider-buttons { display: none; }
+
+/* The floating detail panel — pinned to the bottom-left of the viewport via
+   `sticky` while the tall shared grid row (the full stacked gallery) scrolls
+   past behind it, releasing naturally once the gallery ends, just above the
+   disclosures section. A translucent dark scrim keeps the copy legible
+   without covering the photo like a card. */
 .product__info-wrapper {
   position: sticky;
-  bottom: var(--tt-space-md);
   top: auto;
+  bottom: var(--tt-space-md);
   align-self: end;
   justify-self: start;
   z-index: 2;
-  width: min(34rem, calc(100% - var(--tt-space-md) * 2));
+  /* !important: Dawn's own padding/width rules for this element
+     (.product--large .product__info-wrapper etc., at 750px and 990px+)
+     are 3 classes deep and would otherwise win over this compact panel's
+     sizing and override its padding back to Dawn's side-column values. */
+  width: min(30rem, calc(100vw - var(--tt-space-md) * 2)) !important;
+  max-width: min(30rem, calc(100vw - var(--tt-space-md) * 2)) !important;
   margin-inline-start: var(--tt-space-md);
-  padding: var(--tt-space-sm);
-  background: rgb(var(--color-background));
-  border: var(--tt-border);
+  padding: var(--tt-space-sm) !important;
+  background: rgba(var(--color-background), 0.6);
+  backdrop-filter: blur(12px) saturate(1.1);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  color: rgb(var(--color-foreground));
+  border: var(--tt-border-hairline);
   max-height: calc(100vh - var(--tt-space-lg) * 2);
   overflow-y: auto;
 }
 
 .product__info-container > * + * { margin-top: var(--tt-space-sm); }
+
+/* Buy with Shop Pay renders in Shopify's own purple — it's an embedded,
+   brand-locked button we can't recolor directly, so it's desaturated
+   toward black/white instead of breaking the palette with a purple pill. */
+.product__info-wrapper .shopify-payment-button {
+  filter: grayscale(1) contrast(1.15);
+}
 
 .product__title,
 .product__title h1 {
@@ -441,26 +495,6 @@ h5, .h5 {
 .product__info-container .price {
   font-size: var(--tt-fs-md);
   letter-spacing: var(--tt-tracking-wide);
-}
-
-/* Continuous stacked gallery — every frame full column width, evenly spaced.
-   Dawn otherwise drops images 2+ to half width in a wrap layout. */
-.product__media-list { gap: var(--tt-space-2xs); }
-
-@media screen and (min-width: 990px) {
-  .product--stacked .product__media-list {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    gap: var(--tt-space-xs);
-  }
-
-  .product--stacked .product__media-item,
-  .product--stacked .product__media-item:not(.product__media-item--single):not(:only-child) {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-  }
 }
 
 /* Buy buttons: single calm column */
