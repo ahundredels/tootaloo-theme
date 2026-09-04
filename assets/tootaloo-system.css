@@ -370,32 +370,39 @@ h5, .h5 {
   .product-grid > .grid__item--featured { grid-column: 1 / -1; }
 }
 
-/* ════════════════ 7. PDP — full-bleed gallery + floating buy panel ════════════════
-   LTTT: the image is the whole page — floor-to-ceiling, full width, one
-   frame visible at a time, no side column. The buy box is a compact,
-   translucent panel that floats over it, bottom-left, and stays pinned to
-   the viewport corner while the gallery scrolls/changes behind it — it's
-   a window onto the image, not a card sitting on top of it. */
+/* ════════════════ 7. PDP — filmstrip gallery + floating card ════════════════
+   Mobile: images stack top to bottom at natural width/aspect-ratio, normal
+   page scroll — no forced height, no horizontal swipe. The card sits below
+   the images in normal flow.
+   Desktop (990px+): images run side by side in one continuous, full-height
+   horizontal filmstrip — swipe/scroll to move through them, no arrows. A
+   small bordered card floats bottom-left over the first frame and stays
+   pinned there while the filmstrip scrolls behind it.
+   Both: the card holds only vendor, title, description and the combined
+   Add/price button — variant picker, quantity and the accordion render
+   separately, below the fold, in .product__details. */
 
-/* Media wrapper and info wrapper share one grid cell (instead of sitting
-   side by side) so the panel overlays the image instead of sitting beside
-   it — a prerequisite for both the full-bleed gallery and the floating
-   panel below. */
-.product.grid--2-col-tablet {
-  display: grid;
-  grid-template-columns: 1fr;
-}
+/* Media wrapper and info wrapper share one grid cell on desktop (instead of
+   sitting side by side) so the card can overlay the image; on mobile the
+   grid collapses back to a single stacked column via .product__details
+   being a normal sibling below, so this doesn't need to be undone there. */
+@media screen and (min-width: 990px) {
+  .product.grid--2-col-tablet {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
 
-.product__media-wrapper,
-.product__info-wrapper {
-  grid-column: 1;
-  grid-row: 1;
+  .product__media-wrapper,
+  .product__info-wrapper {
+    grid-column: 1;
+    grid-row: 1;
+  }
 }
 
 .product__media-wrapper { position: relative; z-index: 1; }
 
-/* Break the gallery out of .page-width so it bleeds edge to edge.
-   !important: Dawn re-clamps this to 65/55/45% of the row at 990px+
+/* Break the gallery out of .page-width so it bleeds edge to edge, at every
+   width. !important: Dawn re-clamps this to 65/55/45% of the row at 990px+
    (.product--large/medium/small .product__media-wrapper), which would
    silently undo the full-bleed width on desktop otherwise. */
 .product__media-wrapper {
@@ -404,18 +411,11 @@ h5, .h5 {
   margin-inline: calc(50% - 50vw) !important;
 }
 
-/* Each frame fills the viewport height, so the gallery reads as one
-   continuous full-bleed scroll rather than a boxed image column. */
-.product-media-container.constrain-height {
-  --constrained-min-height: 100vh;
-  --constrained-height: 100vh;
-}
-
-/* One frame at a time, stacked vertically — at every width, not desktop
-   only. Dawn's default is a horizontal "peek" slider (each slide narrower
-   than the viewport so the next one shows at the edge); that peek is what
-   was showing two images at once, so it's overridden outright here rather
-   than only past a breakpoint. */
+/* Mobile (default): one column, natural per-image aspect ratio — Dawn's
+   own padding-box sizing handles this once constrain_to_viewport is off,
+   so nothing here forces a height. Dawn's default is otherwise a horizontal
+   "peek" slider (each slide narrower than the viewport, showing the next
+   one's edge); that's overridden here so it's a plain vertical stack. */
 .product__media-wrapper .product__media-list {
   display: flex !important;
   flex-direction: column !important;
@@ -436,47 +436,79 @@ h5, .h5 {
   scroll-snap-align: none !important;
 }
 
-/* The slider's prev/next/counter controls are for the horizontal peek
-   layout we've just removed — navigation is by scrolling now. */
+/* The slider's prev/next/counter controls are for Dawn's own carousel UI —
+   navigation is by scroll/swipe here, at both breakpoints. */
 .product__media-wrapper .slider-buttons { display: none; }
 
-/* The floating detail panel — pinned to the bottom-left of the viewport via
-   `sticky` while the tall shared grid row (the full stacked gallery) scrolls
-   past behind it, releasing naturally once the gallery ends, just above the
-   disclosures section. A translucent dark scrim keeps the copy legible
-   without covering the photo like a card. */
+/* Desktop: horizontal filmstrip — every frame full viewport height, its own
+   width set from the image's real aspect ratio (via the --ratio custom
+   property Dawn already puts on .product-media-container), side by side,
+   free-scrolling. !important beats the mobile rules above at this width. */
+@media screen and (min-width: 990px) {
+  .product__media-wrapper .product__media-list {
+    flex-direction: row !important;
+    height: 100vh;
+    align-items: stretch;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x proximity !important;
+  }
+
+  .product__media-wrapper .product__media-item {
+    width: auto !important;
+    height: 100%;
+    flex: none !important;
+    scroll-snap-align: start !important;
+  }
+
+  .product__media-wrapper .product-media-container {
+    height: 100%;
+    width: calc(100vh * var(--ratio, 1));
+    max-width: none;
+    flex: none;
+  }
+
+  .product__media-wrapper .product-media-container .product__modal-opener,
+  .product__media-wrapper .product-media-container .media {
+    height: 100%;
+    width: 100%;
+    padding-top: 0 !important;
+  }
+}
+
+/* The card — bordered white box, vendor/title/description/Add button only.
+   Mobile: normal flow, full width, below the images. */
 .product__info-wrapper {
-  position: sticky;
-  top: auto;
-  bottom: var(--tt-space-md);
-  align-self: end;
-  justify-self: start;
-  z-index: 2;
-  /* !important: Dawn's own padding/width rules for this element
-     (.product--large .product__info-wrapper etc., at 750px and 990px+)
-     are 3 classes deep and would otherwise win over this compact panel's
-     sizing and override its padding back to Dawn's side-column values. */
-  width: min(30rem, calc(100vw - var(--tt-space-md) * 2)) !important;
-  max-width: min(30rem, calc(100vw - var(--tt-space-md) * 2)) !important;
-  margin-inline-start: var(--tt-space-md);
-  padding: var(--tt-space-sm) !important;
-  background: rgba(var(--color-background), 0.6);
-  backdrop-filter: blur(12px) saturate(1.1);
-  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  background: rgb(var(--color-background));
+  border: var(--tt-border);
   color: rgb(var(--color-foreground));
-  border: var(--tt-border-hairline);
-  max-height: calc(100vh - var(--tt-space-lg) * 2);
-  overflow-y: auto;
+  padding: var(--tt-space-sm);
+}
+
+/* Desktop: floats bottom-left over the first frame — pinned there via
+   `sticky` on the shared grid cell while the filmstrip scrolls behind it,
+   releasing once the gallery ends, just above .product__details.
+   !important: Dawn's own padding/width rules for this element
+   (.product--large .product__info-wrapper etc., 3 classes deep) would
+   otherwise win over this card's compact sizing. */
+@media screen and (min-width: 990px) {
+  .product__info-wrapper {
+    position: sticky;
+    top: auto;
+    bottom: var(--tt-space-md);
+    align-self: end;
+    justify-self: start;
+    z-index: 2;
+    width: clamp(24rem, 24vw, 36rem) !important;
+    max-width: clamp(24rem, 24vw, 36rem) !important;
+    margin-inline-start: var(--tt-space-md);
+    padding: var(--tt-space-sm) !important;
+    max-height: calc(100vh - var(--tt-space-lg) * 2);
+    overflow-y: auto;
+  }
 }
 
 .product__info-container > * + * { margin-top: var(--tt-space-sm); }
-
-/* Buy with Shop Pay renders in Shopify's own purple — it's an embedded,
-   brand-locked button we can't recolor directly, so it's desaturated
-   toward black/white instead of breaking the palette with a purple pill. */
-.product__info-wrapper .shopify-payment-button {
-  filter: grayscale(1) contrast(1.15);
-}
 
 .product__title,
 .product__title h1 {
@@ -492,18 +524,37 @@ h5, .h5 {
 .product__text.tt-vendor,
 .product .product__text.subtitle { margin-bottom: 0; }
 
-.product__info-container .price {
-  font-size: var(--tt-fs-md);
+/* The combined Add + price button — "Add" left, price right, one row. */
+.tt-add-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tt-space-sm);
+}
+
+.tt-add-bar .tt-add-bar__label {
+  text-transform: uppercase;
   letter-spacing: var(--tt-tracking-wide);
+}
+
+/* The price inherits the button's own (light-on-dark) text color rather
+   than the scheme's default foreground — otherwise it renders in the
+   card's black text, invisible against the black button. */
+.tt-add-bar .price,
+.tt-add-bar .price .price-item {
+  color: inherit !important;
+  font-size: var(--tt-fs-sm);
 }
 
 /* Buy buttons: single calm column */
 .product-form__buttons { margin-top: var(--tt-space-xs); }
 .product-form__submit { margin-bottom: var(--tt-space-2xs); }
 
-/* Vintage metadata area — spacing rhythm only.
-   All label/value typography is owned by component-vintage-details.css. */
-.product__info-container .product__sizing { margin-top: var(--tt-space-2xs); }
+/* Below-the-fold details — variant picker, quantity, vintage accordion,
+   share. Same vertical rhythm as the card, full width, normal flow. */
+.product__details-wrapper { margin-top: var(--tt-section-gap); }
+.product__details > * + * { margin-top: var(--tt-space-sm); }
+.product__details .product__sizing { margin-top: var(--tt-space-2xs); }
 
 .product__accordion .accordion__title,
 .product__accordion summary h2 {

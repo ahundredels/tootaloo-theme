@@ -1,0 +1,104 @@
+{% comment %}
+  Renders the PDP's primary add-to-cart control: a single black button with
+  "Add" left-aligned and the live (variant-aware) price right-aligned, in
+  place of Dawn's separate price line + Add to cart button + dynamic
+  checkout button. Sizing/quantity/Buy-with-Shop are not part of this
+  control — they live below the fold via the separate variant_picker and
+  quantity_selector blocks, associated to this same form with `form=""`
+  rather than DOM nesting (the same technique Dawn itself already uses for
+  the quantity input), so they still work correctly from elsewhere on the
+  page.
+
+  Accepts:
+  - product: {Object} product object.
+  - block: {Object} passing the block information.
+  - product_form_id: {String} product form id.
+  - section_id: {String} id of section to which this snippet belongs.
+
+  Usage:
+  {% render 'product-add-bar', block: block, product: product, product_form_id: product_form_id, section_id: section.id %}
+{% endcomment %}
+<div {{ block.shopify_attributes }}>
+  {%- if product != blank -%}
+    {%- liquid
+      assign check_against_inventory = true
+      if product.selected_or_first_available_variant.inventory_management != 'shopify' or product.selected_or_first_available_variant.inventory_policy == 'continue'
+        assign check_against_inventory = false
+      endif
+      if product.selected_or_first_available_variant.quantity_rule.min > product.selected_or_first_available_variant.inventory_quantity and check_against_inventory
+        assign quantity_rule_soldout = true
+      endif
+    -%}
+    <product-form class="product-form tt-add-bar-form" data-section-id="{{ section.id }}">
+      <div class="product-form__error-message-wrapper" role="alert" hidden>
+        <span class="svg-wrapper">
+          {{- 'icon-error.svg' | inline_asset_content -}}
+        </span>
+        <span class="product-form__error-message"></span>
+      </div>
+
+      {%- form 'product',
+        product,
+        id: product_form_id,
+        class: 'form',
+        novalidate: 'novalidate',
+        data-type: 'add-to-cart-form'
+      -%}
+        <input
+          type="hidden"
+          name="id"
+          value="{{ product.selected_or_first_available_variant.id }}"
+          {% if product.selected_or_first_available_variant.available == false
+            or quantity_rule_soldout
+            or product.selected_or_first_available_variant == null
+          %}
+            disabled
+          {% endif %}
+          class="product-variant-id"
+        >
+
+        <div class="product-form__buttons">
+          <button
+            id="ProductSubmitButton-{{ section_id }}"
+            type="submit"
+            name="add"
+            class="product-form__submit tt-add-bar button button--full-width button--primary"
+            {% if product.selected_or_first_available_variant.available == false
+              or quantity_rule_soldout
+              or product.selected_or_first_available_variant == null
+            %}
+              disabled
+            {% endif %}
+          >
+            <span class="tt-add-bar__label">
+              {%- if product.selected_or_first_available_variant == null -%}
+                {{ 'products.product.unavailable' | t }}
+              {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
+                {{ 'products.product.sold_out' | t }}
+              {%- else -%}
+                {{ 'products.product.add_to_cart' | t }}
+              {%- endif -%}
+            </span>
+            <div id="price-{{ section_id }}" role="status">
+              {%- render 'price', product: product, use_variant: true, show_badges: false -%}
+            </div>
+            {%- render 'loading-spinner' -%}
+          </button>
+        </div>
+      {%- endform -%}
+    </product-form>
+  {%- else -%}
+    <div class="product-form">
+      <div class="product-form__buttons form">
+        <button
+          type="submit"
+          name="add"
+          class="product-form__submit tt-add-bar button button--full-width button--primary"
+          disabled
+        >
+          <span class="tt-add-bar__label">{{ 'products.product.sold_out' | t }}</span>
+        </button>
+      </div>
+    </div>
+  {%- endif -%}
+</div>

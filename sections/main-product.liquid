@@ -90,23 +90,29 @@
   {%- endif -%}
 
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
+  {%- assign product_form_id = 'product-form-' | append: section.id -%}
   <product-component view-event-payload="{{ product | standard_event_data: 'view', context: 'page' | escape }}">
     <div class="page-width">
       <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
         <div class="grid__item product__media-wrapper">
           {% render 'product-media-gallery', variant_images: variant_images %}
         </div>
-        <div class="product__info-wrapper color-scheme-4 grid__item{% if settings.page_width > 1400 and section.settings.media_size == "small" %} product__info-wrapper--extra-padding{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        {%- comment -%}
+          Primary above-fold card: vendor, title, description paragraph, and
+          the combined Add/price button only — everything else (variant
+          picker, quantity, vintage accordion, share…) renders separately
+          below the fold in .product__details. Two passes over the same
+          block list rather than one, so the card can be a real, physically
+          separate floating element instead of a CSS reorder of one
+          container.
+        {%- endcomment -%}
+        <div class="product__info-wrapper grid__item{% if settings.page_width > 1400 and section.settings.media_size == "small" %} product__info-wrapper--extra-padding{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
           <section
             id="ProductInfo-{{ section.id }}"
             class="product__info-container{% if section.settings.enable_sticky_info %} product__column-sticky{% endif %}"
           >
-            {%- assign product_form_id = 'product-form-' | append: section.id -%}
-
             {%- for block in section.blocks -%}
               {%- case block.type -%}
-                {%- when '@app' -%}
-                  {% render block %}
                 {%- when 'text' -%}
                   <p
                     class="product__text inline-richtext{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}"
@@ -123,42 +129,45 @@
                       </h2>
                     </a>
                   </div>
-                {%- when 'price' -%}
-                  <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
-                    {%- render 'price',
-                      product: product,
-                      use_variant: true,
-                      show_badges: true,
-                      price_class: 'price--large'
-                    -%}
-                  </div>
-                  {%- if product.quantity_price_breaks_configured? -%}
-                    <div class="volume-pricing-note" id="Volume-Note-{{ section.id }}">
-                      <span>{{ 'products.product.volume_pricing.note' | t }}</span>
+                {%- when 'description' -%}
+                  {%- if product.description != blank -%}
+                    <div class="product__description rte quick-add-hidden" {{ block.shopify_attributes }}>
+                      {{ product.description }}
                     </div>
                   {%- endif -%}
-                  {%- if cart.taxes_included or cart.duties_included or shop.shipping_policy.body != blank -%}
-                    <div class="product__tax caption rte">
-                      {%- if cart.duties_included and cart.taxes_included -%}
-                        {{ 'products.product.duties_and_taxes_included' | t }}
-                      {%- elsif cart.taxes_included -%}
-                        {{ 'products.product.taxes_included' | t }}
-                      {%- elsif cart.duties_included -%}
-                        {{ 'products.product.duties_included' | t }}
-                      {%- endif -%}
-                      {%- if shop.shipping_policy.body != blank -%}
-                        {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
-                      {%- endif -%}
-                    </div>
+                {%- when 'buy_buttons' -%}
+                  {%- render 'product-add-bar',
+                    block: block,
+                    product: product,
+                    product_form_id: product_form_id,
+                    section_id: section.id
+                  -%}
+                  {%- if product.metafields.spec.one_of_one.value == 'true' -%}
+                    <p class="product__final-sale-note">
+                      {{- block.settings.final_sale_text | default: 'Final sale — no returns or exchanges on one-of-one items.' | escape -}}
+                    </p>
                   {%- endif -%}
-                  <div {{ block.shopify_attributes }}>
-                    {%- assign product_form_installment_id = 'product-form-installment-' | append: section.id -%}
-                    {%- form 'product', product, id: product_form_installment_id, class: 'installment caption-large' -%}
-                      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                      {{ form | payment_terms }}
-                    {%- endform -%}
-                  </div>
-                {%- when 'vintage_sizing' -%}
+              {%- endcase -%}
+            {%- endfor -%}
+          </section>
+        </div>
+      </div>
+
+      {%- comment -%}
+        Below the fold: variant picker, quantity, vintage accordion, share,
+        etc. Full width, normal page flow — not part of the floating card.
+        The variant picker and quantity input are associated to the same
+        <form id="{{ product_form_id }}"> (rendered above, inside the card)
+        via `form="{{ product_form_id }}"` rather than DOM nesting, so
+        selecting a size or quantity here still feeds the Add button above.
+      {%- endcomment -%}
+      <div class="product__details-wrapper">
+        <div class="product__details">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when '@app' -%}
+                {% render block %}
+              {%- when 'vintage_sizing' -%}
                   {%- liquid
                     assign is_ono = false
                     if product.metafields.spec.one_of_one.value == 'true'
@@ -325,12 +334,6 @@
                       {%- endif -%}
                     {%- endif -%}
                   </p>
-                {%- when 'description' -%}
-                  {%- if product.description != blank -%}
-                    <div class="product__description rte quick-add-hidden" {{ block.shopify_attributes }}>
-                      {{ product.description }}
-                    </div>
-                  {%- endif -%}
                 {%- when 'sku' -%}
                   <p
                     class="product__sku{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.sku.size == 0 %} visibility-hidden{% endif %}"
@@ -640,20 +643,6 @@
                       product_form_id: product_form_id
                     %}
                   {%- endif -%}
-                {%- when 'buy_buttons' -%}
-                  {%- render 'buy-buttons',
-                    block: block,
-                    product: product,
-                    product_form_id: product_form_id,
-                    section_id: section.id,
-                    show_pickup_availability: true
-                  -%}
-                  {%- if product.metafields.spec.one_of_one.value == 'true' -%}
-                    <p class="product__final-sale-note">
-                      {{- block.settings.final_sale_text | default: 'Final sale — no returns or exchanges on one-of-one items.' | escape -}}
-                    </p>
-                  {%- endif -%}
-                  {% render 'wishlist-button', product: product %}
                 {%- when 'rating' -%}
                   {%- if product.metafields.reviews.rating.value != blank -%}
                     <div class="rating-wrapper">
@@ -843,13 +832,13 @@
                   </product-recommendations>
                 {%- when 'icon-with-text' -%}
                   {% render 'icon-with-text', block: block %}
-              {%- endcase -%}
-            {%- endfor -%}
-            <a href="{{ product.url }}" class="link product__view-details animate-arrow">
-              {{ 'products.product.view_full_details' | t }}
-              {{- 'icon-arrow.svg' | inline_asset_content -}}
-            </a>
-          </section>
+            {%- endcase -%}
+          {%- endfor -%}
+          {% render 'wishlist-button', product: product %}
+          <a href="{{ product.url }}" class="link product__view-details animate-arrow">
+            {{ 'products.product.view_full_details' | t }}
+            {{- 'icon-arrow.svg' | inline_asset_content -}}
+          </a>
         </div>
       </div>
 

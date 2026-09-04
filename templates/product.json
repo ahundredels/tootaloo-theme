@@ -23,10 +23,6 @@
           "type": "title",
           "settings": {}
         },
-        "price": {
-          "type": "price",
-          "settings": {}
-        },
         "vintage_sizing": {
           "type": "vintage_sizing",
           "settings": {}
@@ -75,12 +71,11 @@
       "block_order": [
         "vendor",
         "title",
-        "price",
-        "vintage_sizing",
+        "description",
+        "buy_buttons",
         "variant_picker",
         "quantity_selector",
-        "buy_buttons",
-        "description",
+        "vintage_sizing",
         "vintage_condition",
         "vintage_measurements",
         "vintage_details",
@@ -90,8 +85,8 @@
         "enable_sticky_info": false,
         "color_scheme": "scheme-1",
         "media_size": "large",
-        "constrain_to_viewport": true,
-        "media_fit": "cover",
+        "constrain_to_viewport": false,
+        "media_fit": "contain",
         "gallery_layout": "stacked",
         "mobile_thumbnails": "hide",
         "media_position": "left",
