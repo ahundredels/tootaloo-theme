@@ -499,3 +499,64 @@
   border-bottom: 1px solid currentColor;
   padding-bottom: 0.2rem;
 }
+
+/* ════════════════ EDITORIAL CARDS — "Tootaloo Mag" ════════════════
+   A row of bordered article cards. Wireframe: kicker / headline / dek /
+   Read more, 3-up desktop, stacked on mobile, hard 1px edges. */
+
+.editorial-cards__grid {
+  list-style: none;
+  margin: var(--tt-space-md) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--tt-grid-col-gap);
+}
+
+@media screen and (min-width: 750px) {
+  .editorial-cards__grid {
+    grid-template-columns: repeat(var(--tt-mag-cols, 3), minmax(0, 1fr));
+  }
+}
+
+.editorial-card {
+  border: var(--tt-border);
+  display: flex;
+}
+
+.editorial-card__link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: rgb(var(--color-foreground));
+  width: 100%;
+}
+
+.editorial-card__media {
+  border-bottom: var(--tt-border);
+}
+
+.editorial-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-2xs);
+  padding: var(--tt-space-sm);
+  flex: 1 1 auto;
+}
+
+.editorial-card__kicker { color: rgba(var(--color-foreground), 0.6); }
+.editorial-card__headline { margin: 0; }
+
+.editorial-card__dek {
+  color: rgba(var(--color-foreground), 0.75);
+  font-size: var(--tt-fs-sm);
+}
+
+.editorial-card__more {
+  margin-top: auto;
+  padding-top: var(--tt-space-2xs);
+  display: inline-flex;
+  gap: 0.6rem;
+}
+
+.editorial-card__link:hover .editorial-card__more { text-decoration: underline; text-underline-offset: 0.3rem; }

@@ -1,0 +1,130 @@
+{%- comment -%}
+  Tootaloo — Editorial Cards ("Tootaloo Mag").
+
+  A row of article cards pulled from a merchant-chosen blog: kicker, headline,
+  dek, and a way in. Nothing is written here — pick a blog with published
+  articles and it fills itself. No blog / no articles → the section is hidden
+  on the live storefront (a placeholder shows only in the editor).
+{%- endcomment -%}
+
+{{ 'tt-modules.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign blog = blogs[section.settings.blog]
+  assign count = section.settings.article_count
+  assign has_articles = false
+  if blog != blank and blog.articles_count > 0
+    assign has_articles = true
+  endif
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .editorial-cards {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .editorial-cards {
+      padding-top: {{ section.settings.padding_top | times: 0.6 | round }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.6 | round }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- if has_articles or request.design_mode -%}
+  <div class="editorial-cards color-{{ section.settings.color_scheme }} gradient">
+    <div class="editorial-cards__inner page-width">
+      {%- render 'tt-module-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading,
+        heading_style: 'label',
+        link_label: section.settings.link_label,
+        link_url: blog.url
+      -%}
+
+      {%- if has_articles -%}
+        <ul class="editorial-cards__grid" role="list" style="--tt-mag-cols: {{ section.settings.columns_desktop }};">
+          {%- for article in blog.articles limit: count -%}
+            {%- liquid
+              assign kicker = article.tags | first
+              if kicker == blank
+                assign kicker = blog.title
+              endif
+              assign dek = article.excerpt_or_content | strip_html | truncatewords: 24
+            -%}
+            <li class="editorial-card">
+              <a class="editorial-card__link" href="{{ article.url }}">
+                {%- if section.settings.show_image and article.image != blank -%}
+                  <span class="editorial-card__media tt-media" data-ratio="landscape">
+                    <img
+                      src="{{ article.image | image_url: width: 800 }}"
+                      srcset="{{ article.image | image_url: width: 500 }} 500w, {{ article.image | image_url: width: 800 }} 800w, {{ article.image | image_url: width: 1200 }} 1200w"
+                      sizes="(min-width: 990px) 33vw, 100vw"
+                      width="{{ article.image.width }}"
+                      height="{{ article.image.height }}"
+                      alt="{{ article.image.alt | escape }}"
+                      loading="lazy"
+                    >
+                  </span>
+                {%- endif -%}
+                <span class="editorial-card__body">
+                  <span class="editorial-card__kicker tt-utility">{{ kicker | escape }}</span>
+                  <span class="editorial-card__headline tt-editorial-heading">{{ article.title | escape }}</span>
+                  {%- if dek != blank -%}
+                    <span class="editorial-card__dek tt-body">{{ dek }}</span>
+                  {%- endif -%}
+                  <span class="editorial-card__more tt-nav">
+                    {{- section.settings.card_link_label | default: 'Read more' | escape -}}
+                    <span aria-hidden="true">&rarr;</span>
+                  </span>
+                </span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- else -%}
+        <p class="tt-collection-row__placeholder">
+          Choose a blog with published articles to fill this section.
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Editorial Cards",
+  "tag": "section",
+  "class": "section section--tt-module",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow label", "default": "Tootaloo Mag" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "From the journal" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "All stories", "info": "Links to the blog." },
+    { "type": "header", "content": "Content" },
+    { "type": "blog", "id": "blog", "label": "Blog" },
+    { "type": "range", "id": "article_count", "min": 2, "max": 6, "step": 1, "default": 3, "label": "Articles to show" },
+    { "type": "checkbox", "id": "show_image", "label": "Show article image", "default": true },
+    { "type": "text", "id": "card_link_label", "label": "Card link label", "default": "Read more" },
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns (desktop)",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    },
+    { "type": "header", "content": "Section" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 72, "label": "Top padding" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 72, "label": "Bottom padding" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "presets": [
+    { "name": "Editorial Cards (Tootaloo Mag)" }
+  ]
+}
+{% endschema %}

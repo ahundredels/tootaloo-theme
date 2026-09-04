@@ -40,7 +40,7 @@
     "collection_tile_grid": {
       "type": "collection-tile-grid",
       "blocks": {
-        "tile_1": { "type": "tile", "settings": { "name": "New Arrivals", "link": "shopify://collections/all" } },
+        "tile_1": { "type": "tile", "settings": { "name": "Staff Picks", "link": "shopify://collections/all" } },
         "tile_2": { "type": "tile", "settings": { "name": "Vintage", "link": "" } },
         "tile_3": { "type": "tile", "settings": { "name": "Archive", "link": "" } }
       },
@@ -49,12 +49,28 @@
         "title": "",
         "heading_size": "h2",
         "columns_desktop": 3,
-        "columns_mobile": "2",
+        "columns_mobile": "1",
         "image_ratio": "portrait",
         "name_position": "overlay",
         "color_scheme": "scheme-1",
         "padding_top": 24,
         "padding_bottom": 24
+      }
+    },
+    "tootaloo_mag": {
+      "type": "editorial-cards",
+      "settings": {
+        "eyebrow": "Tootaloo Mag",
+        "heading": "From the journal",
+        "link_label": "All stories",
+        "blog": "news",
+        "article_count": 3,
+        "show_image": true,
+        "card_link_label": "Read more",
+        "columns_desktop": "3",
+        "padding_top": 72,
+        "padding_bottom": 72,
+        "color_scheme": "scheme-1"
       }
     },
     "recently_sold": {
@@ -81,6 +97,7 @@
     "hero_wordmark",
     "current_drop",
     "collection_tile_grid",
+    "tootaloo_mag",
     "recently_sold"
   ]
 }

@@ -26,6 +26,9 @@
           <span class="svg-wrapper">{{- 'icon-close.svg' | inline_asset_content -}}</span>
           <span>{{ 'accessibility.close' | t | default: 'Close' }}</span>
         </a>
+        <a href="{{ routes.root_url }}" class="menu-drawer__wordmark" data-menu-drawer-close>
+          {%- render 'tootaloo-logo', context: 'drawer' -%}
+        </a>
         <div class="menu-drawer__layout">
         <div class="menu-drawer__navigation-container">
           <nav class="menu-drawer__navigation">

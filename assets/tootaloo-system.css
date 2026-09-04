@@ -624,6 +624,12 @@ h5, .h5 {
 .tt-logo--footer svg { height: 5rem; }
 .tt-logo--drawer svg { height: 2.6rem; }
 
+.menu-drawer__wordmark {
+  display: block;
+  padding: var(--tt-space-xs) var(--tt-space-sm) var(--tt-space-sm);
+  border-bottom: var(--tt-border);
+}
+
 /* ── Uppercase treatment ── */
 .button,
 button.button,
