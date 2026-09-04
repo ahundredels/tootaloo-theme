@@ -724,3 +724,13 @@ textarea {
   text-decoration: underline;
   text-underline-offset: 0.3rem;
 }
+
+/* Add to Bag — always the solid foreground-filled primary, even when the
+   dynamic checkout button is shown (Dawn demotes it to a secondary that
+   blends into the page otherwise). */
+.product-form__submit.button--secondary {
+  --color-button: var(--color-foreground);
+  --color-button-text: var(--color-background);
+  --alpha-button-background: 1;
+  --alpha-button-border: 1;
+}

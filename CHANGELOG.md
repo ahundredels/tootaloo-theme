@@ -94,7 +94,15 @@ Reconciled against the "Tootaloo — Design Breakdown & Build Spec" (checkpoint 
 - `assets/tootaloo-system.css` **§14 (new):** uppercase on `.button` / `.card__heading` / `.product__title` / `.pagination__item` / accordion + footer headings / `.collection-hero__title`; 1px black edges on category tiles, search inputs, sold-out card inners, and the PLP sidebar container at ≥990 (persistent bordered box per wireframe §3); `border-radius: 0` belt-and-braces on buttons/inputs/selects/cards. `.shopify-payment-button__button` explicitly left `text-transform: none`.
 - **Breakpoints:** stay on Dawn's 750 / 990. The skeleton's 900 is **not** introduced — no competing systems.
 - Verified on local `theme dev` @1440: home (wordmark crisp ~34px, category tiles bordered, Archivo throughout), Shop All (sidebar now a bordered box, uppercase toolbar + cards), PDP (sharp size pills + stepper, uppercase vendor/title). No layout regressions, no horizontal overflow.
-- **Still on the §1 checklist for a later pass:** footer search box border + footer link uppercase land with the §5 footer rebuild; category-tile label copy ("New Arrivals" → "Staff Picks") is a §2 `index.json` edit.
+- **Still on the §1 checklist for a later pass:** footer search box border + footer link uppercase land with the §5 footer rebuild.
+
+### §2 — Home · tag `phase-7-s2-home-20260903` · commit `37a8df8`
+- **new** `sections/editorial-cards.liquid` — the **Tootaloo Mag** module (the one confirmed net-new build item). A row of 1px-bordered article cards: kicker (first article tag, else blog title) / headline / dek (24-word excerpt) / "Read more". Merchant picks a blog; 2–6 articles; 2/3/4 columns; optional article image. **Empty-safe** — no blog or zero articles → the section renders nothing on the storefront (editor shows a placeholder). Styles appended to `tt-modules.css`.
+- `templates/index.json` — Mag placed between the tile grid and Recently Sold (blog handle `news`); order updated. Tile 1 label "New Arrivals" → **"Staff Picks"**. Tile grid `columns_mobile` 2 → **1** (wireframe stacks tiles on mobile).
+- `sections/header-group.json` — `logo_position` `middle-left` → **`middle-center`** (wireframe centres the wordmark).
+- `snippets/header-drawer.liquid` — wordmark added at the top of the mobile off-canvas menu (`.menu-drawer__wordmark`, bordered).
+- **Merchant action for the Mag section to appear:** create a blog (handle `news` or re-point the section) with published articles.
+- **Not done in §2:** Recently Sold as a horizontal scroller with arrow controls (currently a static grid — functional, not the wireframe's carousel); desktop hamburger (kept the inline nav — a one-toggle editor change if wanted).
 
 ## Open / not done
 - **Mobile QA is desk-verified only** — the browser tooling renders at a fixed 1440px viewport; the two bugs above came from the merchant's real-device testing. CSS is mobile-first with token breakpoints at 749 / 750 / 990.

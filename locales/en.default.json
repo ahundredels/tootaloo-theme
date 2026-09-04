@@ -49,9 +49,9 @@
       "reset": "Clear search term"
     },
     "cart": {
-      "view": "View cart ({{ count }})",
-      "view_empty_cart": "View cart",
-      "item_added": "Item added to your cart"
+      "view": "View bag ({{ count }})",
+      "view_empty_cart": "View bag",
+      "item_added": "Added to your bag"
     },
     "share": {
       "close": "Close share",
@@ -115,7 +115,7 @@
   },
   "products": {
     "product": {
-      "add_to_cart": "Add to cart",
+      "add_to_cart": "Add to bag",
       "choose_options": "Choose options",
       "choose_product_options": "Choose options for {{ product_name }}",
       "description": "Description",

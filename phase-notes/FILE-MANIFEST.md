@@ -94,8 +94,8 @@ Building to the 7 wireframes. Section numbering follows the breakdown doc.
 | Section | Status | Files |
 |---|---|---|
 | §1 Global tokens | **done** — tag `phase-7-s1-global-20260903` | `config/settings_data.json`, `snippets/tootaloo-tokens.liquid`, `assets/tootaloo-system.css` §14, `sections/header.liquid`, + new `assets/tootaloo-wordmark.svg` / `snippets/tootaloo-logo.liquid` |
-| §2 Home | not started | `templates/index.json` (Staff Picks label), `sections/collection-tile-grid.liquid`, `sections/hero-wordmark.liquid`, `snippets/header-drawer.liquid` (drawer wordmark), **new** `sections/editorial-cards.liquid` + `assets/tt-modules.css` (Tootaloo Mag — 3 cards) |
-| §3 Shop All / PLP | partial (sidebar bordered in §1) | `sections/main-collection-product-grid.liquid`, `snippets/pagination.liquid`, `snippets/facets.liquid` |
-| §4 Product page | not started | `sections/main-product.liquid` / `snippets/buy-buttons.liquid` ("Add to Bag" label + black fill), related-products row |
+| §2 Home | **done** — tag `phase-7-s2-home-20260903` | **new** `sections/editorial-cards.liquid` (Tootaloo Mag) + `assets/tt-modules.css`; `templates/index.json` (Staff Picks label, Mag placement, mobile tiles 1-up); `sections/header-group.json` (centred wordmark); `snippets/header-drawer.liquid` (drawer wordmark) |
+| §3 Shop All / PLP | partial (sidebar bordered + pagination underline in §1) | `sections/main-collection-product-grid.liquid`, `snippets/pagination.liquid`, `snippets/facets.liquid` |
+| §4 Product page | not started | `snippets/buy-buttons.liquid` ("Add to Bag" label + black fill), related-products row on `templates/product.json` |
 | §5 Footer | not started | `sections/footer.liquid` (wordmark + search box + uppercase links), `assets/tootaloo-system.css` §9 |
 | §6 QA | not started | real mobile-viewport screenshots, wireframe diff saved to repo |
