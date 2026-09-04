@@ -370,17 +370,56 @@ h5, .h5 {
   .product-grid > .grid__item--featured { grid-column: 1 / -1; }
 }
 
-/* ════════════════ 7. PDP — image ↔ buy-box relationship ════════════════
-   LTTT: oversized stacked imagery, a calm sticky column, minimal purchase UI. */
+/* ════════════════ 7. PDP — full-bleed gallery + floating buy panel ════════════════
+   LTTT: the image is the whole page — floor-to-ceiling, full width, no side
+   column. The buy box is a compact panel that floats over it, bottom-left,
+   and stays put while the gallery scrolls/changes behind it. Both wrapper
+   elements share one grid cell (stacked, not side-by-side) so the panel
+   overlays the image instead of sitting beside it. */
 
-@media screen and (min-width: 990px) {
-  .product--large .product__media-wrapper { max-width: 62%; }
-  .product--large .product__info-wrapper { padding-inline-start: var(--tt-space-xl); }
+.product.grid--2-col-tablet {
+  display: grid;
+  grid-template-columns: 1fr;
 }
 
-.product__column-sticky {
-  top: var(--tt-sticky-offset);
-  align-self: start;
+.product__media-wrapper,
+.product__info-wrapper {
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  max-width: 100%;
+  flex: none;
+}
+
+.product__media-wrapper { position: relative; z-index: 1; }
+
+/* Each frame fills the viewport height, so the gallery reads as one
+   continuous full-bleed scroll rather than a boxed image column. */
+.product-media-container.constrain-height {
+  --constrained-min-height: 100vh;
+  --constrained-height: 100vh;
+}
+
+.product__media-item { width: 100%; max-width: 100%; margin: 0; }
+
+/* The floating detail panel — fixed to the bottom-left corner of the
+   viewport, pinned there via `sticky` while the tall image column (the
+   grid row both elements share) scrolls past behind it. It releases
+   naturally once the gallery ends, just above the disclosures section. */
+.product__info-wrapper {
+  position: sticky;
+  bottom: var(--tt-space-md);
+  top: auto;
+  align-self: end;
+  justify-self: start;
+  z-index: 2;
+  width: min(34rem, calc(100% - var(--tt-space-md) * 2));
+  margin-inline-start: var(--tt-space-md);
+  padding: var(--tt-space-sm);
+  background: rgb(var(--color-background));
+  border: var(--tt-border);
+  max-height: calc(100vh - var(--tt-space-lg) * 2);
+  overflow-y: auto;
 }
 
 .product__info-container > * + * { margin-top: var(--tt-space-sm); }
