@@ -122,6 +122,45 @@ Reconciled against the "Tootaloo — Design Breakdown & Build Spec" (checkpoint 
 - `tootaloo-system.css`: 1px top border on `.footer`; masthead flex layout; bordered search field + solid icon button; stacks on mobile. Uppercase links/headings via §14.
 - **Merchant config:** build the `footer` menu(s); add social links in Theme settings; "Powered by Shopify" is plan-gated and stays.
 
+## Phase 8 — Pixel & motion precision (2026-09-03) · pushed to live
+
+Built from the "Phase 8: Pixel & Motion Precision Spec". Closes the two flagged 1:1 gaps + brings icons/spacing/motion to a deliberate finish.
+
+### §1+§2 — Icons + spacing · tag `phase-8-s1-s2-icons-spacing-20260903`
+- **Icons** (`assets/icon-*.svg`) rebuilt to one consistent set: 1.5px stroke, round caps, 24×24. `icon-close` (stroke X), `icon-hamburger` (3 bars 22px/7px gaps), `icon-search` (circle r=7 + short handle), `icon-cart` + `icon-cart-empty` (flat-top trapezoid bag + strap, outline), **new** `icon-tt-arrow` (carousel). Hand-authored to the spec's shape table — Tabler wasn't fetchable as a theme asset; geometry matches.
+- **Heart** is now the filled glyph everywhere — `snippets/header-wishlist-icon.liquid`, `snippets/wishlist-button.liquid`; the card button carries saved/unsaved as **opacity 0.5 → 1** (`assets/wishlist.css`), not an outline swap.
+- `icon-caret.svg` **left as-is** — Dawn already renders it as a rotating chevron and 20+ styled rules depend on its 10×6 box. Deviation from §1, deliberate.
+- `.header__icon--cart .icon` pinned to 2rem (Dawn had scaled the old 40-unit viewBox to 4.4rem).
+- **Spacing** (`snippets/tootaloo-tokens.liquid`): numeric scale **`--tt-space-1..9`** = 4/8/12/16/24/32/48/64/96; the named aliases (`--tt-space-2xs`…) now point onto it so existing rules inherit the rhythm (`--tt-space-md` 40 and `--tt-space-2xl` 160 kept off-scale on purpose).
+  - `--tt-gutter` 16 mobile / 32 desktop (dropped the 990 step). `--tt-grid-col-gap` 12/24. `spacing_grid_horizontal` 16 → **24** (Dawn halves to 12 on mobile — keeps the gap synced to `.grid__item` width calc, per the Phase 6 fix).
+  - Header height fixed **72 desktop / 56 mobile** (`min-height`, schema padding zeroed).
+  - Card image→info gap tightened to **8px**.
+
+### §3 — Recently Sold carousel · tag `phase-8-s3-carousel-20260903`
+- `sections/tt-collection-row.liquid`: the `scroller` layout is now a real carousel — prev/next arrows (`icon-tt-arrow`) in the **header row**, not on the cards. **new** `assets/tt-carousel.js`: scroll one card + gap, smooth; prev disabled at `scrollLeft` 0, next at max; re-syncs on scroll (rAF) / resize / `shopify:section:load`.
+- `assets/tt-modules.css`: `--scroller` is a scroll-snap row at every width (78vw cards mobile / exactly `--row-cols-desktop` cards desktop). Arrows `display:none` < 750px — mobile is native swipe.
+- `templates/index.json`: `recently_sold` → `layout: "scroller"`, 12 products, 64 padding. Schema info: point it at a `tag = sold` smart collection sorted newest-first for real live data (merchant step).
+
+### §4 — Mobile PLP two-button bar · tag `phase-8-s4-mobile-plp-20260903`
+- **new** `snippets/tt-plp-bar.liquid`: `[ FILTERS ] [ DESIGNERS A-Z ]`, two equal bordered uppercase buttons, full-bleed within gutters, **< 750px only**. "Filters" re-triggers Dawn's existing mobile facet drawer (6-line inline script clicks `.mobile-facets__open-wrapper`); "Designers A-Z" is a `<label>` for `#CategoryToggle-shop-sidebar`.
+- `snippets/category-sidebar-nav.liquid` rebuilt: mobile presentation is a **slide-in sheet** (fixed panel + translateX + backdrop) on that same checkbox; static bordered column unchanged ≥ 750/990. Old inline "Categories" disclosure removed.
+- `sections/main-collection-product-grid.liquid`: renders the bar above the grid when filtering/sorting is on.
+- Wiring verified in-page (JS): label↔checkbox match, panel is a checkbox sibling, "Filters" click sets `[open]` on Dawn's disclosure.
+
+### §5 — Motion pass · tag `phase-8-s5-motion-20260903`
+- `tootaloo-system.css` §15, all under `@media (prefers-reduced-motion: no-preference)` with a `reduce{}` stop:
+  - card image transform 200ms ease-out (text block static)
+  - outline elements (tiles / PLP bar / carousel arrows) invert to black fill in 120ms
+  - swatch / size pills `transition: none`
+  - menu drawer 280ms ease-out + 200ms backdrop; PLP sheet 280/200
+  - carousel = native smooth scroll; no page-transition layer
+- **PDP accordion left on Dawn's native `<details>`** (instant) — the `grid-template-rows: 0fr→1fr` animate needs the accordion rebuilt off `<details>`, too risky next to the buy box this pass. Deferred.
+
+### Phase 8 — still open
+- Mobile is **CSS-reviewed + JS-wired, not seen** — the browser tool is locked to ~1440px. Real-device pass needed for: the two-button PLP bar + Designers sheet, the carousel swipe, drawer/sheet motion.
+- Recently Sold carousel scroll behaviour needs **> 4 sold products** to actually exercise (only 2 in the catalogue).
+- PDP accordion animation deferred (see §5).
+
 ## Open / not done
 - **Mobile QA is desk-verified only** — the browser tooling renders at a fixed 1440px viewport; the two bugs above came from the merchant's real-device testing. CSS is mobile-first with token breakpoints at 749 / 750 / 990.
 - **Drop / story / brand pages** — templates are live but render nothing until the Admin objects above exist.

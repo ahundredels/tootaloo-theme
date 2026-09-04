@@ -57,16 +57,20 @@ Dawn's `.h0`–`.h5` / `h1`–`h6` are also re-mapped onto this scale in `tootal
 
 ---
 
-## Spacing scale — exactly `8 / 16 / 24 / 40 / 64 / 96 / 160` px
-| Token | Desktop | Mobile (≤749) |
-|---|---|---|
-| `--tt-space-2xs` | 0.8rem (8) | 8 |
-| `--tt-space-xs` | 1.6rem (16) | 16 |
-| `--tt-space-sm` | 2.4rem (24) | 24 |
-| `--tt-space-md` | 4rem (40) | **3.2rem (32)** |
-| `--tt-space-lg` | 6.4rem (64) | **4.8rem (48)** |
-| `--tt-space-xl` | 9.6rem (96) | **6.4rem (64)** |
-| `--tt-space-2xl` | 16rem (160) | **9.6rem (96)** |
+## Spacing scale (Phase 8 §2)
+Canonical numeric scale — `--tt-space-1..9` = `4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96` px. Named aliases point onto it.
+
+| Alias | = | px | Mobile (≤749) |
+|---|---|---|---|
+| `--tt-space-2xs` | `--tt-space-2` | 8 | 8 |
+| `--tt-space-xs` | `--tt-space-4` | 16 | 16 |
+| `--tt-space-sm` | `--tt-space-5` | 24 | 24 |
+| `--tt-space-md` | 4rem | **40** (off-scale, component-internal) | **32** |
+| `--tt-space-lg` | `--tt-space-8` | 64 | **32** |
+| `--tt-space-xl` | `--tt-space-9` | 96 | 64 |
+| `--tt-space-2xl` | 16rem | **160** (off-scale, page-major) | 96 |
+
+Applied: header height `72 / 56` · section padding `64 / 32` · grid gutter `24 / 12` (via `spacing_grid_horizontal: 24`, Dawn halves for mobile) · page-edge gutter `32 / 16` (`--tt-gutter`) · card image→info `8`.
 
 Semantic: `--tt-pad-utility` = 2xs · `--tt-pad-grid` = sm · `--tt-pad-editorial` = lg · `--tt-section-gap` = lg · `--tt-section-gap-major` = 2xl.
 
@@ -95,6 +99,12 @@ Semantic: `--tt-pad-utility` = 2xs · `--tt-pad-grid` = sm · `--tt-pad-editoria
 
 ## Hard edges (Phase 7 — wireframe parity)
 `--tt-border-width` 1px · `--tt-border` `1px solid rgb(var(--color-foreground))` · `--tt-border-hairline` `1px solid rgba(var(--color-foreground), 0.16)` · `--tt-radius` 0. Consumed by `tootaloo-system.css` §14 on category tiles, search inputs, sold-out cards, the PLP sidebar container (≥990). Breakpoints stay 750/990 — the skeleton's 900 is not used.
+
+## Icons (Phase 8 §1)
+One set: 1.5px stroke, round caps, 24×24, `stroke="currentColor" fill="none"`. `icon-close` `icon-hamburger` `icon-search` `icon-cart` `icon-cart-empty` `icon-tt-arrow` rebuilt. Heart = **filled** everywhere (card button toggles opacity 0.5→1). `icon-caret` untouched (already a rotating chevron; 20+ styled deps). `icon-plus`/`icon-minus` kept for the PDP accordion (+/− is the one exception, per spec).
+
+## Motion (Phase 8 §5)
+`tootaloo-system.css` §15, all under `@media (prefers-reduced-motion: no-preference)`: card image 200ms ease-out (image only) · outline hover-invert 120ms · swatch/size `transition: none` · menu drawer 280ms slide + 200ms backdrop · PLP sheet 280/200 · carousel native smooth scroll · no page transitions. `reduce{}` block zeroes all of it.
 
 ---
 

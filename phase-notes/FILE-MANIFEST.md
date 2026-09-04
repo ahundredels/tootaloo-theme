@@ -99,3 +99,14 @@ Building to the 7 wireframes. Section numbering follows the breakdown doc.
 | §4 Product page | **done** — tag `phase-7-s4-pdp-20260903` | `locales/en.default.json` (Add to bag / bag copy), `assets/tootaloo-system.css` (solid Add to Bag), `templates/product.json` (related row) |
 | §5 Footer | **done** — tag `phase-7-s5-footer-20260903` | `sections/footer.liquid` (masthead: wordmark + search), `sections/footer-group.json` (columns + brand block), `assets/tootaloo-system.css` (masthead + border) |
 | §6 QA | desktop swept; mobile is CSS-review only | browser tool renders at a fixed ~1440px viewport (resize confirmed no effect) — mobile needs a real device or the merchant's check |
+
+## Phase 8 — pixel & motion precision (all pushed to live)
+
+| Section | Tag | Files |
+|---|---|---|
+| §1+§2 icons + spacing | `phase-8-s1-s2-icons-spacing-20260903` | `assets/icon-close|hamburger|search|cart|cart-empty.svg` (rewritten), **new** `assets/icon-tt-arrow.svg`; `snippets/header-wishlist-icon.liquid`, `snippets/wishlist-button.liquid`, `assets/wishlist.css` (filled heart); `snippets/tootaloo-tokens.liquid` (`--tt-space-1..9`, gutter, header height); `config/settings_data.json` (`spacing_grid_horizontal: 24`); `assets/tootaloo-system.css` (cart icon size, header height, card gap) |
+| §3 carousel | `phase-8-s3-carousel-20260903` | `sections/tt-collection-row.liquid`, **new** `assets/tt-carousel.js`, `assets/tt-modules.css`, `templates/index.json` |
+| §4 mobile PLP bar | `phase-8-s4-mobile-plp-20260903` | **new** `snippets/tt-plp-bar.liquid`, `snippets/category-sidebar-nav.liquid` (rebuilt → sheet), `sections/main-collection-product-grid.liquid`, `assets/tootaloo-system.css` |
+| §5 motion | `phase-8-s5-motion-20260903` | `assets/tootaloo-system.css` §15 |
+
+**Deferred:** PDP accordion open/close animation (needs the accordion rebuilt off native `<details>`).
