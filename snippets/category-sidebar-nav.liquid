@@ -3,9 +3,10 @@
   so it stays merchant-editable (Online Store > Navigation, handle "shop-sidebar").
   Supports one level of nesting.
 
-  Desktop (>=990px): a persistent bordered column beside the product grid.
-  Mobile (<990px): a slide-in sheet opened by the "Designers A-Z" button in
-  the mobile PLP bar (snippets/tt-plp-bar.liquid), which toggles the checkbox
+  >=990px: a persistent bordered column beside the product grid.
+  750-989px: a static block above the grid.
+  <750px: a slide-in sheet opened by the "Designers A-Z" button in the mobile
+  PLP bar (snippets/tt-plp-bar.liquid), which toggles the checkbox
   #CategoryToggle-<handle> below.
 
   Usage: {% render 'category-sidebar-nav', menu: 'shop-sidebar' %}
@@ -94,7 +95,7 @@
     font-weight: var(--tt-fw-semibold);
     text-transform: uppercase;
     letter-spacing: var(--tt-tracking-widest);
-    padding: 0.2rem 0;
+    padding: calc(var(--tt-space-1) / 2) 0;
   }
 
   .category-sidebar__sublist {
@@ -103,7 +104,7 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: var(--tt-space-1);
   }
 
   .category-sidebar__sublink {
@@ -112,7 +113,7 @@
     color: rgba(var(--color-foreground), 0.65);
     font-size: var(--tt-fs-sm);
     letter-spacing: var(--tt-tracking-normal);
-    padding: 0.2rem 0;
+    padding: calc(var(--tt-space-1) / 2) 0;
   }
 
   @media (prefers-reduced-motion: no-preference) {
