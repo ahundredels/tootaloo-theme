@@ -101,7 +101,11 @@
                   style="--animation-order: {{ forloop.index }};"
                 {% endif %}
               >
-                {%- if block.settings.heading != blank -%}
+                {%- comment -%}
+                  Link-list columns show only the links — no "Customer
+                  care" / "Information" style category label above them.
+                {%- endcomment -%}
+                {%- if block.settings.heading != blank and block.type != 'link_list' -%}
                   <h2 class="footer-block__heading inline-richtext">{{- block.settings.heading -}}</h2>
                 {%- endif -%}
 
