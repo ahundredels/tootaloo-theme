@@ -372,8 +372,11 @@ h5, .h5 {
 
 /* ════════════════ 7. PDP — filmstrip gallery + floating card ════════════════
    Mobile: images stack top to bottom at natural width/aspect-ratio, normal
-   page scroll — no forced height, no horizontal swipe. The card sits below
-   the images in normal flow.
+   page scroll — no forced height, no horizontal swipe. The first image
+   shows clean; from the second image on, the card overlays the gallery and
+   stays pinned (position: sticky) near the top of the screen while the
+   remaining images scroll behind it, releasing once the gallery ends so
+   the footer is reachable below.
    Desktop (990px+): images run side by side in one continuous, full-height
    horizontal filmstrip — swipe/scroll to move through them, no arrows. A
    small bordered card floats bottom-left over the first frame and stays
@@ -384,20 +387,35 @@ h5, .h5 {
    at the end of this block). The card scrolls internally if its own
    content runs long, rather than growing the page. */
 
-/* Media wrapper and info wrapper share one grid cell on desktop (instead of
-   sitting side by side) so the card can overlay the image; mobile keeps
-   them stacked in normal flow (Dawn's own default), so nothing needs
-   undoing there. */
-@media screen and (min-width: 990px) {
-  .product.grid--2-col-tablet {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
+/* Media wrapper and info wrapper share one grid cell at every width (so the
+   card can overlay the images rather than sit beside or fully below them);
+   what differs by breakpoint below is where/how the card pins. */
+.product.grid--2-col-tablet {
+  display: grid;
+  grid-template-columns: 1fr;
+}
 
-  .product__media-wrapper,
+.product__media-wrapper,
+.product__info-wrapper {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* Mobile: the card's flow position starts one viewport-height down (a
+   stand-in for "after the first image" — real photos vary, but a mobile
+   product shot is typically close to full-height) — visited scrolling
+   the gallery, it sticks near the top of the screen from that point on
+   instead of appearing only once, in normal flow, after every image. */
+@media screen and (max-width: 989px) {
   .product__info-wrapper {
-    grid-column: 1;
-    grid-row: 1;
+    position: sticky;
+    top: calc(var(--header-height, 7rem) + var(--tt-space-2xs));
+    align-self: start;
+    z-index: 2;
+    width: 100%;
+    margin-top: 100svh;
+    max-height: calc(100svh - var(--header-height, 7rem) - var(--tt-space-md));
+    overflow-y: auto;
   }
 }
 
