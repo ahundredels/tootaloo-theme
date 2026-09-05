@@ -527,22 +527,15 @@ h5, .h5 {
 
   /* Non-vintage products have no accordion, no condition/measurements
      facts — vendor, title, description, the Add bar, size, quantity,
-     share. A tighter card for them blocks less of the photo instead of
-     reserving the same footprint every product would need — narrower
-     than the default, but not so narrow the title wraps and makes the
-     card TALLER than the default (defeating the point: a card that wraps
-     to more lines blocks more of the photo vertically, and can run past
-     the bottom of the screen). The width and title size below are picked
-     together so a normal product title still fits on one line. */
+     share. Same width, same max-height/scroll ceiling as the vintage
+     card (both inherited from .product__info-wrapper above, untouched
+     here) — it's shorter purely because there's less content inside it,
+     not because the box itself is a different shape. Narrowing it was
+     the earlier (wrong) approach: it made titles wrap, which made the
+     card taller than the vintage one instead of shorter. Padding is the
+     one real difference — slightly tighter since there's less to hold. */
   .product__info-wrapper--compact {
-    width: clamp(22rem, 20vw, 30rem) !important;
-    max-width: clamp(22rem, 20vw, 30rem) !important;
     padding: var(--tt-space-xs) !important;
-  }
-
-  .product__info-wrapper--compact .product__title,
-  .product__info-wrapper--compact .product__title h1 {
-    font-size: var(--tt-fs-md);
   }
 }
 
