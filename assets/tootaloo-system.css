@@ -460,6 +460,12 @@ h5, .h5 {
    navigation is by scroll/swipe here, at both breakpoints. */
 .product__media-wrapper .slider-buttons { display: none; }
 
+/* No zoom on the PDP — Dawn's modal-opener/lightbox click-target and the
+   zoom-cursor icon it overlays on every image are always in the markup
+   regardless of the image_zoom setting; disabled directly here instead. */
+.product__media-wrapper .product__media-toggle { pointer-events: none; }
+.product__media-wrapper .product__media-icon { display: none; }
+
 /* Desktop: horizontal filmstrip — every frame fills the space below the
    (transparent, in-flow) header, its own width set from the image's real
    aspect ratio (via the --ratio custom property Dawn already puts on
@@ -596,8 +602,9 @@ h5, .h5 {
 .product__info-container .product__sizing { margin-top: var(--tt-space-2xs); }
 
 /* One page, no footer — the PDP is the gallery + card and nothing else.
-   Desktop only: mobile still needs to scroll vertically through the
-   stacked images, so it keeps the footer and normal page scroll.
+   Desktop only: on mobile the sticky card stays visible/reachable as you
+   scroll through the gallery, so the footer being there too at the very
+   end is fine — no need to hide it there.
    Scoped via the product template's own <main data-template="product">
    (already in layout/theme.liquid) rather than a new body class. */
 @media screen and (min-width: 990px) {
