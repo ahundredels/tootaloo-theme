@@ -688,8 +688,17 @@ h5, .h5 {
   text-transform: uppercase;
 }
 
-.header__inline-menu .header__menu-item { padding-block: 0; }
-.header__icons { gap: var(--tt-space-xs); }
+/* Nav links were sitting too far into the middle of the header — each
+   item's own left/right padding (Dawn default 1.2rem) was the real
+   footprint, not spacing we'd added; trimmed it down. */
+.header__inline-menu .header__menu-item {
+  padding-block: 0;
+  padding-inline: 0.8rem;
+}
+
+/* Search box + account/wishlist/cart, grouped tighter — was reading as
+   scattered rather than one cluster. */
+.header__icons { gap: var(--tt-space-2xs); }
 .header__icon .svg-wrapper { width: 2rem; height: 2rem; }
 /* (wishlist icon + count are owned by wishlist.css) */
 
@@ -715,7 +724,10 @@ h5, .h5 {
 /* No account icon in the wireframe header — reachable via "Login" in the
    mobile drawer utility links instead. Kept in the DOM (not removed) so
    /account still works and nothing here is destructive. */
-.tt-header-account { display: none; }
+/* !important: the shopify-account custom element sets its own inline
+   display style once it connects/hydrates, which otherwise wins over a
+   plain external rule and the account icon reappears after load. */
+.tt-header-account { display: none !important; }
 
 /* Persistent inline search — desktop only; the mobile top bar has none,
    search lives inside the off-canvas menu (see menu-drawer). */
@@ -775,15 +787,10 @@ h5, .h5 {
   margin-bottom: var(--tt-space-xs);
 }
 
-/* Two link columns side by side, brand/social block stacked under the
-   second column (wireframe: Sizing/Shipping column, then social icons). */
+/* Two link columns side by side (Contact/FAQs/etc., then Sizing/Shipping). */
 @media screen and (min-width: 750px) {
   .footer__blocks-wrapper {
     grid-template-columns: 1fr 1fr !important;
-  }
-
-  .footer__blocks-wrapper > .footer-block:nth-child(3) {
-    grid-column: 2;
   }
 }
 
@@ -1229,8 +1236,13 @@ textarea {
 }
 
 @media screen and (min-width: 750px) {
+  /* !important: section-footer.css's own `.footer__content-top{display:block}`
+     rule is loaded via a <link> footer.liquid outputs inline in the body —
+     physically after this stylesheet's <link> in <head> — so on load-order
+     alone it would win the tie at equal specificity and silently flatten
+     this back to a single stacked column. */
   .footer__content-top {
-    display: grid;
+    display: grid !important;
     grid-template-columns: 1fr 1fr;
     column-gap: var(--tt-space-6);
     row-gap: var(--tt-space-6);
@@ -1256,6 +1268,21 @@ textarea {
     grid-column: 1 / -1;
     grid-row: 2;
   }
+}
+
+/* Bottom row: copyright left, social icons right (wireframe) — social was
+   previously grouped with the newsletter block up top; moved down here to
+   sit with copyright instead. */
+.footer__content-bottom-wrapper--split {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--tt-space-sm);
+}
+
+.footer__list-social--bottom {
+  margin: 0;
 }
 
 .footer__masthead {
