@@ -463,6 +463,13 @@ h5, .h5 {
     overflow-x: auto !important;
     overflow-y: hidden !important;
     scroll-snap-type: x proximity !important;
+    /* Suppress the native rubber-band bounce at the scroll edges — with
+       the loop's clone buffer this edge should rarely be hit at all, but
+       a hard/fast swipe can still reach it before the loop's scrollend
+       handler repositions, and the elastic bounce there reads as broken
+       rather than as "this loops." Also stops the gesture from chaining
+       up to the (already non-scrolling) page. */
+    overscroll-behavior-x: contain;
   }
 
   .product__media-wrapper .product__media-item {
@@ -516,6 +523,16 @@ h5, .h5 {
     padding: var(--tt-space-sm) !important;
     max-height: calc(var(--tt-pdp-h) - var(--tt-space-lg) * 2);
     overflow-y: auto;
+  }
+
+  /* Non-vintage products have no accordion, no condition/measurements
+     facts — vendor, title, description, the Add bar, size, quantity,
+     share. A smaller, tighter card for them blocks less of the photo
+     instead of reserving the same footprint every product would need. */
+  .product__info-wrapper--compact {
+    width: clamp(19rem, 18vw, 26rem) !important;
+    max-width: clamp(19rem, 18vw, 26rem) !important;
+    padding: var(--tt-space-xs) !important;
   }
 }
 
