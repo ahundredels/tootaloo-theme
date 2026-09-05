@@ -181,6 +181,50 @@
     }
   }
 
+  /* Photo tile, name centered over the image — bordered box like the
+     text-only variant, but backed by a real photo instead of a blank
+     field. The name sits centered with a text-shadow so it reads over any
+     photo at rest; hovering fades in a black tint over the whole tile for
+     the affordance, and the name stays legible on top of it. */
+  .collection-tile-grid__grid--name-center .collection-tile {
+    position: relative;
+    display: block;
+    border: var(--tt-border);
+    overflow: hidden;
+  }
+
+  .collection-tile-grid__grid--name-center .collection-tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    transition: background var(--tt-dur) var(--tt-ease);
+    pointer-events: none;
+  }
+
+  .collection-tile-grid__grid--name-center .collection-tile:hover::after,
+  .collection-tile-grid__grid--name-center .collection-tile:focus-visible::after {
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  .collection-tile-grid__grid--name-center .collection-tile__name {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--tt-space-4);
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+    font-family: var(--tt-font-display);
+    font-size: var(--tt-fs-lg);
+    letter-spacing: var(--tt-tracking-tight);
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
   /* Text-only tile — plain bordered box, centered bold label, no image
      (wireframe: Home's Staff Picks / Vintage / Archive tiles). */
   .collection-tile-grid__grid--name-text_only .collection-tile {
@@ -274,6 +318,7 @@
       "id": "name_position",
       "label": "Collection name position",
       "options": [
+        { "value": "center", "label": "Centered on photo, black tint on hover" },
         { "value": "overlay", "label": "Overlaid on image" },
         { "value": "below", "label": "Below image" },
         { "value": "text_only", "label": "Text only (bordered box, no image)" }

@@ -1348,11 +1348,14 @@ variant-selects .product-form__input label {
   transition: none;
 }
 
-/* Outline hover-invert — quick, functional, no lingering fade */
-.collection-tile:hover {
+/* Outline hover-invert — quick, functional, no lingering fade.
+   Scoped to the text-only tile variant specifically: the photo variant
+   (--name-center) has its own black-tint hover in collection-tile-grid.liquid,
+   and this invert would otherwise fight it (both target .collection-tile). */
+.collection-tile-grid__grid--name-text_only .collection-tile:hover {
   background: rgb(var(--color-foreground));
 }
-.collection-tile:hover .collection-tile__name {
+.collection-tile-grid__grid--name-text_only .collection-tile:hover .collection-tile__name {
   color: rgb(var(--color-background));
 }
 .tt-plp-bar__btn:hover {
