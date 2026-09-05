@@ -61,7 +61,7 @@
 /* ---------- Condition & flaws (info area) ---------- */
 .product__condition {
   border-top: 1px solid rgba(var(--color-foreground), 0.12);
-  padding-top: var(--tt-space-sm);
+  padding-top: var(--tt-space-xs);
   display: flex;
   flex-direction: column;
   gap: var(--tt-space-2xs);
@@ -125,7 +125,7 @@
 /* ---------- Measurements ---------- */
 .product__measurements {
   border-top: 1px solid rgba(var(--color-foreground), 0.12);
-  padding-top: var(--tt-space-sm);
+  padding-top: var(--tt-space-xs);
 }
 
 .product__measurements-list {

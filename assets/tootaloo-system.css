@@ -500,7 +500,7 @@ h5, .h5 {
   background: rgb(var(--color-background));
   border: var(--tt-border);
   color: rgb(var(--color-foreground));
-  padding: var(--tt-space-sm);
+  padding: var(--tt-space-xs);
 }
 
 /* Desktop: floats bottom-right — pinned there via `sticky` on the shared
@@ -520,33 +520,18 @@ h5, .h5 {
     width: clamp(24rem, 24vw, 36rem) !important;
     max-width: clamp(24rem, 24vw, 36rem) !important;
     margin-inline-end: var(--tt-space-md);
-    padding: var(--tt-space-sm) !important;
+    padding: var(--tt-space-xs) !important;
     max-height: calc(var(--tt-pdp-h) - var(--tt-space-lg) * 2);
     overflow-y: auto;
   }
-
-  /* Non-vintage products have no accordion, no condition/measurements
-     facts — vendor, title, description, the Add bar, size, quantity,
-     share. Same width, same max-height/scroll ceiling as the vintage
-     card (both inherited from .product__info-wrapper above, untouched
-     here) — it's shorter purely because there's less content inside it,
-     not because the box itself is a different shape. Narrowing it was
-     the earlier (wrong) approach: it made titles wrap, which made the
-     card taller than the vintage one instead of shorter. Padding is the
-     one real difference — slightly tighter since there's less to hold. */
-  .product__info-wrapper--compact {
-    padding: var(--tt-space-xs) !important;
-  }
 }
 
-.product__info-container > * + * { margin-top: var(--tt-space-sm); }
-
-/* Non-vintage cards: tighter rhythm between Add bar / wishlist / size /
-   quantity / share — less to hold, so it should read as a shorter stack,
-   not the same spacing as the vintage card's longer one. */
-.product__info-wrapper--compact .product__info-container > * + * {
-  margin-top: var(--tt-space-xs);
-}
+/* Tight rhythm between every block in the card (vendor, title,
+   description, Add bar, wishlist, size, quantity, vintage facts,
+   accordion, share) — vintage cards hold more of these than non-vintage
+   ones, so both need a compact baseline rather than roomy spacing that
+   only non-vintage cards could afford. */
+.product__info-container > * + * { margin-top: var(--tt-space-2xs); }
 
 .product__title,
 .product__title h1 {
