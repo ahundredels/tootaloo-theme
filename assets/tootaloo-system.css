@@ -36,7 +36,7 @@
   font-size: var(--tt-fs-oversized);
   line-height: var(--tt-lh-none);
   letter-spacing: var(--tt-tracking-tighter);
-  font-weight: var(--tt-fw-regular);
+  font-weight: var(--tt-fw-bold);
   text-transform: uppercase;
 }
 
@@ -72,7 +72,7 @@
   font-size: var(--tt-fs-lg);
   line-height: var(--tt-lh-tight);
   letter-spacing: var(--tt-tracking-tight);
-  font-weight: var(--tt-fw-regular);
+  font-weight: var(--tt-fw-bold);
   text-transform: uppercase;
 }
 
@@ -81,7 +81,7 @@
   font-size: var(--tt-fs-lg);
   line-height: var(--tt-lh-snug);
   letter-spacing: var(--tt-tracking-tight);
-  font-weight: var(--tt-fw-regular);
+  font-weight: var(--tt-fw-bold);
 }
 
 .tt-product-title {
@@ -145,7 +145,7 @@ h1, h2, h3, h4, h5,
   font-family: var(--tt-font-display);
   letter-spacing: var(--tt-tracking-tight);
   line-height: var(--tt-lh-heading);
-  font-weight: var(--tt-fw-regular);
+  font-weight: var(--tt-fw-bold);
 }
 
 .h0 { font-size: var(--tt-fs-display); line-height: var(--tt-lh-tight); letter-spacing: var(--tt-tracking-tighter); }
@@ -541,6 +541,13 @@ h5, .h5 {
 
 .product__info-container > * + * { margin-top: var(--tt-space-sm); }
 
+/* Non-vintage cards: tighter rhythm between Add bar / wishlist / size /
+   quantity / share — less to hold, so it should read as a shorter stack,
+   not the same spacing as the vintage card's longer one. */
+.product__info-wrapper--compact .product__info-container > * + * {
+  margin-top: var(--tt-space-xs);
+}
+
 .product__title,
 .product__title h1 {
   font-family: var(--tt-font-grotesk);
@@ -676,6 +683,7 @@ h5, .h5 {
 .header__heading-link .h2,
 .header__heading-link {
   font-family: var(--tt-font-display);
+  font-weight: var(--tt-fw-bold);
   letter-spacing: var(--tt-tracking-tight);
   text-transform: none;
 }
@@ -832,6 +840,7 @@ h5, .h5 {
 
 .wishlist-page__title {
   font-family: var(--tt-font-display);
+  font-weight: var(--tt-fw-bold);
   font-size: var(--tt-fs-xl);
   letter-spacing: var(--tt-tracking-tight);
   margin-block: var(--tt-space-md) var(--tt-space-md);

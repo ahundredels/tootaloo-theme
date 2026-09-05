@@ -15,7 +15,9 @@
         "wordmark": "TOOTALOO",
         "link_label": "Staff Picks",
         "link": "shopify://collections/all",
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "height": 100,
+        "height_mobile": 100
       }
     },
     "current_drop": {

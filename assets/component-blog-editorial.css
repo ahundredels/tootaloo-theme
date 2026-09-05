@@ -53,7 +53,7 @@
 .blog-articles .article-card__title {
   font-family: var(--tt-font-display);
   font-size: var(--tt-fs-md);
-  font-weight: var(--tt-fw-regular);
+  font-weight: var(--tt-fw-bold);
   line-height: var(--tt-lh-snug);
   margin-top: var(--tt-space-xs);
 }
@@ -88,7 +88,7 @@
 
 .article-template__title {
   font-family: var(--tt-font-display);
-  font-weight: var(--tt-fw-regular);
+  font-weight: var(--tt-fw-bold);
   letter-spacing: var(--tt-tracking-tight);
   line-height: var(--tt-lh-tight);
   margin-bottom: var(--tt-space-xs);
@@ -113,7 +113,7 @@
 .article-template__content h2,
 .article-template__content h3 {
   font-family: var(--tt-font-display);
-  font-weight: var(--tt-fw-regular);
+  font-weight: var(--tt-fw-bold);
   line-height: var(--tt-lh-snug);
   margin-top: 2em;
 }
